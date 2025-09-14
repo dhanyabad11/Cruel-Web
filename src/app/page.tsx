@@ -1,103 +1,206 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+import { useState, useEffect } from "react";
+import { Calendar, Clock, AlertTriangle, Plus, Settings } from "lucide-react";
+import { deadlineAPI } from "@/services/api";
+import type { Deadline } from "@/types";
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+export default function Dashboard() {
+    const [deadlines, setDeadlines] = useState<Deadline[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchDeadlines = async () => {
+            try {
+                const response = await deadlineAPI.getAll();
+                setDeadlines(response.data);
+            } catch (error) {
+                console.error("Failed to fetch deadlines:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchDeadlines();
+    }, []);
+
+    const getPriorityColor = (priority: string) => {
+        switch (priority) {
+            case "urgent":
+                return "text-red-600 bg-red-100";
+            case "high":
+                return "text-orange-600 bg-orange-100";
+            case "medium":
+                return "text-yellow-600 bg-yellow-100";
+            case "low":
+                return "text-green-600 bg-green-100";
+            default:
+                return "text-gray-600 bg-gray-100";
+        }
+    };
+
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case "completed":
+                return "text-green-600 bg-green-100";
+            case "in_progress":
+                return "text-blue-600 bg-blue-100";
+            case "overdue":
+                return "text-red-600 bg-red-100";
+            case "pending":
+                return "text-gray-600 bg-gray-100";
+            default:
+                return "text-gray-600 bg-gray-100";
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="min-h-screen bg-gray-50">
+            {/* Header */}
+            <header className="bg-white shadow">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex justify-between items-center py-6">
+                        <div className="flex items-center">
+                            <AlertTriangle className="h-8 w-8 text-red-600 mr-3" />
+                            <h1 className="text-3xl font-bold text-gray-900">AI Cruel</h1>
+                            <span className="ml-2 text-sm text-gray-500">Deadline Manager</span>
+                        </div>
+                        <div className="flex items-center space-x-4">
+                            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+                                <Plus className="h-4 w-4 mr-2" />
+                                Add Deadline
+                            </button>
+                            <button className="text-gray-600 hover:text-gray-900">
+                                <Settings className="h-5 w-5" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            {/* Main Content */}
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                {/* Stats Overview */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div className="bg-white rounded-lg shadow p-6">
+                        <div className="flex items-center">
+                            <Calendar className="h-8 w-8 text-blue-600" />
+                            <div className="ml-4">
+                                <p className="text-sm font-medium text-gray-600">Total Deadlines</p>
+                                <p className="text-2xl font-bold text-gray-900">
+                                    {deadlines.length}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-white rounded-lg shadow p-6">
+                        <div className="flex items-center">
+                            <Clock className="h-8 w-8 text-yellow-600" />
+                            <div className="ml-4">
+                                <p className="text-sm font-medium text-gray-600">Pending</p>
+                                <p className="text-2xl font-bold text-gray-900">
+                                    {deadlines.filter((d) => d.status === "pending").length}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-white rounded-lg shadow p-6">
+                        <div className="flex items-center">
+                            <AlertTriangle className="h-8 w-8 text-red-600" />
+                            <div className="ml-4">
+                                <p className="text-sm font-medium text-gray-600">Overdue</p>
+                                <p className="text-2xl font-bold text-gray-900">
+                                    {deadlines.filter((d) => d.status === "overdue").length}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-white rounded-lg shadow p-6">
+                        <div className="flex items-center">
+                            <Calendar className="h-8 w-8 text-green-600" />
+                            <div className="ml-4">
+                                <p className="text-sm font-medium text-gray-600">Completed</p>
+                                <p className="text-2xl font-bold text-gray-900">
+                                    {deadlines.filter((d) => d.status === "completed").length}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Deadlines List */}
+                <div className="bg-white rounded-lg shadow">
+                    <div className="px-6 py-4 border-b border-gray-200">
+                        <h2 className="text-lg font-medium text-gray-900">Recent Deadlines</h2>
+                    </div>
+                    <div className="divide-y divide-gray-200">
+                        {deadlines.length === 0 ? (
+                            <div className="px-6 py-12 text-center">
+                                <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                                    No deadlines yet
+                                </h3>
+                                <p className="text-gray-600 mb-4">
+                                    Get started by adding your first deadline or connecting a
+                                    portal.
+                                </p>
+                                <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                                    Add First Deadline
+                                </button>
+                            </div>
+                        ) : (
+                            deadlines.map((deadline) => (
+                                <div key={deadline.id} className="px-6 py-4 hover:bg-gray-50">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex-1">
+                                            <h3 className="text-lg font-medium text-gray-900">
+                                                {deadline.title}
+                                            </h3>
+                                            {deadline.description && (
+                                                <p className="text-gray-600 mt-1">
+                                                    {deadline.description}
+                                                </p>
+                                            )}
+                                            <div className="flex items-center mt-2 space-x-4">
+                                                <span
+                                                    className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(
+                                                        deadline.priority
+                                                    )}`}
+                                                >
+                                                    {deadline.priority.toUpperCase()}
+                                                </span>
+                                                <span
+                                                    className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                                                        deadline.status
+                                                    )}`}
+                                                >
+                                                    {deadline.status
+                                                        .replace("_", " ")
+                                                        .toUpperCase()}
+                                                </span>
+                                                <span className="text-sm text-gray-500">
+                                                    Due:{" "}
+                                                    {new Date(
+                                                        deadline.due_date
+                                                    ).toLocaleDateString()}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
+            </main>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+    );
 }
