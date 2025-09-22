@@ -59,3 +59,10 @@ export const portalAPI = {
     connect: (portal: CreatePortalRequest) => api.post("/api/portals", portal),
     sync: (id: number) => api.post(`/api/portals/${id}/sync`),
 };
+
+// Export API with organized structure
+export const apiService = {
+    auth: authAPI,
+    deadlines: deadlineAPI,
+    portals: portalAPI,
+};
