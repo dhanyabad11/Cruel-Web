@@ -12,6 +12,7 @@ import {
     BarChart3,
     Users,
     Globe,
+    MessageSquare,
 } from "lucide-react";
 
 interface DashboardLayoutProps {
@@ -22,6 +23,7 @@ interface DashboardLayoutProps {
 const navigation = [
     { name: "Dashboard", href: "/", icon: BarChart3, current: true },
     { name: "Deadlines", href: "/deadlines", icon: Calendar, current: false },
+    { name: "WhatsApp", href: "/whatsapp", icon: MessageSquare, current: false },
     { name: "Portals", href: "/portals", icon: Globe, current: false },
     { name: "Notifications", href: "/notifications", icon: Bell, current: false },
     { name: "Settings", href: "/settings", icon: Settings, current: false },
