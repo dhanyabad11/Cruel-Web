@@ -6,6 +6,7 @@ import type {
     UpdateDeadlineRequest,
     CreatePortalRequest,
 } from "../types";
+import { whatsappAPI } from "./whatsapp";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -42,6 +43,7 @@ export const authAPI = {
     login: (credentials: LoginRequest) => api.post("/api/auth/login", credentials),
     register: (userData: RegisterRequest) => api.post("/api/auth/register", userData),
     me: () => api.get("/api/auth/me"),
+    test: () => api.get("/api/auth/test"),
 };
 
 // Deadline endpoints
@@ -65,4 +67,5 @@ export const apiService = {
     auth: authAPI,
     deadlines: deadlineAPI,
     portals: portalAPI,
+    whatsapp: whatsappAPI,
 };
