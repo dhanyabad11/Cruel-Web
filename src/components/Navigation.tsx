@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { LogOut, MessageSquare, FileText, Settings } from "lucide-react";
+import { LogOut, MessageSquare, FileText } from "lucide-react";
 
 export function Navigation() {
     const { user, logout } = useAuth();
@@ -45,14 +45,12 @@ export function Navigation() {
                             </Link>
                         </div>
                     </div>
-                    
+
                     <div className="flex items-center space-x-4">
-                        <span className="text-sm text-gray-600">
-                            Welcome, {user.email}
-                        </span>
-                        <Button 
-                            variant="outline" 
-                            size="sm" 
+                        <span className="text-sm text-gray-600">Welcome, {user.email}</span>
+                        <Button
+                            variant="outline"
+                            size="sm"
                             onClick={handleLogout}
                             className="flex items-center"
                         >

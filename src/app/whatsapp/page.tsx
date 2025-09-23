@@ -1,6 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Navigation } from "@/components/Navigation";
+import { useRouter } from "next/navigation";
 import { MessageSquare, Upload, Sparkles, Book, HelpCircle } from "lucide-react";
 import { WhatsAppUploader } from "@/components/WhatsApp/WhatsAppUploader";
 import { MessageParser } from "@/components/WhatsApp/MessageParser";
@@ -9,13 +12,38 @@ import type { ExtractedDeadline } from "@/services/whatsapp";
 export default function WhatsAppPage() {
     const [activeTab, setActiveTab] = useState<"upload" | "parse">("upload");
     const [extractedDeadlines, setExtractedDeadlines] = useState<ExtractedDeadline[]>([]);
+    const { user, loading } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push("/login");
+        }
+    }, [user, loading, router]);
 
     const handleDeadlinesExtracted = (deadlines: ExtractedDeadline[]) => {
         setExtractedDeadlines((prev) => [...prev, ...deadlines]);
     };
 
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600"></div>
+                    <p className="mt-4 text-gray-600">Loading...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!user) {
+        return null;
+    }
+
     return (
         <div className="min-h-screen bg-gray-50">
+            <Navigation />
+
             {/* Header */}
             <div className="bg-white shadow-sm border-b">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
