@@ -165,7 +165,7 @@ export function MessageParser({ onDeadlinesExtracted }: MessageParserProps) {
                                     onClick={() => setMessage(example)}
                                     className="w-full text-left p-3 bg-gray-50 rounded-lg hover:bg-gray-100 text-sm text-gray-700 transition-colors"
                                 >
-                                    " {example}"
+                                    &quot; {example}&quot;
                                 </button>
                             ))}
                         </div>

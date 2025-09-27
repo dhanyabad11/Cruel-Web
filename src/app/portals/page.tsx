@@ -13,15 +13,18 @@ export default function PortalsPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [typeFilter, setTypeFilter] = useState<string>("all");
     const [statusFilter, setStatusFilter] = useState<string>("all");
+    const [error, setError] = useState("");
 
     // Fetch portals on component mount
     useEffect(() => {
         const fetchPortals = async () => {
             try {
                 setLoading(true);
+                setError("");
                 const response = await apiService.portals.getAll();
                 setPortals(response.data);
             } catch (error) {
+                setError("Failed to load portals. Please try again later.");
                 console.error("Error fetching portals:", error);
                 // Use mock data for demo
                 setPortals(mockPortals);
@@ -105,6 +108,9 @@ export default function PortalsPage() {
 
     return (
         <DashboardLayout title="Portals">
+            {error && (
+                <div className="bg-red-100 text-red-800 p-3 rounded mb-4 text-center">{error}</div>
+            )}
             <div className="space-y-6">
                 {/* Portal Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

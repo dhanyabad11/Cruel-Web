@@ -40,11 +40,13 @@ export default function NotificationsPage() {
     const [history, setHistory] = useState<NotificationHistory[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<"preferences" | "history">("preferences");
+    const [error, setError] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
+                setError("");
                 // TODO: Fetch from API
                 // const [prefsRes, historyRes] = await Promise.all([
                 //   apiService.notifications.getPreferences(),
@@ -57,9 +59,8 @@ export default function NotificationsPage() {
                 setPreferences(mockPreferences);
                 setHistory(mockHistory);
             } catch (error) {
+                setError("Failed to load notifications. Please try again later.");
                 console.error("Error fetching notification data:", error);
-                setPreferences(mockPreferences);
-                setHistory(mockHistory);
             } finally {
                 setLoading(false);
             }
@@ -110,6 +111,9 @@ export default function NotificationsPage() {
 
     return (
         <DashboardLayout title="Notifications">
+            {error && (
+                <div className="bg-red-100 text-red-800 p-3 rounded mb-4 text-center">{error}</div>
+            )}
             <div className="space-y-6">
                 {/* Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
