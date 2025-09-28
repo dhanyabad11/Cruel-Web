@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { LogOut, MessageSquare, FileText } from "lucide-react";
 
 export function Navigation() {
     const { user, logout } = useAuth();
@@ -21,40 +20,37 @@ export function Navigation() {
     }
 
     return (
-        <nav className="bg-white shadow-sm border-b">
+        <nav className="border-b border-gray-200 bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
                     <div className="flex items-center">
-                        <Link href="/" className="text-xl font-bold text-gray-900">
+                        <Link href="/" className="text-xl font-light text-gray-900">
                             AI Cruel
                         </Link>
-                        <div className="ml-10 flex items-baseline space-x-4">
+                        <div className="ml-12 flex items-center space-x-8">
                             <Link
                                 href="/dashboard"
-                                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center"
+                                className="text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors"
                             >
-                                <FileText className="mr-2 h-4 w-4" />
                                 Dashboard
                             </Link>
                             <Link
                                 href="/whatsapp"
-                                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center"
+                                className="text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors"
                             >
-                                <MessageSquare className="mr-2 h-4 w-4" />
                                 WhatsApp
                             </Link>
                         </div>
                     </div>
 
-                    <div className="flex items-center space-x-4">
-                        <span className="text-sm text-gray-600">Welcome, {user.email}</span>
+                    <div className="flex items-center space-x-6">
+                        <span className="text-sm text-gray-600">{user.email}</span>
                         <Button
-                            variant="outline"
+                            variant="ghost"
                             size="sm"
                             onClick={handleLogout}
-                            className="flex items-center"
+                            className="text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                         >
-                            <LogOut className="mr-2 h-4 w-4" />
                             Logout
                         </Button>
                     </div>

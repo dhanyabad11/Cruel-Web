@@ -4,10 +4,11 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 import { apiService } from "@/services/api";
 
 interface User {
-    id: number;
+    id: string;
     email: string;
     full_name?: string;
-    is_active: boolean;
+    is_active?: boolean;
+    email_confirmed?: boolean;
 }
 
 interface AuthContextType {
@@ -73,7 +74,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             const response = await apiService.auth.register({
                 email,
                 password,
-                name: fullName || "",
+                full_name: fullName || "",
             });
             const { access_token, user: userData } = response.data;
 

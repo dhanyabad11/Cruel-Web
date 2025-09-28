@@ -1,10 +1,10 @@
 export interface User {
-    id: number;
+    id: string;
     email: string;
-    name: string;
-    phone?: string;
-    created_at: string;
-    updated_at: string;
+    full_name?: string;
+    email_confirmed?: boolean;
+    created_at?: string;
+    updated_at?: string;
 }
 
 export interface Deadline {
@@ -59,7 +59,7 @@ export interface LoginRequest {
 export interface RegisterRequest {
     email: string;
     password: string;
-    name: string;
+    full_name: string;
 }
 
 export interface AuthResponse {

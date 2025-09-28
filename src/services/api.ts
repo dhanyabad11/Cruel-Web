@@ -40,10 +40,10 @@ api.interceptors.response.use(
 
 // Auth endpoints
 export const authAPI = {
-    login: (credentials: LoginRequest) => api.post("/api/auth/login", credentials),
-    register: (userData: RegisterRequest) => api.post("/api/auth/register", userData),
+    login: (credentials: LoginRequest) => api.post("/api/auth/signin", credentials),
+    register: (userData: RegisterRequest) => api.post("/api/auth/signup", userData),
     me: () => api.get("/api/auth/me"),
-    test: () => api.get("/api/auth/test"),
+    test: () => api.get("/api/auth/me-test"),
 };
 
 // Deadline endpoints

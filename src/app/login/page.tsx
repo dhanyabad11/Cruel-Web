@@ -4,13 +4,14 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 export default function LoginPage() {
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [username, setUsername] = useState("");
+    const [fullName, setFullName] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -27,7 +28,7 @@ export default function LoginPage() {
             if (isLogin) {
                 await login(email, password);
             } else {
-                await register(email, password, username);
+                await register(email, password, fullName);
             }
             router.push("/dashboard");
         } catch (err: unknown) {
@@ -39,40 +40,88 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full space-y-8">
-                <div>
-                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                        {isLogin ? "Sign in to your account" : "Create your account"}
+        <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+            <div className="sm:mx-auto sm:w-full sm:max-w-md">
+                <Link
+                    href="/"
+                    className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 mb-8"
+                >
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Back to home
+                </Link>
+
+                <div className="text-center mb-8">
+                    <h2 className="text-3xl font-bold text-gray-900">
+                        {isLogin ? "Welcome back" : "Create your account"}
                     </h2>
-                    <p className="mt-2 text-center text-sm text-gray-600">
-                        AI Cruel - Smart Deadline Management
+                    <p className="mt-2 text-gray-600">
+                        {isLogin
+                            ? "Sign in to your AI Cruel account"
+                            : "Join thousands of students staying organized"
+                        }
                     </p>
                 </div>
+            </div>
 
-                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                    <div className="space-y-4">
+            <div className="sm:mx-auto sm:w-full sm:max-w-md">
+                <div className="card py-8 px-6 shadow-xl">
+                    {/* Tab Switcher */}
+                    <div className="flex rounded-lg bg-gray-100 p-1 mb-8">
+                        <button
+                            type="button"
+                            onClick={() => setIsLogin(true)}
+                            className={`flex-1 py-2 px-4 text-sm font-medium rounded-md transition-all ${
+                                isLogin
+                                    ? "bg-white text-gray-900 shadow-sm"
+                                    : "text-gray-600 hover:text-gray-900"
+                            }`}
+                        >
+                            Sign In
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setIsLogin(false)}
+                            className={`flex-1 py-2 px-4 text-sm font-medium rounded-md transition-all ${
+                                !isLogin
+                                    ? "bg-white text-gray-900 shadow-sm"
+                                    : "text-gray-600 hover:text-gray-900"
+                            }`}
+                        >
+                            Sign Up
+                        </button>
+                    </div>
+
+                    <form className="space-y-6" onSubmit={handleSubmit}>
+                        {/* Error Message */}
+                        {error && (
+                            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                                {error}
+                            </div>
+                        )}
+
+                        {/* Full Name Field (Sign Up only) */}
                         {!isLogin && (
                             <div>
-                                <label htmlFor="username" className="sr-only">
-                                    Username
+                                <label htmlFor="fullName" className="label">
+                                    Full Name
                                 </label>
                                 <input
-                                    id="username"
-                                    name="username"
+                                    id="fullName"
+                                    name="fullName"
                                     type="text"
                                     required={!isLogin}
-                                    className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                                    placeholder="Username"
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
+                                    className="input"
+                                    placeholder="Enter your full name"
+                                    value={fullName}
+                                    onChange={(e) => setFullName(e.target.value)}
                                 />
                             </div>
                         )}
 
+                        {/* Email Field */}
                         <div>
-                            <label htmlFor="email" className="sr-only">
-                                Email address
+                            <label htmlFor="email" className="label">
+                                Email Address
                             </label>
                             <input
                                 id="email"
@@ -80,66 +129,85 @@ export default function LoginPage() {
                                 type="email"
                                 autoComplete="email"
                                 required
-                                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                                placeholder="Email address"
+                                className="input"
+                                placeholder="Enter your email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
 
-                        <div className="relative">
-                            <label htmlFor="password" className="sr-only">
+                        {/* Password Field */}
+                        <div>
+                            <label htmlFor="password" className="label">
                                 Password
                             </label>
-                            <input
-                                id="password"
-                                name="password"
-                                type={showPassword ? "text" : "password"}
-                                autoComplete={isLogin ? "current-password" : "new-password"}
-                                required
-                                className="appearance-none rounded-md relative block w-full px-3 py-2 pr-10 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                                placeholder="Password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
+                            <div className="relative">
+                                <input
+                                    id="password"
+                                    name="password"
+                                    type={showPassword ? "text" : "password"}
+                                    autoComplete={isLogin ? "current-password" : "new-password"}
+                                    required
+                                    className="input pr-12"
+                                    placeholder="Enter your password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                                <button
+                                    type="button"
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? (
+                                        <EyeOff className="h-5 w-5 text-gray-400" />
+                                    ) : (
+                                        <Eye className="h-5 w-5 text-gray-400" />
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Submit Button */}
+                        <div>
+                            <Button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full btn-primary text-lg py-3"
+                            >
+                                {loading ? (
+                                    <div className="flex items-center justify-center">
+                                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                                        {isLogin ? "Signing in..." : "Creating account..."}
+                                    </div>
+                                ) : (
+                                    isLogin ? "Sign In" : "Create Account"
+                                )}
+                            </Button>
+                        </div>
+
+                        {/* Switch Mode Link */}
+                        <div className="text-center">
                             <button
                                 type="button"
-                                className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                                onClick={() => setShowPassword(!showPassword)}
+                                onClick={() => setIsLogin(!isLogin)}
+                                className="text-sm text-gray-600 hover:text-gray-900"
                             >
-                                {showPassword ? (
-                                    <EyeOff className="h-4 w-4 text-gray-400" />
-                                ) : (
-                                    <Eye className="h-4 w-4 text-gray-400" />
-                                )}
+                                {isLogin
+                                    ? "Don't have an account? Sign up"
+                                    : "Already have an account? Sign in"
+                                }
                             </button>
                         </div>
-                    </div>
+                    </form>
+                </div>
 
-                    {error && <div className="text-red-600 text-sm text-center">{error}</div>}
-
-                    <div>
-                        <Button
-                            type="submit"
-                            disabled={loading}
-                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-                        >
-                            {loading ? "Loading..." : isLogin ? "Sign in" : "Sign up"}
-                        </Button>
-                    </div>
-
-                    <div className="text-center">
-                        <button
-                            type="button"
-                            className="text-indigo-600 hover:text-indigo-500 text-sm"
-                            onClick={() => setIsLogin(!isLogin)}
-                        >
-                            {isLogin
-                                ? "Don't have an account? Sign up"
-                                : "Already have an account? Sign in"}
-                        </button>
-                    </div>
-                </form>
+                {/* Footer */}
+                <div className="mt-8 text-center text-sm text-gray-600">
+                    By {isLogin ? "signing in" : "creating an account"}, you agree to our{" "}
+                    <a href="#" className="text-black hover:underline">Terms of Service</a>{" "}
+                    and{" "}
+                    <a href="#" className="text-black hover:underline">Privacy Policy</a>
+                </div>
             </div>
         </div>
     );
