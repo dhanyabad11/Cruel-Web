@@ -1,216 +1,244 @@
 "use client";
-
-import { useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { ArrowLeft, Eye, EyeOff, Mail, Lock, Github, Chrome, AlertCircle } from "lucide-react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { apiClient } from "@/lib/api";
 
 export default function LoginPage() {
-    const [isLogin, setIsLogin] = useState(true);
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [fullName, setFullName] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
-
-    const { login, register } = useAuth();
     const router = useRouter();
+    const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string>("");
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+        rememberMe: false,
+    });
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
+        setIsLoading(true);
         setError("");
 
         try {
-            if (isLogin) {
-                await login(email, password);
-            } else {
-                await register(email, password, fullName);
+            const response = await apiClient.login(formData.email, formData.password);
+
+            if (response.error) {
+                setError(response.error);
+                return;
             }
-            router.push("/dashboard");
-        } catch (err: unknown) {
-            const errorMessage = err instanceof Error ? err.message : "An error occurred";
-            setError(errorMessage);
+
+            if (response.data) {
+                // Store remember me preference
+                if (formData.rememberMe) {
+                    localStorage.setItem("remember_me", "true");
+                }
+
+                // Redirect to dashboard
+                router.push("/dashboard");
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+            setError("An unexpected error occurred. Please try again.");
         } finally {
-            setLoading(false);
+            setIsLoading(false);
+        }
+    };
+
+    const handleSocialLogin = (provider: string) => {
+        // For now, redirect to backend OAuth endpoints
+        if (provider === "google") {
+            window.location.href = `${
+                process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+            }/api/auth/google`;
+        } else if (provider === "github") {
+            window.location.href = `${
+                process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+            }/api/auth/github`;
         }
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-            <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center py-12 px-4">
+            <div className="max-w-md w-full">
+                {/* Back to home */}
                 <Link
                     href="/"
-                    className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 mb-8"
+                    className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-8 transition-colors group"
                 >
-                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
                     Back to home
                 </Link>
 
-                <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold text-gray-900">
-                        {isLogin ? "Welcome back" : "Create your account"}
-                    </h2>
-                    <p className="mt-2 text-gray-600">
-                        {isLogin
-                            ? "Sign in to your AI Cruel account"
-                            : "Join thousands of students staying organized"}
-                    </p>
-                </div>
-            </div>
+                {/* Login Card */}
+                <div className="bg-white/80 backdrop-blur-sm shadow-2xl rounded-2xl p-8 border border-gray-200/50">
+                    <div className="text-center mb-8">
+                        <div className="flex items-center justify-center mb-6">
+                            <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                                <span className="text-white font-bold text-2xl">C</span>
+                            </div>
+                        </div>
+                        <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome back</h2>
+                        <p className="text-gray-600">Sign in to your account to continue</p>
+                    </div>
 
-            <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="card py-8 px-6 shadow-xl">
-                    {/* Tab Switcher */}
-                    <div className="flex rounded-lg bg-gray-100 p-1 mb-8">
+                    {/* Social Login Buttons */}
+                    <div className="space-y-3 mb-6">
                         <button
-                            type="button"
-                            onClick={() => setIsLogin(true)}
-                            className={`flex-1 py-2 px-4 text-sm font-medium rounded-md transition-all ${
-                                isLogin
-                                    ? "bg-white text-gray-900 shadow-sm"
-                                    : "text-gray-600 hover:text-gray-900"
-                            }`}
+                            onClick={() => handleSocialLogin("google")}
+                            className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 shadow-sm hover:shadow-md"
                         >
-                            Sign In
+                            <Chrome className="w-5 h-5 mr-3" />
+                            Continue with Google
                         </button>
                         <button
-                            type="button"
-                            onClick={() => setIsLogin(false)}
-                            className={`flex-1 py-2 px-4 text-sm font-medium rounded-md transition-all ${
-                                !isLogin
-                                    ? "bg-white text-gray-900 shadow-sm"
-                                    : "text-gray-600 hover:text-gray-900"
-                            }`}
+                            onClick={() => handleSocialLogin("github")}
+                            className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 shadow-sm hover:shadow-md"
                         >
-                            Sign Up
+                            <Github className="w-5 h-5 mr-3" />
+                            Continue with GitHub
                         </button>
                     </div>
 
-                    <form className="space-y-6" onSubmit={handleSubmit}>
-                        {/* Error Message */}
-                        {error && (
-                            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-                                {error}
-                            </div>
-                        )}
+                    {/* Divider */}
+                    <div className="relative mb-6">
+                        <div className="absolute inset-0 flex items-center">
+                            <div className="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div className="relative flex justify-center text-sm">
+                            <span className="px-4 bg-white text-gray-500">
+                                Or continue with email
+                            </span>
+                        </div>
+                    </div>
 
-                        {/* Full Name Field (Sign Up only) */}
-                        {!isLogin && (
-                            <div>
-                                <label htmlFor="fullName" className="label">
-                                    Full Name
-                                </label>
+                    {/* Error Message */}
+                    {error && (
+                        <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200">
+                            <div className="flex items-center">
+                                <AlertCircle className="w-5 h-5 text-red-500 mr-3" />
+                                <p className="text-sm text-red-700">{error}</p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Login Form */}
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div>
+                            <label
+                                htmlFor="email"
+                                className="block text-sm font-medium text-gray-700 mb-2"
+                            >
+                                Email address
+                            </label>
+                            <div className="relative">
+                                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                                 <input
-                                    id="fullName"
-                                    name="fullName"
-                                    type="text"
-                                    required={!isLogin}
-                                    className="input"
-                                    placeholder="Enter your full name"
-                                    value={fullName}
-                                    onChange={(e) => setFullName(e.target.value)}
+                                    id="email"
+                                    name="email"
+                                    type="email"
+                                    required
+                                    value={formData.email}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, email: e.target.value })
+                                    }
+                                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white"
+                                    placeholder="Enter your email"
                                 />
                             </div>
-                        )}
-
-                        {/* Email Field */}
-                        <div>
-                            <label htmlFor="email" className="label">
-                                Email Address
-                            </label>
-                            <input
-                                id="email"
-                                name="email"
-                                type="email"
-                                autoComplete="email"
-                                required
-                                className="input"
-                                placeholder="Enter your email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
                         </div>
 
-                        {/* Password Field */}
                         <div>
-                            <label htmlFor="password" className="label">
+                            <label
+                                htmlFor="password"
+                                className="block text-sm font-medium text-gray-700 mb-2"
+                            >
                                 Password
                             </label>
                             <div className="relative">
+                                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                                 <input
                                     id="password"
                                     name="password"
                                     type={showPassword ? "text" : "password"}
-                                    autoComplete={isLogin ? "current-password" : "new-password"}
                                     required
-                                    className="input pr-12"
+                                    value={formData.password}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, password: e.target.value })
+                                    }
+                                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white"
                                     placeholder="Enter your password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
                                 />
                                 <button
                                     type="button"
-                                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
                                     onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                                 >
                                     {showPassword ? (
-                                        <EyeOff className="h-5 w-5 text-gray-400" />
+                                        <EyeOff className="w-5 h-5" />
                                     ) : (
-                                        <Eye className="h-5 w-5 text-gray-400" />
+                                        <Eye className="w-5 h-5" />
                                     )}
                                 </button>
                             </div>
                         </div>
 
-                        {/* Submit Button */}
-                        <div>
-                            <Button
-                                type="submit"
-                                disabled={loading}
-                                className="w-full btn-primary text-lg py-3"
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center">
+                                <input
+                                    id="remember-me"
+                                    name="remember-me"
+                                    type="checkbox"
+                                    checked={formData.rememberMe}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, rememberMe: e.target.checked })
+                                    }
+                                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                />
+                                <label
+                                    htmlFor="remember-me"
+                                    className="ml-2 block text-sm text-gray-700"
+                                >
+                                    Remember me
+                                </label>
+                            </div>
+                            <Link
+                                href="/forgot-password"
+                                className="text-sm text-blue-600 hover:text-blue-500 font-medium"
                             >
-                                {loading ? (
-                                    <div className="flex items-center justify-center">
-                                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                                        {isLogin ? "Signing in..." : "Creating account..."}
-                                    </div>
-                                ) : isLogin ? (
-                                    "Sign In"
-                                ) : (
-                                    "Create Account"
-                                )}
-                            </Button>
+                                Forgot password?
+                            </Link>
                         </div>
 
-                        {/* Switch Mode Link */}
-                        <div className="text-center">
-                            <button
-                                type="button"
-                                onClick={() => setIsLogin(!isLogin)}
-                                className="text-sm text-gray-600 hover:text-gray-900"
-                            >
-                                {isLogin
-                                    ? "Don't have an account? Sign up"
-                                    : "Already have an account? Sign in"}
-                            </button>
-                        </div>
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-xl hover:from-blue-700 hover:to-purple-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl font-medium"
+                        >
+                            {isLoading ? (
+                                <div className="flex items-center justify-center">
+                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                                    Signing in...
+                                </div>
+                            ) : (
+                                "Sign in"
+                            )}
+                        </button>
                     </form>
-                </div>
 
-                {/* Footer */}
-                <div className="mt-8 text-center text-sm text-gray-600">
-                    By {isLogin ? "signing in" : "creating an account"}, you agree to our{" "}
-                    <a href="#" className="text-black hover:underline">
-                        Terms of Service
-                    </a>{" "}
-                    and{" "}
-                    <a href="#" className="text-black hover:underline">
-                        Privacy Policy
-                    </a>
+                    {/* Sign up Link */}
+                    <div className="mt-8 text-center">
+                        <p className="text-sm text-gray-600">
+                            Don&apos;t have an account?{" "}
+                            <Link
+                                href="/register"
+                                className="text-blue-600 hover:text-blue-500 font-medium transition-colors"
+                            >
+                                Sign up for free
+                            </Link>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
