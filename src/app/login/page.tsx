@@ -57,8 +57,7 @@ export default function LoginPage() {
                     <p className="mt-2 text-gray-600">
                         {isLogin
                             ? "Sign in to your AI Cruel account"
-                            : "Join thousands of students staying organized"
-                        }
+                            : "Join thousands of students staying organized"}
                     </p>
                 </div>
             </div>
@@ -179,8 +178,10 @@ export default function LoginPage() {
                                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
                                         {isLogin ? "Signing in..." : "Creating account..."}
                                     </div>
+                                ) : isLogin ? (
+                                    "Sign In"
                                 ) : (
-                                    isLogin ? "Sign In" : "Create Account"
+                                    "Create Account"
                                 )}
                             </Button>
                         </div>
@@ -194,8 +195,7 @@ export default function LoginPage() {
                             >
                                 {isLogin
                                     ? "Don't have an account? Sign up"
-                                    : "Already have an account? Sign in"
-                                }
+                                    : "Already have an account? Sign in"}
                             </button>
                         </div>
                     </form>
@@ -204,9 +204,13 @@ export default function LoginPage() {
                 {/* Footer */}
                 <div className="mt-8 text-center text-sm text-gray-600">
                     By {isLogin ? "signing in" : "creating an account"}, you agree to our{" "}
-                    <a href="#" className="text-black hover:underline">Terms of Service</a>{" "}
+                    <a href="#" className="text-black hover:underline">
+                        Terms of Service
+                    </a>{" "}
                     and{" "}
-                    <a href="#" className="text-black hover:underline">Privacy Policy</a>
+                    <a href="#" className="text-black hover:underline">
+                        Privacy Policy
+                    </a>
                 </div>
             </div>
         </div>

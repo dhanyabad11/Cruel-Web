@@ -1,180 +1,324 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import DashboardLayout from "@/components/Dashboard/DashboardLayout";
-import { DeadlineList } from "@/components/Dashboard/DeadlineList";
-import { Plus, Search } from "lucide-react";
-import { apiService } from "@/services/api";
-import type { Deadline } from "@/types";
+import { Navigation } from "@/components/Navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Plus, Clock, Calendar, AlertCircle, CheckCircle } from "lucide-react";
+
+interface Deadline {
+    id: string;
+    title: string;
+    description: string;
+    dueDate: string;
+    status: "pending" | "completed" | "overdue";
+    subject: string;
+    priority: "low" | "medium" | "high";
+}
 
 export default function DeadlinesPage() {
+    const { user, loading } = useAuth();
+    const router = useRouter();
     const [deadlines, setDeadlines] = useState<Deadline[]>([]);
-    const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
-    const [statusFilter, setStatusFilter] = useState<string>("all");
-    const [priorityFilter, setPriorityFilter] = useState<string>("all");
-    const [error, setError] = useState("");
+    const [statusFilter, setStatusFilter] = useState("all");
 
-    // Fetch deadlines on component mount
     useEffect(() => {
-        const fetchDeadlines = async () => {
-            try {
-                setLoading(true);
-                setError("");
-                const response = await apiService.deadlines.getAll();
-                setDeadlines(response.data);
-            } catch (error) {
-                setError("Failed to load deadlines. Please try again later.");
-                console.error("Error fetching deadlines:", error);
-                // Use mock data for demo
-                setDeadlines(mockDeadlines);
-            } finally {
-                setLoading(false);
-            }
-        };
+        if (!loading && !user) {
+            router.push("/login");
+        }
+    }, [user, loading, router]);
 
-        fetchDeadlines();
+    useEffect(() => {
+        // Mock data - replace with API call
+        setDeadlines([
+            {
+                id: "1",
+                title: "Math Assignment 1",
+                description: "Complete chapters 1-3 exercises",
+                dueDate: "2024-12-15",
+                status: "pending",
+                subject: "Mathematics",
+                priority: "high",
+            },
+            {
+                id: "2",
+                title: "Physics Lab Report",
+                description: "Submit lab report on thermodynamics",
+                dueDate: "2024-12-10",
+                status: "overdue",
+                subject: "Physics",
+                priority: "medium",
+            },
+            {
+                id: "3",
+                title: "English Essay",
+                description: "Write 1000 word essay on modern literature",
+                dueDate: "2024-12-20",
+                status: "completed",
+                subject: "English",
+                priority: "medium",
+            },
+            {
+                id: "4",
+                title: "Computer Science Project",
+                description: "Build a web application using React",
+                dueDate: "2024-12-25",
+                status: "pending",
+                subject: "Computer Science",
+                priority: "high",
+            },
+        ]);
     }, []);
 
-    // Filter deadlines based on search and filters
     const filteredDeadlines = deadlines.filter((deadline) => {
         const matchesSearch =
             deadline.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (deadline.description &&
-                deadline.description.toLowerCase().includes(searchTerm.toLowerCase()));
+            deadline.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            deadline.subject.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesStatus = statusFilter === "all" || deadline.status === statusFilter;
-        const matchesPriority = priorityFilter === "all" || deadline.priority === priorityFilter;
-
-        return matchesSearch && matchesStatus && matchesPriority;
+        return matchesSearch && matchesStatus;
     });
 
-    const handleEditDeadline = (deadline: Deadline) => {
-        // TODO: Implement edit functionality
-        console.log("Edit deadline:", deadline);
+    const handleCompleteDeadline = (id: string) => {
+        setDeadlines((prev) =>
+            prev.map((deadline) =>
+                deadline.id === id ? { ...deadline, status: "completed" as const } : deadline
+            )
+        );
     };
 
-    const handleDeleteDeadline = (id: number) => {
-        // TODO: Implement delete functionality
-        console.log("Delete deadline:", id);
+    const handleDeleteDeadline = (id: string) => {
+        setDeadlines((prev) => prev.filter((deadline) => deadline.id !== id));
     };
 
-    const handleToggleStatus = (id: number, status: Deadline["status"]) => {
-        // TODO: Implement status toggle
-        console.log("Toggle status:", id, status);
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black"></div>
+            </div>
+        );
+    }
+
+    if (!user) {
+        return null;
+    }
+
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case "completed":
+                return "text-green-600 bg-green-50";
+            case "overdue":
+                return "text-red-600 bg-red-50";
+            default:
+                return "text-orange-600 bg-orange-50";
+        }
+    };
+
+    const getPriorityColor = (priority: string) => {
+        switch (priority) {
+            case "high":
+                return "text-red-600 bg-red-50";
+            case "medium":
+                return "text-orange-600 bg-orange-50";
+            default:
+                return "text-gray-600 bg-gray-50";
+        }
+    };
+
+    const getStatusIcon = (status: string) => {
+        switch (status) {
+            case "completed":
+                return <CheckCircle className="h-4 w-4 text-green-600" />;
+            case "overdue":
+                return <AlertCircle className="h-4 w-4 text-red-600" />;
+            default:
+                return <Clock className="h-4 w-4 text-orange-600" />;
+        }
     };
 
     return (
-        <DashboardLayout title="Deadlines">
-            <div className="px-4 sm:px-6 lg:px-8">
-                <div className="sm:flex sm:items-center">
-                    <div className="sm:flex-auto">
-                        <h1 className="text-2xl font-semibold text-gray-900">Deadlines</h1>
-                        <p className="mt-2 text-sm text-gray-700">
-                            Manage and track all your important deadlines.
-                        </p>
+        <div className="min-h-screen bg-white">
+            <Navigation />
+            <div className="container mx-auto px-4 py-8">
+                {/* Header */}
+                <div className="flex justify-between items-center mb-8">
+                    <div>
+                        <h1 className="text-2xl font-bold mb-2">Deadlines</h1>
+                        <p className="text-gray-600">Manage your assignments and deadlines</p>
                     </div>
-                    <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-                        <button
-                            type="button"
-                            className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        >
-                            <Plus className="h-4 w-4 mr-2" />
-                            Add Deadline
-                        </button>
-                    </div>
+                    <button className="btn btn-primary">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Deadline
+                    </button>
                 </div>
 
                 {/* Filters */}
-                <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                    <div className="flex-1">
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                    <div className="flex flex-col md:flex-row gap-4">
+                        <div className="flex-1">
                             <input
                                 type="text"
                                 placeholder="Search deadlines..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 w-full"
+                                className="input w-full"
                             />
                         </div>
-                    </div>
-                    <div className="flex gap-2">
-                        <select
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                            className="px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                        >
-                            <option value="all">All Status</option>
-                            <option value="pending">Pending</option>
-                            <option value="in_progress">In Progress</option>
-                            <option value="completed">Completed</option>
-                            <option value="overdue">Overdue</option>
-                        </select>
-                        <select
-                            value={priorityFilter}
-                            onChange={(e) => setPriorityFilter(e.target.value)}
-                            className="px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                        >
-                            <option value="all">All Priority</option>
-                            <option value="low">Low</option>
-                            <option value="medium">Medium</option>
-                            <option value="high">High</option>
-                            <option value="urgent">Urgent</option>
-                        </select>
+                        <div className="flex gap-2">
+                            <select
+                                value={statusFilter}
+                                onChange={(e) => setStatusFilter(e.target.value)}
+                                className="input min-w-[120px]"
+                            >
+                                <option value="all">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="completed">Completed</option>
+                                <option value="overdue">Overdue</option>
+                            </select>
+                            <button
+                                onClick={() => {
+                                    setSearchTerm("");
+                                    setStatusFilter("all");
+                                }}
+                                className="btn btn-ghost text-sm"
+                            >
+                                Clear
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                {/* Error Message */}
-                {error && (
-                    <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md">
-                        <p className="text-sm text-red-600">{error}</p>
+                {/* Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div className="card">
+                        <div className="flex items-center">
+                            <Calendar className="h-8 w-8 text-blue-600 mr-3" />
+                            <div>
+                                <p className="text-sm text-gray-600">Total</p>
+                                <p className="text-xl font-semibold">{deadlines.length}</p>
+                            </div>
+                        </div>
                     </div>
-                )}
+                    <div className="card">
+                        <div className="flex items-center">
+                            <Clock className="h-8 w-8 text-orange-600 mr-3" />
+                            <div>
+                                <p className="text-sm text-gray-600">Pending</p>
+                                <p className="text-xl font-semibold">
+                                    {deadlines.filter((d) => d.status === "pending").length}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="card">
+                        <div className="flex items-center">
+                            <CheckCircle className="h-8 w-8 text-green-600 mr-3" />
+                            <div>
+                                <p className="text-sm text-gray-600">Completed</p>
+                                <p className="text-xl font-semibold">
+                                    {deadlines.filter((d) => d.status === "completed").length}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="card">
+                        <div className="flex items-center">
+                            <AlertCircle className="h-8 w-8 text-red-600 mr-3" />
+                            <div>
+                                <p className="text-sm text-gray-600">Overdue</p>
+                                <p className="text-xl font-semibold">
+                                    {deadlines.filter((d) => d.status === "overdue").length}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                {/* Deadline List */}
-                <div className="mt-8">
-                    {loading ? (
-                        <div className="flex items-center justify-center py-12">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-                            <span className="ml-2 text-gray-600">Loading deadlines...</span>
+                {/* Deadlines List */}
+                <div className="space-y-4">
+                    {filteredDeadlines.length === 0 ? (
+                        <div className="card text-center py-12">
+                            <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                            <h3 className="text-lg font-medium text-gray-900 mb-2">
+                                No deadlines found
+                            </h3>
+                            <p className="text-gray-600 mb-6">
+                                {searchTerm || statusFilter !== "all"
+                                    ? "Try adjusting your search or filters"
+                                    : "Get started by adding your first deadline"}
+                            </p>
+                            {!searchTerm && statusFilter === "all" && (
+                                <button className="btn btn-primary">
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    Add Deadline
+                                </button>
+                            )}
                         </div>
                     ) : (
-                        <DeadlineList
-                            deadlines={filteredDeadlines}
-                            onEdit={handleEditDeadline}
-                            onDelete={handleDeleteDeadline}
-                            onToggleStatus={handleToggleStatus}
-                        />
+                        filteredDeadlines.map((deadline) => (
+                            <div
+                                key={deadline.id}
+                                className="card hover:shadow-md transition-shadow"
+                            >
+                                <div className="flex items-start justify-between">
+                                    <div className="flex-1">
+                                        <div className="flex items-center gap-3 mb-2">
+                                            {getStatusIcon(deadline.status)}
+                                            <h3 className="font-semibold text-lg">
+                                                {deadline.title}
+                                            </h3>
+                                            <span
+                                                className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                                                    deadline.status
+                                                )}`}
+                                            >
+                                                {deadline.status}
+                                            </span>
+                                            <span
+                                                className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(
+                                                    deadline.priority
+                                                )}`}
+                                            >
+                                                {deadline.priority} priority
+                                            </span>
+                                        </div>
+                                        <p className="text-gray-600 mb-3">{deadline.description}</p>
+                                        <div className="flex items-center gap-6 text-sm text-gray-500">
+                                            <div className="flex items-center gap-1">
+                                                <Calendar className="h-4 w-4" />
+                                                Due:{" "}
+                                                {new Date(deadline.dueDate).toLocaleDateString()}
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                                                {deadline.subject}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-2 ml-4">
+                                        {deadline.status === "pending" && (
+                                            <button
+                                                onClick={() => handleCompleteDeadline(deadline.id)}
+                                                className="btn btn-success text-sm"
+                                            >
+                                                Complete
+                                            </button>
+                                        )}
+                                        <button className="btn btn-ghost text-sm">Edit</button>
+                                        <button
+                                            onClick={() => handleDeleteDeadline(deadline.id)}
+                                            className="btn btn-danger text-sm"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
                     )}
                 </div>
             </div>
-        </DashboardLayout>
+        </div>
     );
 }
-
-// Mock data for development
-const mockDeadlines: Deadline[] = [
-    {
-        id: 1,
-        title: "Complete project proposal",
-        description: "Write and submit the Q1 project proposal to stakeholders",
-        due_date: "2024-01-15T10:00:00Z",
-        priority: "high",
-        status: "pending",
-        user_id: 1,
-        created_at: "2024-01-01T00:00:00Z",
-        updated_at: "2024-01-01T00:00:00Z",
-    },
-    {
-        id: 2,
-        title: "Review code changes",
-        description: "Review pull request #123 for the authentication module",
-        due_date: "2024-01-10T15:30:00Z",
-        priority: "medium",
-        status: "in_progress",
-        portal_id: 1,
-        user_id: 1,
-        created_at: "2024-01-05T00:00:00Z",
-        updated_at: "2024-01-05T00:00:00Z",
-    },
-];
