@@ -10,115 +10,19 @@ import { useRouter } from "next/navigation";import { Navigation } from "@/compon
 
 import { useEffect, useState } from "react";
 
-import { Bell, Mail, MessageSquare, Clock, Save, CheckCircle } from "lucide-react";import { useAuth } from "@/contexts/AuthContext";import { useAuth } from "@/contexts/AuthContext";
+import { Bell, Mail, MessageSquare, Save } from "lucide-react";import { useAuth } from "@/contexts/AuthContext";import { useAuth } from "@/contexts/AuthContext";
 
 
 
-interface NotificationSettings {import { useRouter } from "next/navigation";import { useRouter } from "next/navigation";
-
-    email: {
-
-        deadlineReminders: boolean;import { useEffect, useState } from "react";import { useEffect, useState } from "react";
-
-        weeklyDigest: boolean;
-
-        newDeadlines: boolean;import { Bell, Mail, MessageSquare, Clock, Save, CheckCircle } from "lucide-react";import { Bell, Mail, MessageSquare, Clock, Save, CheckCircle } from "lucide-react";
-
-        overdueAlerts: boolean;
-
-    };
-
-    whatsapp: {
-
-        deadlineReminders: boolean;interface NotificationSettings {interface NotificationSettings {
-
-        dailyDigest: boolean;
-
-        urgentAlerts: boolean;    email: {    email: {
-
-    };
-
-    inApp: {        deadlineReminders: boolean;        deadlineReminders: boolean;
-
-        allNotifications: boolean;
-
-        deadlineReminders: boolean;        weeklyDigest: boolean;        weeklyDigest: boolean;
-
-        systemUpdates: boolean;
-
-    };        newDeadlines: boolean;        newDeadlines: boolean;
-
-    timing: {
-
-        reminderDays: number;        overdueAlerts: boolean;        overdueAlerts: boolean;
-
-        digestTime: string;
-
-        urgentThreshold: number;    };    };
-
-    };
-
-}    whatsapp: {    whatsapp: {
-
-
-
-export default function NotificationsPage() {        deadlineReminders: boolean;        deadlineReminders: boolean;
+export default function NotificationsPage() {import { useRouter } from "next/navigation";import { useRouter } from "next/navigation";
 
     const { user, loading } = useAuth();
 
-    const router = useRouter();        dailyDigest: boolean;        dailyDigest: boolean;
+    const router = useRouter();import { useEffect, useState } from "react";import { useEffect, useState } from "react";
 
-    const [settings, setSettings] = useState<NotificationSettings>({
+    const [isSaving, setIsSaving] = useState(false);
 
-        email: {        urgentAlerts: boolean;        urgentAlerts: boolean;
-
-            deadlineReminders: true,
-
-            weeklyDigest: true,    };    };
-
-            newDeadlines: false,
-
-            overdueAlerts: true    inApp: {    inApp: {
-
-        },
-
-        whatsapp: {        allNotifications: boolean;        allNotifications: boolean;
-
-            deadlineReminders: false,
-
-            dailyDigest: false,        deadlineReminders: boolean;        deadlineReminders: boolean;
-
-            urgentAlerts: true
-
-        },        systemUpdates: boolean;        systemUpdates: boolean;
-
-        inApp: {
-
-            allNotifications: true,    };    };
-
-            deadlineReminders: true,
-
-            systemUpdates: true    timing: {    timing: {
-
-        },
-
-        timing: {        reminderDays: number;        reminderDays: number;
-
-            reminderDays: 3,
-
-            digestTime: "09:00",        digestTime: string;        digestTime: string;
-
-            urgentThreshold: 24
-
-        }        urgentThreshold: number;        urgentThreshold: number;
-
-    });
-
-    const [saving, setSaving] = useState(false);    };    };
-
-    const [saved, setSaved] = useState(false);
-
-}}
+import { Bell, Mail, MessageSquare, Save } from "lucide-react";import { Bell, Mail, MessageSquare, Save } from "lucide-react";
 
     useEffect(() => {
 
@@ -132,45 +36,765 @@ export default function NotificationsPage() {        deadlineReminders: boolean;
 
     const { user, loading } = useAuth();    const { user, loading } = useAuth();
 
-    const handleToggle = (category: keyof NotificationSettings, key: string) => {
+    const handleSave = async () => {
 
-        setSettings(prev => ({    const router = useRouter();    const router = useRouter();
+        setIsSaving(true);    const router = useRouter();    const router = useRouter();
 
-            ...prev,
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
-            [category]: {    const [settings, setSettings] = useState<NotificationSettings>({    const [settings, setSettings] = useState<NotificationSettings>({
-
-                ...prev[category],
-
-                [key]: !prev[category][key as keyof typeof prev[typeof category]]        email: {        email: {
-
-            }
-
-        }));            deadlineReminders: true,            deadlineReminders: true,
+        setIsSaving(false);    const [isSaving, setIsSaving] = useState(false);    const [isSaving, setIsSaving] = useState(false);
 
     };
 
-            weeklyDigest: true,            weeklyDigest: true,
 
-    const handleTimingChange = (key: keyof NotificationSettings['timing'], value: string | number) => {
 
-        setSettings(prev => ({            newDeadlines: false,            newDeadlines: false,
+    if (loading) {
 
-            ...prev,
+        return (    useEffect(() => {    useEffect(() => {
 
-            timing: {            overdueAlerts: true            overdueAlerts: true
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50">
 
-                ...prev.timing,
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>        if (!loading && !user) {        if (!loading && !user) {
 
-                [key]: value        },        },
+            </div>
 
-            }
+        );            router.push("/login");            router.push("/login");
 
-        }));        whatsapp: {        whatsapp: {
+    }
+
+        }        }
+
+    if (!user) return null;
+
+    }, [user, loading, router]);    }, [user, loading, router]);
+
+    return (
+
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+
+            <Navigation />
+
+            <div className="max-w-4xl mx-auto p-6">    const handleSave = async () => {    const handleSave = async () => {
+
+                <div className="mb-10">
+
+                    <h1 className="text-4xl font-bold text-slate-900 mb-3">Notification Settings</h1>        setIsSaving(true);        setIsSaving(true);
+
+                    <p className="text-lg text-slate-600">Customize how and when you receive deadline reminders</p>
+
+                </div>        await new Promise(resolve => setTimeout(resolve, 1000));        await new Promise(resolve => setTimeout(resolve, 1000));
+
+
+
+                <div className="space-y-8">        setIsSaving(false);        setIsSaving(false);
+
+                    <div className="card">
+
+                        <div className="card-header">    };    };
+
+                            <div className="flex items-center space-x-3">
+
+                                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+
+                                    <Mail className="w-5 h-5 text-white" />
+
+                                </div>    if (loading) {    if (loading) {
+
+                                <div>
+
+                                    <h2 className="card-title text-xl">Email Notifications</h2>        return (        return (
+
+                                    <p className="card-description">Receive updates via email</p>
+
+                                </div>            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50">            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50">
+
+                            </div>
+
+                        </div>                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+
+                        <div className="card-content">
+
+                            <p className="text-slate-600">Configure your email notification preferences here.</p>            </div>            </div>
+
+                        </div>
+
+                    </div>        );        );
+
+
+
+                    <div className="card">    }    }
+
+                        <div className="card-header">
+
+                            <div className="flex items-center space-x-3">
+
+                                <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+
+                                    <Bell className="w-5 h-5 text-white" />    if (!user) return null;    if (!user) return null;
+
+                                </div>
+
+                                <div>
+
+                                    <h2 className="card-title text-xl">Push Notifications</h2>
+
+                                    <p className="card-description">Browser and mobile notifications</p>    return (    return (
+
+                                </div>
+
+                            </div>        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+
+                        </div>
+
+                        <div className="card-content">            <Navigation />            <Navigation />
+
+                            <p className="text-slate-600">Set up push notifications for instant alerts.</p>
+
+                        </div>            <div className="max-w-4xl mx-auto p-6">            <div className="max-w-4xl mx-auto p-6">
+
+                    </div>
+
+                <div className="mb-10">                <div className="mb-10">
+
+                    <div className="card">
+
+                        <div className="card-header">                    <h1 className="text-4xl font-bold text-slate-900 mb-3">Notification Settings</h1>                    <h1 className="text-4xl font-bold text-slate-900 mb-3">Notification Settings</h1>
+
+                            <div className="flex items-center space-x-3">
+
+                                <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">                    <p className="text-lg text-slate-600">Customize how and when you receive deadline reminders</p>                    <p className="text-lg text-slate-600">Customize how and when you receive deadline reminders</p>
+
+                                    <MessageSquare className="w-5 h-5 text-white" />
+
+                                </div>                </div>                </div>
+
+                                <div>
+
+                                    <h2 className="card-title text-xl">WhatsApp Notifications</h2>
+
+                                    <p className="card-description">Get reminders on WhatsApp</p>
+
+                                </div>                <div className="space-y-8">                <div className="space-y-8">
+
+                            </div>
+
+                        </div>                    <div className="card">                    <div className="card">
+
+                        <div className="card-content">
+
+                            <p className="text-slate-600">Connect WhatsApp for deadline reminders.</p>                        <div className="card-header">                        <div className="card-header">
+
+                        </div>
+
+                    </div>                            <div className="flex items-center space-x-3">                            <div className="flex items-center space-x-3">
+
+                </div>
+
+                                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">                                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+
+                <div className="mt-10 flex justify-center">
+
+                    <button                                    <Mail className="w-5 h-5 text-white" />                                    <Mail className="w-5 h-5 text-white" />
+
+                        onClick={handleSave}
+
+                        disabled={isSaving}                                </div>                                </div>
+
+                        className="btn btn-primary btn-lg flex items-center space-x-2"
+
+                    >                                <div>                                <div>
+
+                        {isSaving ? (
+
+                            <>                                    <h2 className="card-title text-xl">Email Notifications</h2>                                    <h2 className="card-title text-xl">Email Notifications</h2>
+
+                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+
+                                <span>Saving...</span>                                    <p className="card-description">Receive updates via email</p>                                    <p className="card-description">Receive updates via email</p>
+
+                            </>
+
+                        ) : (                                </div>                                </div>
+
+                            <>
+
+                                <Save className="w-5 h-5" />                            </div>                            </div>
+
+                                <span>Save Settings</span>
+
+                            </>                        </div>                        </div>
+
+                        )}
+
+                    </button>                        <div className="card-content">                        <div className="card-content">
+
+                </div>
+
+            </div>                            <p className="text-slate-600">Configure your email notification preferences here.</p>                            <p className="text-slate-600">Configure your email notification preferences here.</p>
+
+        </div>
+
+    );                        </div>                        </div>
+
+}
+                    </div>                    </div>
+
+
+
+                    <div className="card">                    <div className="card">
+
+                        <div className="card-header">                        <div className="card-header">
+
+                            <div className="flex items-center space-x-3">                            <div className="flex items-center space-x-3">
+
+                                <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">                                <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+
+                                    <Bell className="w-5 h-5 text-white" />                                    <Bell className="w-5 h-5 text-white" />
+
+                                </div>                                </div>
+
+                                <div>                                <div>
+
+                                    <h2 className="card-title text-xl">Push Notifications</h2>                                    <h2 className="card-title text-xl">Push Notifications</h2>
+
+                                    <p className="card-description">Browser and mobile notifications</p>                                    <p className="card-description">Browser and mobile notifications</p>
+
+                                </div>                                </div>
+
+                            </div>                            </div>
+
+                        </div>                        </div>
+
+                        <div className="card-content">                        <div className="card-content">
+
+                            <p className="text-slate-600">Set up push notifications for instant alerts.</p>                            <p className="text-slate-600">Set up push notifications for instant alerts.</p>
+
+                        </div>                        </div>
+
+                    </div>                    </div>
+
+
+
+                    <div className="card">                    <div className="card">
+
+                        <div className="card-header">                        <div className="card-header">
+
+                            <div className="flex items-center space-x-3">                            <div className="flex items-center space-x-3">
+
+                                <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">                                <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
+
+                                    <MessageSquare className="w-5 h-5 text-white" />                                    <MessageSquare className="w-5 h-5 text-white" />
+
+                                </div>                                </div>
+
+                                <div>                                <div>
+
+                                    <h2 className="card-title text-xl">WhatsApp Notifications</h2>                                    <h2 className="card-title text-xl">WhatsApp Notifications</h2>
+
+                                    <p className="card-description">Get reminders on WhatsApp</p>                                    <p className="card-description">Get reminders on WhatsApp</p>
+
+                                </div>                                </div>
+
+                            </div>                            </div>
+
+                        </div>                        </div>
+
+                        <div className="card-content">                        <div className="card-content">
+
+                            <p className="text-slate-600">Connect WhatsApp for deadline reminders.</p>                            <p className="text-slate-600">Connect WhatsApp for deadline reminders.</p>
+
+                        </div>                        </div>
+
+                    </div>                    </div>
+
+                </div>                </div>
+
+
+
+                <div className="mt-10 flex justify-center">                <div className="mt-10 flex justify-center">
+
+                    <button                    <button
+
+                        onClick={handleSave}                        onClick={handleSave}
+
+                        disabled={isSaving}                        disabled={isSaving}
+
+                        className="btn btn-primary btn-lg flex items-center space-x-2"                        className="btn btn-primary btn-lg flex items-center space-x-2"
+
+                    >                    >
+
+                        {isSaving ? (                        {isSaving ? (
+
+                            <>                            <>
+
+                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+
+                                <span>Saving...</span>                                <span>Saving...</span>
+
+                            </>                            </>
+
+                        ) : (                        ) : (
+
+                            <>                            <>
+
+                                <Save className="w-5 h-5" />                                <Save className="w-5 h-5" />
+
+                                <span>Save Settings</span>                                <span>Save Settings</span>
+
+                            </>                            </>
+
+                        )}                        )}
+
+                    </button>                    </button>
+
+                </div>                </div>
+
+            </div>            </div>
+
+        </div>        </div>
+
+    );    );
+
+}}
+
+    useEffect(() => {
+
+        if (!loading && !user) {
+
+            router.push("/login");
+
+        }interface NotificationSettings {import { useRouter } from "next/navigation";import { Navigation } from "@/components/Navigation";import { Navigation } from "@/components/Navigation";
+
+    }, [user, loading, router]);
+
+    email: {
+
+    const handleSave = async () => {
+
+        setIsSaving(true);        deadlineReminders: boolean;import { useEffect, useState } from "react";
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        setIsSaving(false);        weeklyDigest: boolean;
 
     };
 
-            deadlineReminders: false,            deadlineReminders: false,
+        newDeadlines: boolean;import { Bell, Mail, MessageSquare, Clock, Save, CheckCircle } from "lucide-react";import { useAuth } from "@/contexts/AuthContext";import { useAuth } from "@/contexts/AuthContext";
+
+    if (loading) {
+
+        return (        overdueAlerts: boolean;
+
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50">
+
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>    };
+
+            </div>
+
+        );    push: {
+
+    }
+
+        enabled: boolean;interface NotificationSettings {import { useRouter } from "next/navigation";import { useRouter } from "next/navigation";
+
+    if (!user) return null;
+
+        deadlineAlerts: boolean;
+
+    return (
+
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">        completionReminders: boolean;    email: {
+
+            <Navigation />
+
+            <div className="max-w-4xl mx-auto p-6">    };
+
+                <div className="mb-10">
+
+                    <h1 className="text-4xl font-bold text-slate-900 mb-3">Notification Settings</h1>    whatsapp: {        deadlineReminders: boolean;import { useEffect, useState } from "react";import { useEffect, useState } from "react";
+
+                    <p className="text-lg text-slate-600">Customize how and when you receive deadline reminders</p>
+
+                </div>        enabled: boolean;
+
+
+
+                <div className="space-y-8">        phoneNumber: string;        weeklyDigest: boolean;
+
+                    <div className="card">
+
+                        <div className="card-header">        dailySummary: boolean;
+
+                            <div className="flex items-center space-x-3">
+
+                                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">    };        newDeadlines: boolean;import { Bell, Mail, MessageSquare, Clock, Save, CheckCircle } from "lucide-react";import { Bell, Mail, MessageSquare, Clock, Save, CheckCircle } from "lucide-react";
+
+                                    <Mail className="w-5 h-5 text-white" />
+
+                                </div>    timing: {
+
+                                <div>
+
+                                    <h2 className="card-title text-xl">Email Notifications</h2>        reminderDays: number[];        overdueAlerts: boolean;
+
+                                    <p className="card-description">Receive updates via email</p>
+
+                                </div>        quietHours: {
+
+                            </div>
+
+                        </div>            enabled: boolean;    };
+
+                        <div className="card-content">
+
+                            <p className="text-slate-600">Configure your email notification preferences here.</p>            start: string;
+
+                        </div>
+
+                    </div>            end: string;    whatsapp: {
+
+
+
+                    <div className="card">        };
+
+                        <div className="card-header">
+
+                            <div className="flex items-center space-x-3">    };        deadlineReminders: boolean;interface NotificationSettings {interface NotificationSettings {
+
+                                <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+
+                                    <Bell className="w-5 h-5 text-white" />}
+
+                                </div>
+
+                                <div>        dailyDigest: boolean;
+
+                                    <h2 className="card-title text-xl">Push Notifications</h2>
+
+                                    <p className="card-description">Browser and mobile notifications</p>export default function NotificationsPage() {
+
+                                </div>
+
+                            </div>    const { user, loading } = useAuth();        urgentAlerts: boolean;    email: {    email: {
+
+                        </div>
+
+                        <div className="card-content">    const router = useRouter();
+
+                            <p className="text-slate-600">Set up push notifications for instant alerts.</p>
+
+                        </div>    const [settings, setSettings] = useState<NotificationSettings>({    };
+
+                    </div>
+
+        email: {
+
+                    <div className="card">
+
+                        <div className="card-header">            deadlineReminders: true,    inApp: {        deadlineReminders: boolean;        deadlineReminders: boolean;
+
+                            <div className="flex items-center space-x-3">
+
+                                <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">            weeklyDigest: true,
+
+                                    <MessageSquare className="w-5 h-5 text-white" />
+
+                                </div>            newDeadlines: true,        allNotifications: boolean;
+
+                                <div>
+
+                                    <h2 className="card-title text-xl">WhatsApp Notifications</h2>            overdueAlerts: true,
+
+                                    <p className="card-description">Get reminders on WhatsApp</p>
+
+                                </div>        },        deadlineReminders: boolean;        weeklyDigest: boolean;        weeklyDigest: boolean;
+
+                            </div>
+
+                        </div>        push: {
+
+                        <div className="card-content">
+
+                            <p className="text-slate-600">Connect WhatsApp for deadline reminders.</p>            enabled: true,        systemUpdates: boolean;
+
+                        </div>
+
+                    </div>            deadlineAlerts: true,
+
+                </div>
+
+            completionReminders: true,    };        newDeadlines: boolean;        newDeadlines: boolean;
+
+                <div className="mt-10 flex justify-center">
+
+                    <button        },
+
+                        onClick={handleSave}
+
+                        disabled={isSaving}        whatsapp: {    timing: {
+
+                        className="btn btn-primary btn-lg flex items-center space-x-2"
+
+                    >            enabled: false,
+
+                        {isSaving ? (
+
+                            <>            phoneNumber: "",        reminderDays: number;        overdueAlerts: boolean;        overdueAlerts: boolean;
+
+                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+
+                                <span>Saving...</span>            dailySummary: false,
+
+                            </>
+
+                        ) : (        },        digestTime: string;
+
+                            <>
+
+                                <Save className="w-5 h-5" />        timing: {
+
+                                <span>Save Settings</span>
+
+                            </>            reminderDays: [7, 3, 1],        urgentThreshold: number;    };    };
+
+                        )}
+
+                    </button>            quietHours: {
+
+                </div>
+
+            </div>                enabled: true,    };
+
+        </div>
+
+    );                start: "22:00",
+
+}
+                end: "08:00",}    whatsapp: {    whatsapp: {
+
+            },
+
+        },
+
+    });
+
+    const [isSaving, setIsSaving] = useState(false);export default function NotificationsPage() {        deadlineReminders: boolean;        deadlineReminders: boolean;
+
+
+
+    useEffect(() => {    const { user, loading } = useAuth();
+
+        if (!loading && !user) {
+
+            router.push("/login");    const router = useRouter();        dailyDigest: boolean;        dailyDigest: boolean;
+
+        }
+
+    }, [user, loading, router]);    const [settings, setSettings] = useState<NotificationSettings>({
+
+
+
+    const handleSave = async () => {        email: {        urgentAlerts: boolean;        urgentAlerts: boolean;
+
+        setIsSaving(true);
+
+        await new Promise(resolve => setTimeout(resolve, 1000));            deadlineReminders: true,
+
+        setIsSaving(false);
+
+    };            weeklyDigest: true,    };    };
+
+
+
+    if (loading) {            newDeadlines: false,
+
+        return (
+
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50">            overdueAlerts: true    inApp: {    inApp: {
+
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+
+            </div>        },
+
+        );
+
+    }        whatsapp: {        allNotifications: boolean;        allNotifications: boolean;
+
+
+
+    if (!user) return null;            deadlineReminders: false,
+
+
+
+    return (            dailyDigest: false,        deadlineReminders: boolean;        deadlineReminders: boolean;
+
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+
+            <Navigation />            urgentAlerts: true
+
+            <div className="max-w-4xl mx-auto p-6">
+
+                <div className="mb-10">        },        systemUpdates: boolean;        systemUpdates: boolean;
+
+                    <h1 className="text-4xl font-bold text-slate-900 mb-3">Notification Settings</h1>
+
+                    <p className="text-lg text-slate-600">Customize how and when you receive deadline reminders</p>        inApp: {
+
+                </div>
+
+            allNotifications: true,    };    };
+
+                <div className="space-y-8">
+
+                    <div className="card">            deadlineReminders: true,
+
+                        <div className="card-header">
+
+                            <div className="flex items-center space-x-3">            systemUpdates: true    timing: {    timing: {
+
+                                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+
+                                    <Mail className="w-5 h-5 text-white" />        },
+
+                                </div>
+
+                                <div>        timing: {        reminderDays: number;        reminderDays: number;
+
+                                    <h2 className="card-title text-xl">Email Notifications</h2>
+
+                                    <p className="card-description">Receive updates via email</p>            reminderDays: 3,
+
+                                </div>
+
+                            </div>            digestTime: "09:00",        digestTime: string;        digestTime: string;
+
+                        </div>
+
+                        <div className="card-content">            urgentThreshold: 24
+
+                            <p className="text-slate-600">Configure your email notification preferences here.</p>
+
+                        </div>        }        urgentThreshold: number;        urgentThreshold: number;
+
+                    </div>
+
+    });
+
+                    <div className="card">
+
+                        <div className="card-header">    const [saving, setSaving] = useState(false);    };    };
+
+                            <div className="flex items-center space-x-3">
+
+                                <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">    const [saved, setSaved] = useState(false);
+
+                                    <Bell className="w-5 h-5 text-white" />
+
+                                </div>}}
+
+                                <div>
+
+                                    <h2 className="card-title text-xl">Push Notifications</h2>    useEffect(() => {
+
+                                    <p className="card-description">Browser and mobile notifications</p>
+
+                                </div>        if (!loading && !user) {
+
+                            </div>
+
+                        </div>            router.push("/login");
+
+                        <div className="card-content">
+
+                            <p className="text-slate-600">Set up push notifications for instant alerts.</p>        }export default function NotificationsPage() {export default function NotificationsPage() {
+
+                        </div>
+
+                    </div>    }, [user, loading, router]);
+
+
+
+                    <div className="card">    const { user, loading } = useAuth();    const { user, loading } = useAuth();
+
+                        <div className="card-header">
+
+                            <div className="flex items-center space-x-3">    const handleToggle = (category: keyof NotificationSettings, key: string) => {
+
+                                <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
+
+                                    <MessageSquare className="w-5 h-5 text-white" />        setSettings(prev => ({    const router = useRouter();    const router = useRouter();
+
+                                </div>
+
+                                <div>            ...prev,
+
+                                    <h2 className="card-title text-xl">WhatsApp Notifications</h2>
+
+                                    <p className="card-description">Get reminders on WhatsApp</p>            [category]: {    const [settings, setSettings] = useState<NotificationSettings>({    const [settings, setSettings] = useState<NotificationSettings>({
+
+                                </div>
+
+                            </div>                ...prev[category],
+
+                        </div>
+
+                        <div className="card-content">                [key]: !prev[category][key as keyof typeof prev[typeof category]]        email: {        email: {
+
+                            <p className="text-slate-600">Connect WhatsApp for deadline reminders.</p>
+
+                        </div>            }
+
+                    </div>
+
+                </div>        }));            deadlineReminders: true,            deadlineReminders: true,
+
+
+
+                <div className="mt-10 flex justify-center">    };
+
+                    <button
+
+                        onClick={handleSave}            weeklyDigest: true,            weeklyDigest: true,
+
+                        disabled={isSaving}
+
+                        className="btn btn-primary btn-lg flex items-center space-x-2"    const handleTimingChange = (key: keyof NotificationSettings['timing'], value: string | number) => {
+
+                    >
+
+                        {isSaving ? (        setSettings(prev => ({            newDeadlines: false,            newDeadlines: false,
+
+                            <>
+
+                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>            ...prev,
+
+                                <span>Saving...</span>
+
+                            </>            timing: {            overdueAlerts: true            overdueAlerts: true
+
+                        ) : (
+
+                            <>                ...prev.timing,
+
+                                <Save className="w-5 h-5" />
+
+                                <span>Save Settings</span>                [key]: value        },        },
+
+                            </>
+
+                        )}            }
+
+                    </button>
+
+                </div>        }));        whatsapp: {        whatsapp: {
+
+            </div>
+
+        </div>    };
+
+    );
+
+}            deadlineReminders: false,            deadlineReminders: false,
 
     const handleSave = async () => {
 
