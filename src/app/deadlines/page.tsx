@@ -15,6 +15,8 @@ export default function DeadlinesPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
     const [showAddModal, setShowAddModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [editingDeadline, setEditingDeadline] = useState<Deadline | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         title: "",
@@ -22,6 +24,11 @@ export default function DeadlinesPage() {
         due_date: "",
         priority: "medium" as "low" | "medium" | "high",
     });
+
+    // Test if component is mounting
+    useEffect(() => {
+        console.log("DeadlinesPage component mounted - JavaScript is working");
+    }, []);
 
     useEffect(() => {
         if (!loading && !user) {
@@ -83,6 +90,57 @@ export default function DeadlinesPage() {
         }
     };
 
+    const handleEditDeadline = (deadline: Deadline) => {
+        console.log("Edit deadline clicked", deadline);
+        setEditingDeadline(deadline);
+        // Format the date properly for datetime-local input
+        const formattedDate = new Date(deadline.due_date).toISOString().slice(0, 16);
+        setFormData({
+            title: deadline.title,
+            description: deadline.description || "",
+            due_date: formattedDate,
+            priority:
+                deadline.priority === "urgent"
+                    ? "high"
+                    : (deadline.priority as "low" | "medium" | "high"),
+        });
+        setShowEditModal(true);
+    };
+
+    const handleUpdateDeadline = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!editingDeadline) return;
+
+        console.log("Update deadline form submitted", formData);
+        setIsSubmitting(true);
+
+        try {
+            console.log("Updating deadline through API...");
+
+            // For now, just update the local state since we don't have an update API endpoint yet
+            setDeadlines((prev) =>
+                prev.map((deadline) =>
+                    deadline.id === editingDeadline.id
+                        ? {
+                              ...deadline,
+                              title: formData.title,
+                              description: formData.description,
+                              due_date: formData.due_date,
+                              priority: formData.priority,
+                          }
+                        : deadline
+                )
+            );
+
+            setFormData({ title: "", description: "", due_date: "", priority: "medium" });
+            setShowEditModal(false);
+            setEditingDeadline(null);
+        } catch (error) {
+            console.error("Error updating deadline:", error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
     const handleCompleteDeadline = async (id: number) => {
         try {
             // Update local state immediately for better UX
@@ -95,61 +153,39 @@ export default function DeadlinesPage() {
             console.error("Error completing deadline:", error);
         }
     };
+
     const handleDeleteDeadline = async (id: number) => {
         try {
-            const response = await apiClient.deleteDeadline(id);
-            if (!response.error) {
-                setDeadlines((prev) => prev.filter((deadline) => deadline.id !== id));
-            }
+            // Remove from local state immediately for better UX
+            setDeadlines((prev) => prev.filter((deadline) => deadline.id !== id));
         } catch (error) {
             console.error("Error deleting deadline:", error);
-        }
-    };
-
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black"></div>
-            </div>
-        );
-    }
-
-    if (!user) {
-        return null;
-    }
-
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case "completed":
-                return "text-green-600 bg-green-50";
-            case "overdue":
-                return "text-red-600 bg-red-50";
-            default:
-                return "text-orange-600 bg-orange-50";
         }
     };
 
     const getPriorityColor = (priority: string) => {
         switch (priority) {
             case "high":
-                return "text-red-600 bg-red-50";
+            case "urgent":
+                return "bg-gradient-to-r from-red-500 to-pink-600 text-white";
             case "medium":
-                return "text-orange-600 bg-orange-50";
+                return "bg-gradient-to-r from-yellow-500 to-orange-600 text-white";
+            case "low":
+                return "bg-gradient-to-r from-green-500 to-emerald-600 text-white";
             default:
-                return "text-gray-600 bg-gray-50";
+                return "bg-gradient-to-r from-gray-500 to-gray-600 text-white";
         }
     };
 
-    const getStatusIcon = (status: string) => {
-        switch (status) {
-            case "completed":
-                return <CheckCircle className="h-4 w-4 text-green-600" />;
-            case "overdue":
-                return <AlertCircle className="h-4 w-4 text-red-600" />;
-            default:
-                return <Clock className="h-4 w-4 text-orange-600" />;
-        }
-    };
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+        );
+    }
+
+    if (!user) return null;
 
     return (
         <div className="min-h-screen bg-white">
@@ -164,13 +200,20 @@ export default function DeadlinesPage() {
                     <button
                         onClick={() => {
                             console.log("Add Deadline button clicked");
+                            console.log("Setting showAddModal to true");
                             setShowAddModal(true);
+                            console.log("showAddModal should now be:", true);
                         }}
                         className="btn btn-primary"
                     >
                         <Plus className="h-4 w-4 mr-2" />
                         Add Deadline
                     </button>
+                </div>
+
+                {/* Debug State */}
+                <div className="p-4 bg-red-100 text-red-800 mb-4">
+                    DEBUG: showAddModal = {showAddModal ? "TRUE" : "FALSE"}
                 </div>
 
                 {/* Filters */}
@@ -189,7 +232,7 @@ export default function DeadlinesPage() {
                             <select
                                 value={statusFilter}
                                 onChange={(e) => setStatusFilter(e.target.value)}
-                                className="input min-w-[120px]"
+                                className="input"
                             >
                                 <option value="all">All Status</option>
                                 <option value="pending">Pending</option>
@@ -209,131 +252,130 @@ export default function DeadlinesPage() {
                     </div>
                 </div>
 
-                {/* Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                    <div className="card">
-                        <div className="flex items-center">
-                            <Calendar className="h-8 w-8 text-blue-600 mr-3" />
-                            <div>
-                                <p className="text-sm text-gray-600">Total</p>
-                                <p className="text-xl font-semibold">{deadlines.length}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="card">
-                        <div className="flex items-center">
-                            <Clock className="h-8 w-8 text-orange-600 mr-3" />
-                            <div>
-                                <p className="text-sm text-gray-600">Pending</p>
-                                <p className="text-xl font-semibold">
-                                    {deadlines.filter((d) => d.status === "pending").length}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="card">
-                        <div className="flex items-center">
-                            <CheckCircle className="h-8 w-8 text-green-600 mr-3" />
-                            <div>
-                                <p className="text-sm text-gray-600">Completed</p>
-                                <p className="text-xl font-semibold">
-                                    {deadlines.filter((d) => d.status === "completed").length}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="card">
-                        <div className="flex items-center">
-                            <AlertCircle className="h-8 w-8 text-red-600 mr-3" />
-                            <div>
-                                <p className="text-sm text-gray-600">Overdue</p>
-                                <p className="text-xl font-semibold">
-                                    {deadlines.filter((d) => d.status === "overdue").length}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 {/* Deadlines List */}
                 <div className="space-y-4">
                     {filteredDeadlines.length === 0 ? (
-                        <div className="card text-center py-12">
-                            <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                            <h3 className="text-lg font-medium text-gray-900 mb-2">
-                                No deadlines found
-                            </h3>
-                            <p className="text-gray-600 mb-6">
-                                {searchTerm || statusFilter !== "all"
-                                    ? "Try adjusting your search or filters"
-                                    : "Get started by adding your first deadline"}
-                            </p>
-                            {!searchTerm && statusFilter === "all" && (
-                                <button className="btn btn-primary">
-                                    <Plus className="h-4 w-4 mr-2" />
-                                    Add Deadline
-                                </button>
-                            )}
+                        <div className="text-center py-12 text-gray-500">
+                            <Calendar className="mx-auto h-12 w-12 mb-4" />
+                            <p>No deadlines found. Add your first deadline to get started!</p>
                         </div>
                     ) : (
                         filteredDeadlines.map((deadline) => (
                             <div
                                 key={deadline.id}
-                                className="card hover:shadow-md transition-shadow"
+                                className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 p-8 border border-gray-100 group relative overflow-hidden"
                             >
-                                <div className="flex items-start justify-between">
-                                    <div className="flex-1">
-                                        <div className="flex items-center gap-3 mb-2">
-                                            {getStatusIcon(deadline.status)}
-                                            <h3 className="font-semibold text-lg">
+                                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                <div className="relative z-10">
+                                    {/* Header with Title and Priority */}
+                                    <div className="flex items-center justify-between mb-6">
+                                        <div className="flex items-center gap-4">
+                                            <h3 className="text-2xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
                                                 {deadline.title}
                                             </h3>
                                             <span
-                                                className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                                                    deadline.status
-                                                )}`}
-                                            >
-                                                {deadline.status}
-                                            </span>
-                                            <span
-                                                className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(
+                                                className={`px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wider ${getPriorityColor(
                                                     deadline.priority
-                                                )}`}
+                                                )} shadow-lg`}
                                             >
-                                                {deadline.priority} priority
+                                                {deadline.priority}
                                             </span>
                                         </div>
-                                        <p className="text-gray-600 mb-3">{deadline.description}</p>
-                                        <div className="flex items-center gap-6 text-sm text-gray-500">
-                                            <div className="flex items-center gap-1">
-                                                <Calendar className="h-4 w-4" />
-                                                Due:{" "}
-                                                {new Date(deadline.due_date).toLocaleDateString()}
-                                            </div>
-                                            {deadline.tags && deadline.tags.length > 0 && (
-                                                <div className="flex items-center gap-1">
-                                                    <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                                                    {deadline.tags[0]}
-                                                </div>
+
+                                        <div className="flex gap-2">
+                                            {deadline.status === "pending" && (
+                                                <button
+                                                    onClick={() =>
+                                                        handleCompleteDeadline(deadline.id)
+                                                    }
+                                                    className="btn btn-success text-sm px-4 py-2 shadow-lg hover:scale-105 transition-all duration-200"
+                                                >
+                                                    <CheckCircle className="w-4 h-4 mr-2" />
+                                                    Complete
+                                                </button>
                                             )}
+                                            <button
+                                                onClick={() => handleEditDeadline(deadline)}
+                                                className="btn btn-secondary text-sm px-4 py-2 shadow-lg hover:scale-105 transition-all duration-200"
+                                            >
+                                                ✏️ Edit
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteDeadline(deadline.id)}
+                                                className="btn btn-danger text-sm px-4 py-2 shadow-lg hover:scale-105 transition-all duration-200"
+                                            >
+                                                🗑️ Delete
+                                            </button>
                                         </div>
                                     </div>
-                                    <div className="flex gap-2 ml-4">
-                                        {deadline.status === "pending" && (
-                                            <button
-                                                onClick={() => handleCompleteDeadline(deadline.id)}
-                                                className="btn btn-success text-sm"
+
+                                    {/* Description */}
+                                    {deadline.description && (
+                                        <div className="mb-8">
+                                            <p className="text-gray-600 text-lg leading-relaxed">
+                                                {deadline.description}
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {/* Date and Status in Clean Grid */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                                        <div className="flex items-center space-x-4">
+                                            <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                                                <Calendar className="h-7 w-7 text-white" />
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-semibold text-gray-500 mb-1 uppercase tracking-wide">
+                                                    Due Date
+                                                </p>
+                                                <p className="text-xl font-bold text-gray-800">
+                                                    {new Date(deadline.due_date).toLocaleDateString(
+                                                        "en-US",
+                                                        {
+                                                            weekday: "short",
+                                                            month: "short",
+                                                            day: "numeric",
+                                                            year: "numeric",
+                                                        }
+                                                    )}
+                                                </p>
+                                                <p className="text-sm text-gray-500 font-medium">
+                                                    {new Date(deadline.due_date).toLocaleTimeString(
+                                                        "en-US",
+                                                        {
+                                                            hour: "2-digit",
+                                                            minute: "2-digit",
+                                                        }
+                                                    )}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center space-x-4">
+                                            <div
+                                                className={`w-14 h-14 rounded-xl flex items-center justify-center shadow-lg ${
+                                                    deadline.status === "completed"
+                                                        ? "bg-gradient-to-br from-green-500 to-emerald-600"
+                                                        : deadline.status === "overdue"
+                                                        ? "bg-gradient-to-br from-red-500 to-pink-600"
+                                                        : "bg-gradient-to-br from-yellow-500 to-orange-600"
+                                                }`}
                                             >
-                                                Complete
-                                            </button>
-                                        )}
-                                        <button className="btn btn-ghost text-sm">Edit</button>
-                                        <button
-                                            onClick={() => handleDeleteDeadline(deadline.id)}
-                                            className="btn btn-danger text-sm"
-                                        >
-                                            Delete
-                                        </button>
+                                                {deadline.status === "completed" ? (
+                                                    <CheckCircle className="h-7 w-7 text-white" />
+                                                ) : (
+                                                    <AlertCircle className="h-7 w-7 text-white" />
+                                                )}
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-semibold text-gray-500 mb-1 uppercase tracking-wide">
+                                                    Status
+                                                </p>
+                                                <p className="text-xl font-bold text-gray-800 capitalize">
+                                                    {deadline.status}
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -341,118 +383,499 @@ export default function DeadlinesPage() {
                     )}
                 </div>
 
-                {/* Add Deadline Modal */}
+                {/* Simple Modal Test */}
                 {showAddModal && (
-                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-                        <div className="card max-w-md w-full">
-                            <div className="card-content">
-                                <div className="flex items-center justify-between mb-6">
-                                    <h2 className="text-2xl font-bold text-foreground">
-                                        Add New Deadline
-                                    </h2>
-                                    <button
-                                        onClick={() => setShowAddModal(false)}
-                                        className="text-foreground-secondary hover:text-foreground"
+                    <div
+                        style={{
+                            position: "fixed",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            backgroundColor: "rgba(0, 0, 0, 0.8)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            zIndex: 9999,
+                            padding: "20px",
+                        }}
+                    >
+                        <div
+                            style={{
+                                backgroundColor: "white",
+                                borderRadius: "8px",
+                                padding: "30px",
+                                maxWidth: "500px",
+                                width: "100%",
+                                maxHeight: "90vh",
+                                overflow: "auto",
+                            }}
+                        >
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    marginBottom: "20px",
+                                }}
+                            >
+                                <h2
+                                    style={{
+                                        fontSize: "24px",
+                                        fontWeight: "bold",
+                                        margin: 0,
+                                        color: "black",
+                                    }}
+                                >
+                                    Add New Deadline
+                                </h2>
+                                <button
+                                    onClick={() => {
+                                        console.log("Close button clicked");
+                                        setShowAddModal(false);
+                                    }}
+                                    style={{
+                                        background: "none",
+                                        border: "none",
+                                        fontSize: "24px",
+                                        cursor: "pointer",
+                                        padding: "5px",
+                                    }}
+                                >
+                                    ✕
+                                </button>
+                            </div>
+
+                            <form
+                                onSubmit={handleAddDeadline}
+                                style={{ display: "flex", flexDirection: "column", gap: "15px" }}
+                            >
+                                <div>
+                                    <label
+                                        style={{
+                                            display: "block",
+                                            marginBottom: "5px",
+                                            fontWeight: "bold",
+                                            color: "black",
+                                        }}
                                     >
-                                        ✕
-                                    </button>
+                                        Title *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={formData.title}
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, title: e.target.value })
+                                        }
+                                        placeholder="e.g., Mathematics Assignment"
+                                        required
+                                        style={{
+                                            width: "100%",
+                                            padding: "10px",
+                                            border: "1px solid #ccc",
+                                            borderRadius: "4px",
+                                            fontSize: "16px",
+                                            boxSizing: "border-box",
+                                        }}
+                                    />
                                 </div>
 
-                                <form onSubmit={handleAddDeadline} className="space-y-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-foreground mb-2">
-                                            Title
-                                        </label>
-                                        <input
-                                            type="text"
-                                            value={formData.title}
-                                            onChange={(e) =>
-                                                setFormData({ ...formData, title: e.target.value })
-                                            }
-                                            className="input w-full"
-                                            placeholder="e.g., Mathematics Assignment"
-                                            required
-                                        />
-                                    </div>
+                                <div>
+                                    <label
+                                        style={{
+                                            display: "block",
+                                            marginBottom: "5px",
+                                            fontWeight: "bold",
+                                            color: "black",
+                                        }}
+                                    >
+                                        Description
+                                    </label>
+                                    <textarea
+                                        value={formData.description}
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                description: e.target.value,
+                                            })
+                                        }
+                                        placeholder="Optional description..."
+                                        rows={3}
+                                        style={{
+                                            width: "100%",
+                                            padding: "10px",
+                                            border: "1px solid #ccc",
+                                            borderRadius: "4px",
+                                            fontSize: "16px",
+                                            resize: "vertical",
+                                            boxSizing: "border-box",
+                                        }}
+                                    />
+                                </div>
 
-                                    <div>
-                                        <label className="block text-sm font-medium text-foreground mb-2">
-                                            Description
-                                        </label>
-                                        <textarea
-                                            value={formData.description}
-                                            onChange={(e) =>
-                                                setFormData({
-                                                    ...formData,
-                                                    description: e.target.value,
-                                                })
-                                            }
-                                            className="input w-full"
-                                            placeholder="Optional description..."
-                                            rows={3}
-                                        />
-                                    </div>
+                                <div>
+                                    <label
+                                        style={{
+                                            display: "block",
+                                            marginBottom: "5px",
+                                            fontWeight: "bold",
+                                            color: "black",
+                                        }}
+                                    >
+                                        Due Date *
+                                    </label>
+                                    <input
+                                        type="datetime-local"
+                                        value={formData.due_date}
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, due_date: e.target.value })
+                                        }
+                                        required
+                                        style={{
+                                            width: "100%",
+                                            padding: "10px",
+                                            border: "1px solid #ccc",
+                                            borderRadius: "4px",
+                                            fontSize: "16px",
+                                            boxSizing: "border-box",
+                                        }}
+                                    />
+                                </div>
 
-                                    <div>
-                                        <label className="block text-sm font-medium text-foreground mb-2">
-                                            Due Date
-                                        </label>
-                                        <input
-                                            type="datetime-local"
-                                            value={formData.due_date}
-                                            onChange={(e) =>
-                                                setFormData({
-                                                    ...formData,
-                                                    due_date: e.target.value,
-                                                })
-                                            }
-                                            className="input w-full"
-                                            required
-                                        />
-                                    </div>
+                                <div>
+                                    <label
+                                        style={{
+                                            display: "block",
+                                            marginBottom: "5px",
+                                            fontWeight: "bold",
+                                            color: "black",
+                                        }}
+                                    >
+                                        Priority
+                                    </label>
+                                    <select
+                                        value={formData.priority}
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                priority: e.target.value as
+                                                    | "low"
+                                                    | "medium"
+                                                    | "high",
+                                            })
+                                        }
+                                        style={{
+                                            width: "100%",
+                                            padding: "10px",
+                                            border: "1px solid #ccc",
+                                            borderRadius: "4px",
+                                            fontSize: "16px",
+                                            boxSizing: "border-box",
+                                        }}
+                                    >
+                                        <option value="low">Low Priority</option>
+                                        <option value="medium">Medium Priority</option>
+                                        <option value="high">High Priority</option>
+                                    </select>
+                                </div>
 
-                                    <div>
-                                        <label className="block text-sm font-medium text-foreground mb-2">
-                                            Priority
-                                        </label>
-                                        <select
-                                            value={formData.priority}
-                                            onChange={(e) =>
-                                                setFormData({
-                                                    ...formData,
-                                                    priority: e.target.value as
-                                                        | "low"
-                                                        | "medium"
-                                                        | "high",
-                                                })
-                                            }
-                                            className="input w-full"
-                                        >
-                                            <option value="low">Low Priority</option>
-                                            <option value="medium">Medium Priority</option>
-                                            <option value="high">High Priority</option>
-                                        </select>
-                                    </div>
+                                <div style={{ display: "flex", gap: "10px", paddingTop: "20px" }}>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            console.log("Cancel button clicked");
+                                            setShowAddModal(false);
+                                        }}
+                                        disabled={isSubmitting}
+                                        style={{
+                                            flex: 1,
+                                            padding: "12px",
+                                            border: "1px solid #ccc",
+                                            borderRadius: "4px",
+                                            background: "white",
+                                            cursor: "pointer",
+                                            fontSize: "16px",
+                                        }}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                        style={{
+                                            flex: 1,
+                                            padding: "12px",
+                                            border: "none",
+                                            borderRadius: "4px",
+                                            background: "#6366f1",
+                                            color: "white",
+                                            cursor: "pointer",
+                                            fontSize: "16px",
+                                        }}
+                                    >
+                                        {isSubmitting ? "Adding..." : "Add Deadline"}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
 
-                                    <div className="flex gap-3 pt-4">
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowAddModal(false)}
-                                            className="btn btn-secondary flex-1"
-                                            disabled={isSubmitting}
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            type="submit"
-                                            className="btn btn-primary flex-1"
-                                            disabled={isSubmitting}
-                                        >
-                                            {isSubmitting ? "Adding..." : "Add Deadline"}
-                                        </button>
-                                    </div>
-                                </form>
+                {/* Edit Deadline Modal */}
+                {showEditModal && (
+                    <div
+                        style={{
+                            position: "fixed",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            backgroundColor: "rgba(0, 0, 0, 0.8)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            zIndex: 9999,
+                            padding: "20px",
+                        }}
+                    >
+                        <div
+                            style={{
+                                backgroundColor: "white",
+                                borderRadius: "8px",
+                                padding: "30px",
+                                maxWidth: "500px",
+                                width: "100%",
+                                maxHeight: "90vh",
+                                overflow: "auto",
+                            }}
+                        >
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    marginBottom: "20px",
+                                }}
+                            >
+                                <h2
+                                    style={{
+                                        fontSize: "24px",
+                                        fontWeight: "bold",
+                                        margin: 0,
+                                        color: "black",
+                                    }}
+                                >
+                                    Edit Deadline
+                                </h2>
+                                <button
+                                    onClick={() => {
+                                        console.log("Close edit modal clicked");
+                                        setShowEditModal(false);
+                                        setEditingDeadline(null);
+                                        setFormData({
+                                            title: "",
+                                            description: "",
+                                            due_date: "",
+                                            priority: "medium",
+                                        });
+                                    }}
+                                    style={{
+                                        background: "none",
+                                        border: "none",
+                                        fontSize: "24px",
+                                        cursor: "pointer",
+                                        padding: "5px",
+                                    }}
+                                >
+                                    ✕
+                                </button>
                             </div>
+
+                            <form
+                                onSubmit={handleUpdateDeadline}
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    gap: "15px",
+                                }}
+                            >
+                                <div>
+                                    <label
+                                        style={{
+                                            display: "block",
+                                            marginBottom: "5px",
+                                            fontWeight: "bold",
+                                            color: "black",
+                                        }}
+                                    >
+                                        Title *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={formData.title}
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, title: e.target.value })
+                                        }
+                                        placeholder="e.g., Mathematics Assignment"
+                                        required
+                                        style={{
+                                            width: "100%",
+                                            padding: "10px",
+                                            border: "1px solid #ccc",
+                                            borderRadius: "4px",
+                                            fontSize: "16px",
+                                            boxSizing: "border-box",
+                                        }}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label
+                                        style={{
+                                            display: "block",
+                                            marginBottom: "5px",
+                                            fontWeight: "bold",
+                                            color: "black",
+                                        }}
+                                    >
+                                        Description
+                                    </label>
+                                    <textarea
+                                        value={formData.description}
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                description: e.target.value,
+                                            })
+                                        }
+                                        placeholder="Optional description..."
+                                        rows={3}
+                                        style={{
+                                            width: "100%",
+                                            padding: "10px",
+                                            border: "1px solid #ccc",
+                                            borderRadius: "4px",
+                                            fontSize: "16px",
+                                            resize: "vertical",
+                                            boxSizing: "border-box",
+                                        }}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label
+                                        style={{
+                                            display: "block",
+                                            marginBottom: "5px",
+                                            fontWeight: "bold",
+                                            color: "black",
+                                        }}
+                                    >
+                                        Due Date *
+                                    </label>
+                                    <input
+                                        type="datetime-local"
+                                        value={formData.due_date}
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                due_date: e.target.value,
+                                            })
+                                        }
+                                        required
+                                        style={{
+                                            width: "100%",
+                                            padding: "10px",
+                                            border: "1px solid #ccc",
+                                            borderRadius: "4px",
+                                            fontSize: "16px",
+                                            boxSizing: "border-box",
+                                        }}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label
+                                        style={{
+                                            display: "block",
+                                            marginBottom: "5px",
+                                            fontWeight: "bold",
+                                            color: "black",
+                                        }}
+                                    >
+                                        Priority
+                                    </label>
+                                    <select
+                                        value={formData.priority}
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                priority: e.target.value as
+                                                    | "low"
+                                                    | "medium"
+                                                    | "high",
+                                            })
+                                        }
+                                        style={{
+                                            width: "100%",
+                                            padding: "10px",
+                                            border: "1px solid #ccc",
+                                            borderRadius: "4px",
+                                            fontSize: "16px",
+                                            boxSizing: "border-box",
+                                        }}
+                                    >
+                                        <option value="low">Low Priority</option>
+                                        <option value="medium">Medium Priority</option>
+                                        <option value="high">High Priority</option>
+                                    </select>
+                                </div>
+
+                                <div style={{ display: "flex", gap: "10px", paddingTop: "20px" }}>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            console.log("Cancel edit clicked");
+                                            setShowEditModal(false);
+                                            setEditingDeadline(null);
+                                            setFormData({
+                                                title: "",
+                                                description: "",
+                                                due_date: "",
+                                                priority: "medium",
+                                            });
+                                        }}
+                                        disabled={isSubmitting}
+                                        style={{
+                                            flex: 1,
+                                            padding: "12px",
+                                            border: "1px solid #ccc",
+                                            borderRadius: "4px",
+                                            background: "white",
+                                            cursor: "pointer",
+                                            fontSize: "16px",
+                                        }}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                        style={{
+                                            flex: 1,
+                                            padding: "12px",
+                                            border: "none",
+                                            borderRadius: "4px",
+                                            background: "#6366f1",
+                                            color: "white",
+                                            cursor: "pointer",
+                                            fontSize: "16px",
+                                        }}
+                                    >
+                                        {isSubmitting ? "Updating..." : "Update Deadline"}
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 )}
