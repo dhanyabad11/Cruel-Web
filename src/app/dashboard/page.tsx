@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FileText, Calendar, Bell, MessageSquare } from "lucide-react";
+import { apiClient } from "@/lib/api";
+import { Deadline } from "@/types/api";
 
 export default function DashboardPage() {
     const { user, loading } = useAuth();
@@ -23,27 +25,59 @@ export default function DashboardPage() {
         }
     }, [user, loading, router]);
 
-    // Fetch dashboard stats
+    // Fetch dashboard stats only when authenticated
     useEffect(() => {
         const fetchStats = async () => {
+            // Don't fetch if not authenticated
+            if (!user || loading) return;
+
             try {
-                // This would normally fetch from the API
-                // For now, we'll use mock data
-                setStats({
-                    totalDeadlines: 12,
-                    upcomingDeadlines: 8,
-                    completedDeadlines: 3,
-                    overdueDeadlines: 1,
-                });
+                // Fetch real deadlines from API
+                const deadlinesResponse = await apiClient.getDeadlines();
+                if (deadlinesResponse.data) {
+                    // API now returns array directly
+                    const deadlines = deadlinesResponse.data;
+                    const now = new Date();
+
+                    const completed = deadlines.filter(
+                        (d: Deadline) => d.status === "completed"
+                    ).length;
+                    const overdue = deadlines.filter(
+                        (d: Deadline) => new Date(d.due_date) < now && d.status !== "completed"
+                    ).length;
+                    const upcoming = deadlines.filter(
+                        (d: Deadline) => new Date(d.due_date) >= now && d.status !== "completed"
+                    ).length;
+
+                    setStats({
+                        totalDeadlines: deadlines.length,
+                        upcomingDeadlines: upcoming,
+                        completedDeadlines: completed,
+                        overdueDeadlines: overdue,
+                    });
+                } else {
+                    // If no data, show zeros
+                    setStats({
+                        totalDeadlines: 0,
+                        upcomingDeadlines: 0,
+                        completedDeadlines: 0,
+                        overdueDeadlines: 0,
+                    });
+                }
             } catch (error) {
                 console.error("Error fetching stats:", error);
+                // Show zeros on error
+                setStats({
+                    totalDeadlines: 0,
+                    upcomingDeadlines: 0,
+                    completedDeadlines: 0,
+                    overdueDeadlines: 0,
+                });
             }
         };
 
-        if (user) {
-            fetchStats();
-        }
-    }, [user]);
+        fetchStats();
+    }, [user, loading]);
 
     if (loading) {
         return (
@@ -61,64 +95,71 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+        <div className="min-h-screen bg-background">
             <Navigation />
-            <div className="max-w-7xl mx-auto px-6 py-12">
-                {/* Header */}
-                <div className="mb-12">
-                    <div className="animate-fade-in">
-                        <h1 className="text-4xl font-bold text-slate-900 mb-3">
-                            Welcome back, {user.full_name || user.email?.split("@")[0]}
-                        </h1>
-                        <p className="text-xl text-slate-600">
-                            Here&apos;s your deadline overview and productivity insights
-                        </p>
-                    </div>
+            <div className="container mx-auto px-6 py-12">
+                {/* Stunning Header */}
+                <div className="mb-12 text-center">
+                    <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-accent to-warning bg-clip-text text-transparent">
+                        Welcome back!
+                    </h1>
+                    <p className="text-xl text-foreground-secondary max-w-2xl mx-auto">
+                        Your intelligent deadline management dashboard - stay ahead of everything
+                        that matters
+                    </p>
                 </div>
 
-                {/* Stats Grid */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                    <div className="card group">
-                        <div className="card-content text-center">
-                            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                                <FileText className="w-8 h-8 text-white" />
+                {/* Stunning Stats Grid */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+                    <div className="card group relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className="card-content text-center relative z-10">
+                            <div className="w-20 h-20 bg-gradient-to-br from-primary to-accent rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-2xl">
+                                <FileText className="w-10 h-10 text-white" />
                             </div>
-                            <div className="text-3xl font-bold text-slate-900 mb-1">
+                            <div className="text-4xl font-bold text-foreground mb-2 font-mono">
                                 {stats.totalDeadlines}
                             </div>
-                            <div className="text-sm font-medium text-slate-600">
-                                Total deadlines
+                            <div className="text-sm font-semibold text-foreground-secondary uppercase tracking-wider">
+                                Total Deadlines
                             </div>
                         </div>
                     </div>
-                    <div className="card group">
-                        <div className="card-content text-center">
-                            <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                                <Calendar className="w-8 h-8 text-white" />
+                    <div className="card group relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-br from-warning/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className="card-content text-center relative z-10">
+                            <div className="w-20 h-20 bg-gradient-to-br from-warning to-accent rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-2xl">
+                                <Calendar className="w-10 h-10 text-white" />
                             </div>
-                            <div className="text-3xl font-bold text-orange-600 mb-1">
+                            <div className="text-4xl font-bold text-warning mb-2 font-mono">
                                 {stats.upcomingDeadlines}
                             </div>
-                            <div className="text-sm font-medium text-slate-600">Upcoming</div>
+                            <div className="text-sm font-semibold text-foreground-secondary uppercase tracking-wider">
+                                Upcoming
+                            </div>
                         </div>
                     </div>
-                    <div className="card group">
-                        <div className="card-content text-center">
-                            <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                                <FileText className="w-8 h-8 text-white" />
+                    <div className="card group relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-br from-success/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className="card-content text-center relative z-10">
+                            <div className="w-20 h-20 bg-gradient-to-br from-success to-primary rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-2xl">
+                                <FileText className="w-10 h-10 text-white" />
                             </div>
-                            <div className="text-3xl font-bold text-green-600 mb-1">
+                            <div className="text-4xl font-bold text-success mb-2 font-mono">
                                 {stats.completedDeadlines}
                             </div>
-                            <div className="text-sm font-medium text-slate-600">Completed</div>
+                            <div className="text-sm font-semibold text-foreground-secondary uppercase tracking-wider">
+                                Completed
+                            </div>
                         </div>
                     </div>
-                    <div className="card group">
-                        <div className="card-content text-center">
-                            <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                                <Bell className="w-8 h-8 text-white" />
+                    <div className="card group relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-br from-danger/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className="card-content text-center relative z-10">
+                            <div className="w-20 h-20 bg-gradient-to-br from-danger to-accent rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-2xl">
+                                <Bell className="w-10 h-10 text-white" />
                             </div>
-                            <div className="text-3xl font-bold text-red-600 mb-1">
+                            <div className="text-4xl font-bold text-danger mb-2 font-mono">
                                 {stats.overdueDeadlines}
                             </div>
                             <div className="text-sm font-medium text-slate-600">Overdue</div>

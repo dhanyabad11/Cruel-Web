@@ -5,16 +5,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Plus, Clock, Calendar, AlertCircle, CheckCircle } from "lucide-react";
-
-interface Deadline {
-    id: string;
-    title: string;
-    description: string;
-    dueDate: string;
-    status: "pending" | "completed" | "overdue";
-    subject: string;
-    priority: "low" | "medium" | "high";
-}
+import { apiClient } from "@/lib/api";
+import { Deadline } from "@/types/api";
 
 export default function DeadlinesPage() {
     const { user, loading } = useAuth();
@@ -22,6 +14,14 @@ export default function DeadlinesPage() {
     const [deadlines, setDeadlines] = useState<Deadline[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [formData, setFormData] = useState({
+        title: "",
+        description: "",
+        due_date: "",
+        priority: "medium" as "low" | "medium" | "high",
+    });
 
     useEffect(() => {
         if (!loading && !user) {
@@ -29,67 +29,81 @@ export default function DeadlinesPage() {
         }
     }, [user, loading, router]);
 
+    // Load deadlines from API
     useEffect(() => {
-        // Mock data - replace with API call
-        setDeadlines([
-            {
-                id: "1",
-                title: "Math Assignment 1",
-                description: "Complete chapters 1-3 exercises",
-                dueDate: "2024-12-15",
-                status: "pending",
-                subject: "Mathematics",
-                priority: "high",
-            },
-            {
-                id: "2",
-                title: "Physics Lab Report",
-                description: "Submit lab report on thermodynamics",
-                dueDate: "2024-12-10",
-                status: "overdue",
-                subject: "Physics",
-                priority: "medium",
-            },
-            {
-                id: "3",
-                title: "English Essay",
-                description: "Write 1000 word essay on modern literature",
-                dueDate: "2024-12-20",
-                status: "completed",
-                subject: "English",
-                priority: "medium",
-            },
-            {
-                id: "4",
-                title: "Computer Science Project",
-                description: "Build a web application using React",
-                dueDate: "2024-12-25",
-                status: "pending",
-                subject: "Computer Science",
-                priority: "high",
-            },
-        ]);
-    }, []);
+        const loadDeadlines = async () => {
+            if (!user) return;
+
+            try {
+                const response = await apiClient.getDeadlines();
+                if (response.data) {
+                    setDeadlines(response.data);
+                }
+            } catch (err) {
+                console.error("Error loading deadlines:", err);
+            }
+        };
+
+        loadDeadlines();
+    }, [user]);
 
     const filteredDeadlines = deadlines.filter((deadline) => {
         const matchesSearch =
             deadline.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            deadline.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            deadline.subject.toLowerCase().includes(searchTerm.toLowerCase());
+            (deadline.description?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false);
         const matchesStatus = statusFilter === "all" || deadline.status === statusFilter;
         return matchesSearch && matchesStatus;
     });
 
-    const handleCompleteDeadline = (id: string) => {
-        setDeadlines((prev) =>
-            prev.map((deadline) =>
-                deadline.id === id ? { ...deadline, status: "completed" as const } : deadline
-            )
-        );
+    const handleAddDeadline = async (e: React.FormEvent) => {
+        e.preventDefault();
+        console.log("Add deadline form submitted", formData);
+        setIsSubmitting(true);
+
+        try {
+            console.log("Creating deadline through API...");
+            const response = await apiClient.createDeadline({
+                title: formData.title,
+                description: formData.description,
+                due_date: formData.due_date,
+                priority: formData.priority,
+            });
+
+            if (response.data) {
+                // Add to local state immediately for better UX
+                setDeadlines((prev) => [...prev, response.data!]);
+            }
+
+            setFormData({ title: "", description: "", due_date: "", priority: "medium" });
+            setShowAddModal(false);
+        } catch (error) {
+            console.error("Error adding deadline:", error);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
-    const handleDeleteDeadline = (id: string) => {
-        setDeadlines((prev) => prev.filter((deadline) => deadline.id !== id));
+    const handleCompleteDeadline = async (id: number) => {
+        try {
+            // Update local state immediately for better UX
+            setDeadlines((prev) =>
+                prev.map((deadline) =>
+                    deadline.id === id ? { ...deadline, status: "completed" as const } : deadline
+                )
+            );
+        } catch (error) {
+            console.error("Error completing deadline:", error);
+        }
+    };
+    const handleDeleteDeadline = async (id: number) => {
+        try {
+            const response = await apiClient.deleteDeadline(id);
+            if (!response.error) {
+                setDeadlines((prev) => prev.filter((deadline) => deadline.id !== id));
+            }
+        } catch (error) {
+            console.error("Error deleting deadline:", error);
+        }
     };
 
     if (loading) {
@@ -147,7 +161,13 @@ export default function DeadlinesPage() {
                         <h1 className="text-2xl font-bold mb-2">Deadlines</h1>
                         <p className="text-gray-600">Manage your assignments and deadlines</p>
                     </div>
-                    <button className="btn btn-primary">
+                    <button
+                        onClick={() => {
+                            console.log("Add Deadline button clicked");
+                            setShowAddModal(true);
+                        }}
+                        className="btn btn-primary"
+                    >
                         <Plus className="h-4 w-4 mr-2" />
                         Add Deadline
                     </button>
@@ -288,12 +308,14 @@ export default function DeadlinesPage() {
                                             <div className="flex items-center gap-1">
                                                 <Calendar className="h-4 w-4" />
                                                 Due:{" "}
-                                                {new Date(deadline.dueDate).toLocaleDateString()}
+                                                {new Date(deadline.due_date).toLocaleDateString()}
                                             </div>
-                                            <div className="flex items-center gap-1">
-                                                <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                                                {deadline.subject}
-                                            </div>
+                                            {deadline.tags && deadline.tags.length > 0 && (
+                                                <div className="flex items-center gap-1">
+                                                    <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                                                    {deadline.tags[0]}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="flex gap-2 ml-4">
@@ -318,6 +340,122 @@ export default function DeadlinesPage() {
                         ))
                     )}
                 </div>
+
+                {/* Add Deadline Modal */}
+                {showAddModal && (
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+                        <div className="card max-w-md w-full">
+                            <div className="card-content">
+                                <div className="flex items-center justify-between mb-6">
+                                    <h2 className="text-2xl font-bold text-foreground">
+                                        Add New Deadline
+                                    </h2>
+                                    <button
+                                        onClick={() => setShowAddModal(false)}
+                                        className="text-foreground-secondary hover:text-foreground"
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
+
+                                <form onSubmit={handleAddDeadline} className="space-y-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-foreground mb-2">
+                                            Title
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={formData.title}
+                                            onChange={(e) =>
+                                                setFormData({ ...formData, title: e.target.value })
+                                            }
+                                            className="input w-full"
+                                            placeholder="e.g., Mathematics Assignment"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-foreground mb-2">
+                                            Description
+                                        </label>
+                                        <textarea
+                                            value={formData.description}
+                                            onChange={(e) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    description: e.target.value,
+                                                })
+                                            }
+                                            className="input w-full"
+                                            placeholder="Optional description..."
+                                            rows={3}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-foreground mb-2">
+                                            Due Date
+                                        </label>
+                                        <input
+                                            type="datetime-local"
+                                            value={formData.due_date}
+                                            onChange={(e) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    due_date: e.target.value,
+                                                })
+                                            }
+                                            className="input w-full"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-foreground mb-2">
+                                            Priority
+                                        </label>
+                                        <select
+                                            value={formData.priority}
+                                            onChange={(e) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    priority: e.target.value as
+                                                        | "low"
+                                                        | "medium"
+                                                        | "high",
+                                                })
+                                            }
+                                            className="input w-full"
+                                        >
+                                            <option value="low">Low Priority</option>
+                                            <option value="medium">Medium Priority</option>
+                                            <option value="high">High Priority</option>
+                                        </select>
+                                    </div>
+
+                                    <div className="flex gap-3 pt-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowAddModal(false)}
+                                            className="btn btn-secondary flex-1"
+                                            disabled={isSubmitting}
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="btn btn-primary flex-1"
+                                            disabled={isSubmitting}
+                                        >
+                                            {isSubmitting ? "Adding..." : "Add Deadline"}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

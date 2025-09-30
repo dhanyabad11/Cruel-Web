@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import {
     Calendar,
     Clock,
@@ -31,6 +32,7 @@ const navigation = [
 
 export default function DashboardLayout({ children, title }: DashboardLayoutProps) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const { user } = useAuth();
 
     return (
         <div className="flex h-screen bg-gray-50">
@@ -89,8 +91,12 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
                             <Users className="h-4 w-4 text-white" />
                         </div>
                         <div className="ml-3">
-                            <p className="text-sm font-medium text-gray-700">John Doe</p>
-                            <p className="text-xs text-gray-500">john@example.com</p>
+                            <p className="text-sm font-medium text-gray-700">
+                                {user?.email || "User"}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                                {user?.email || "user@example.com"}
+                            </p>
                         </div>
                     </div>
                 </div>

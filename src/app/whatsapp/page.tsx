@@ -70,30 +70,18 @@ export default function WhatsAppPage() {
         setUploadedFiles(textFiles);
 
         try {
-            // Simulate processing the files
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            // Process files with the backend API
+            const formData = new FormData();
+            textFiles.forEach((file) => {
+                formData.append(`files`, file);
+            });
 
-            // Mock extracted deadlines
-            const mockDeadlines = [
-                {
-                    id: "1",
-                    title: "Math Assignment due tomorrow",
-                    extractedFrom: "Study Group Chat",
-                    dueDate: "2024-12-15",
-                    confidence: 95,
-                    originalMessage: "Don't forget math assignment is due tomorrow!",
-                },
-                {
-                    id: "2",
-                    title: "Physics lab report deadline",
-                    extractedFrom: "Class Updates",
-                    dueDate: "2024-12-18",
-                    confidence: 88,
-                    originalMessage: "Physics lab report deadline is this Friday",
-                },
-            ];
-
-            setExtractedDeadlines(mockDeadlines);
+            // For now, show a message that WhatsApp parsing will be implemented
+            // In production, this would parse the files and extract deadlines
+            setExtractedDeadlines([]);
+            setError(
+                "WhatsApp message parsing is not yet implemented. Please add deadlines manually."
+            );
         } catch (err) {
             console.error("Error processing files:", err);
             setError("Failed to process WhatsApp files. Please try again.");

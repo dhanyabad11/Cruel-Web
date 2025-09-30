@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { apiService } from "@/services/api";
+import { apiClient } from "@/lib/api";
 
 interface User {
     id: string;
@@ -38,17 +38,34 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
-    // Check if user is already logged in on app start
+    // Production-level auth initialization
     useEffect(() => {
         const initAuth = async () => {
-            const token = localStorage.getItem("token");
-            if (token) {
+            const token = localStorage.getItem("auth_token");
+            const storedUser = localStorage.getItem("user");
+
+            if (token && storedUser) {
                 try {
-                    const response = await apiService.auth.me();
-                    setUser(response.data);
-                } catch {
-                    // Token is invalid, remove it
-                    localStorage.removeItem("token");
+                    // Try to use stored user first for faster loading
+                    const parsedUser = JSON.parse(storedUser);
+                    setUser(parsedUser);
+
+                    // Validate token in background
+                    const response = await apiClient.getCurrentUser();
+                    if (response.data) {
+                        // Update with fresh user data
+                        setUser(response.data);
+                        localStorage.setItem("user", JSON.stringify(response.data));
+                    } else if (response.error) {
+                        // Token is invalid
+                        console.warn("Token validation failed:", response.error);
+                        setUser(null);
+                        apiClient.clearToken();
+                    }
+                } catch (error) {
+                    console.error("Auth initialization failed:", error);
+                    setUser(null);
+                    apiClient.clearToken();
                 }
             }
             setLoading(false);
@@ -59,11 +76,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const login = async (email: string, password: string) => {
         try {
-            const response = await apiService.auth.login({ email, password });
-            const { access_token, user: userData } = response.data;
-
-            localStorage.setItem("token", access_token);
-            setUser(userData);
+            const response = await apiClient.login(email, password);
+            if (response.data) {
+                setUser(response.data.user);
+            } else if (response.error) {
+                throw new Error(response.error);
+            }
         } catch (error) {
             throw error;
         }
@@ -71,22 +89,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const register = async (email: string, password: string, fullName?: string) => {
         try {
-            const response = await apiService.auth.register({
+            const response = await apiClient.register({
                 email,
                 password,
                 full_name: fullName || "",
             });
-            const { access_token, user: userData } = response.data;
-
-            localStorage.setItem("token", access_token);
-            setUser(userData);
+            if (response.data) {
+                setUser(response.data.user);
+            } else if (response.error) {
+                throw new Error(response.error);
+            }
         } catch (error) {
             throw error;
         }
     };
 
-    const logout = () => {
-        localStorage.removeItem("token");
+    const logout = async () => {
+        await apiClient.logout();
         setUser(null);
     };
 
