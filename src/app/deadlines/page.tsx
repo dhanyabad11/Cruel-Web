@@ -4,7 +4,7 @@ import { Navigation } from "@/components/Navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Plus, Clock, Calendar, AlertCircle, CheckCircle } from "lucide-react";
+import { Plus, Calendar, AlertCircle, CheckCircle } from "lucide-react";
 import { apiClient } from "@/lib/api";
 import { Deadline } from "@/types/api";
 
@@ -117,49 +117,86 @@ export default function DeadlinesPage() {
         try {
             console.log("Updating deadline through API...");
 
-            // For now, just update the local state since we don't have an update API endpoint yet
-            setDeadlines((prev) =>
-                prev.map((deadline) =>
-                    deadline.id === editingDeadline.id
-                        ? {
-                              ...deadline,
-                              title: formData.title,
-                              description: formData.description,
-                              due_date: formData.due_date,
-                              priority: formData.priority,
-                          }
-                        : deadline
-                )
-            );
+            // Call the actual update API
+            const response = await apiClient.updateDeadline(editingDeadline.id, {
+                title: formData.title,
+                description: formData.description,
+                due_date: formData.due_date,
+                priority: formData.priority,
+            });
+
+            if (response.error) {
+                throw new Error(response.error);
+            }
+
+            console.log("Deadline updated successfully:", response.data);
+
+            // Update local state with the response from server
+            if (response.data) {
+                setDeadlines((prev) =>
+                    prev.map((deadline) =>
+                        deadline.id === editingDeadline.id ? response.data! : deadline
+                    )
+                );
+            }
 
             setFormData({ title: "", description: "", due_date: "", priority: "medium" });
             setShowEditModal(false);
             setEditingDeadline(null);
         } catch (error) {
             console.error("Error updating deadline:", error);
+            alert("Failed to update deadline. Please try again.");
         } finally {
             setIsSubmitting(false);
         }
     };
     const handleCompleteDeadline = async (id: number) => {
         try {
-            // Update local state immediately for better UX
-            setDeadlines((prev) =>
-                prev.map((deadline) =>
-                    deadline.id === id ? { ...deadline, status: "completed" as const } : deadline
-                )
-            );
+            console.log("Marking deadline as completed through API...", id);
+
+            const response = await apiClient.updateDeadline(id, { status: "completed" });
+
+            if (response.error) {
+                throw new Error(response.error);
+            }
+
+            console.log("Deadline marked as completed successfully");
+
+            // Update local state with the response from server
+            if (response.data) {
+                setDeadlines((prev) =>
+                    prev.map((deadline) => (deadline.id === id ? response.data! : deadline))
+                );
+            }
         } catch (error) {
             console.error("Error completing deadline:", error);
+            alert("Failed to update deadline status. Please try again.");
         }
     };
 
     const handleDeleteDeadline = async (id: number) => {
+        if (
+            !confirm("Are you sure you want to delete this deadline? This action cannot be undone.")
+        ) {
+            return;
+        }
+
         try {
-            // Remove from local state immediately for better UX
+            console.log("Deleting deadline through API...", id);
+
+            const response = await apiClient.deleteDeadline(id);
+
+            if (response.error) {
+                throw new Error(response.error);
+            }
+
+            console.log("Deadline deleted successfully");
+
+            // Remove from local state after successful API call
             setDeadlines((prev) => prev.filter((deadline) => deadline.id !== id));
         } catch (error) {
             console.error("Error deleting deadline:", error);
+            alert("Failed to delete deadline. Please try again.");
         }
     };
 

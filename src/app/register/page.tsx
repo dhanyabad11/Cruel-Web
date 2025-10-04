@@ -37,7 +37,12 @@ export default function RegisterPage() {
 
         try {
             await register(email, password, fullName);
-            router.push("/dashboard");
+            // Show success message instead of redirecting immediately
+            setError(""); // Clear any errors
+            alert(
+                "Registration successful! Please check your email to verify your account, then you can sign in."
+            );
+            router.push("/login"); // Redirect to login page
         } catch (err) {
             setError(err instanceof Error ? err.message : "Registration failed");
         } finally {

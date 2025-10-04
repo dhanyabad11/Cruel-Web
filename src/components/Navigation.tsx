@@ -55,6 +55,12 @@ export function Navigation() {
                             >
                                 WhatsApp
                             </Link>
+                            <Link
+                                href="/settings/notifications"
+                                className="text-foreground-secondary hover:text-foreground text-sm font-semibold transition-all duration-300 hover:scale-105"
+                            >
+                                Notifications
+                            </Link>
                         </div>
                     </div>
 

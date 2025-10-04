@@ -96,6 +96,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             });
             if (response.data) {
                 setUser(response.data.user);
+                // Note: Supabase requires email verification, so user won't have session immediately
             } else if (response.error) {
                 throw new Error(response.error);
             }

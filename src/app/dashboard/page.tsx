@@ -5,7 +5,16 @@ import { Navigation } from "@/components/Navigation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { FileText, Calendar, Bell, MessageSquare } from "lucide-react";
+import {
+    Calendar,
+    Bell,
+    MessageSquare,
+    Link as LinkIcon,
+    TrendingUp,
+    CheckCircle2,
+    Clock,
+    AlertCircle,
+} from "lucide-react";
 import { apiClient } from "@/lib/api";
 import { Deadline } from "@/types/api";
 
@@ -18,6 +27,7 @@ export default function DashboardPage() {
         completedDeadlines: 0,
         overdueDeadlines: 0,
     });
+    const [recentDeadlines, setRecentDeadlines] = useState<Deadline[]>([]);
 
     useEffect(() => {
         if (!loading && !user) {
@@ -25,17 +35,14 @@ export default function DashboardPage() {
         }
     }, [user, loading, router]);
 
-    // Fetch dashboard stats only when authenticated
+    // Fetch dashboard stats and recent deadlines
     useEffect(() => {
-        const fetchStats = async () => {
-            // Don't fetch if not authenticated
+        const fetchData = async () => {
             if (!user || loading) return;
 
             try {
-                // Fetch real deadlines from API
                 const deadlinesResponse = await apiClient.getDeadlines();
                 if (deadlinesResponse.data) {
-                    // API now returns array directly
                     const deadlines = deadlinesResponse.data;
                     const now = new Date();
 
@@ -55,8 +62,19 @@ export default function DashboardPage() {
                         completedDeadlines: completed,
                         overdueDeadlines: overdue,
                     });
+
+                    // Get top 3 upcoming deadlines
+                    const upcomingList = deadlines
+                        .filter(
+                            (d: Deadline) => new Date(d.due_date) >= now && d.status !== "completed"
+                        )
+                        .sort(
+                            (a: Deadline, b: Deadline) =>
+                                new Date(a.due_date).getTime() - new Date(b.due_date).getTime()
+                        )
+                        .slice(0, 3);
+                    setRecentDeadlines(upcomingList);
                 } else {
-                    // If no data, show zeros
                     setStats({
                         totalDeadlines: 0,
                         upcomingDeadlines: 0,
@@ -65,8 +83,7 @@ export default function DashboardPage() {
                     });
                 }
             } catch (error) {
-                console.error("Error fetching stats:", error);
-                // Show zeros on error
+                console.error("Error fetching data:", error);
                 setStats({
                     totalDeadlines: 0,
                     upcomingDeadlines: 0,
@@ -76,232 +93,247 @@ export default function DashboardPage() {
             }
         };
 
-        fetchStats();
+        fetchData();
     }, [user, loading]);
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f8fafc] to-[#e0e7ff]">
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4f8cff] mx-auto"></div>
-                    <p className="mt-4 text-[#6b7280]">Loading your dashboard...</p>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                    <p className="mt-4 text-gray-600">Loading...</p>
                 </div>
             </div>
         );
     }
 
-    if (!user) {
-        return null;
-    }
+    if (!user) return null;
+
+    const getTimeUntil = (dueDate: string) => {
+        const now = new Date();
+        const due = new Date(dueDate);
+        const diff = due.getTime() - now.getTime();
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+        if (days > 0) return `${days}d ${hours}h`;
+        if (hours > 0) return `${hours}h`;
+        return "Soon";
+    };
+
+    const getPriorityColor = (priority: string) => {
+        switch (priority?.toLowerCase()) {
+            case "high":
+            case "urgent":
+                return "text-red-600 bg-red-50 border-red-200";
+            case "medium":
+                return "text-yellow-600 bg-yellow-50 border-yellow-200";
+            default:
+                return "text-blue-600 bg-blue-50 border-blue-200";
+        }
+    };
 
     return (
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-gray-50">
             <Navigation />
-            <div className="container mx-auto px-6 py-12">
-                {/* Stunning Header */}
-                <div className="mb-12 text-center">
-                    <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-accent to-warning bg-clip-text text-transparent">
-                        Welcome back!
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                {/* Header */}
+                <div className="mb-8">
+                    <h1 className="text-3xl font-bold text-gray-900">
+                        Welcome back, {user.email?.split("@")[0]}!
                     </h1>
-                    <p className="text-xl text-foreground-secondary max-w-2xl mx-auto">
-                        Your intelligent deadline management dashboard - stay ahead of everything
-                        that matters
+                    <p className="mt-2 text-gray-600">
+                        Here's what's happening with your deadlines
                     </p>
                 </div>
 
-                {/* Stunning Stats Grid */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-                    <div className="card group relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <div className="card-content text-center relative z-10">
-                            <div className="w-20 h-20 bg-gradient-to-br from-primary to-accent rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-2xl">
-                                <FileText className="w-10 h-10 text-white" />
+                {/* Stats Grid - Compact & Clean */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-gray-600">Total</p>
+                                <p className="text-3xl font-bold text-gray-900 mt-1">
+                                    {stats.totalDeadlines}
+                                </p>
                             </div>
-                            <div className="text-4xl font-bold text-foreground mb-2 font-mono">
-                                {stats.totalDeadlines}
-                            </div>
-                            <div className="text-sm font-semibold text-foreground-secondary uppercase tracking-wider">
-                                Total Deadlines
-                            </div>
-                        </div>
-                    </div>
-                    <div className="card group relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-br from-warning/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <div className="card-content text-center relative z-10">
-                            <div className="w-20 h-20 bg-gradient-to-br from-warning to-accent rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-2xl">
-                                <Calendar className="w-10 h-10 text-white" />
-                            </div>
-                            <div className="text-4xl font-bold text-warning mb-2 font-mono">
-                                {stats.upcomingDeadlines}
-                            </div>
-                            <div className="text-sm font-semibold text-foreground-secondary uppercase tracking-wider">
-                                Upcoming
+                            <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <Calendar className="h-6 w-6 text-blue-600" />
                             </div>
                         </div>
                     </div>
-                    <div className="card group relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-br from-success/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <div className="card-content text-center relative z-10">
-                            <div className="w-20 h-20 bg-gradient-to-br from-success to-primary rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-2xl">
-                                <FileText className="w-10 h-10 text-white" />
+                    <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-gray-600">Upcoming</p>
+                                <p className="text-3xl font-bold text-yellow-600 mt-1">
+                                    {stats.upcomingDeadlines}
+                                </p>
                             </div>
-                            <div className="text-4xl font-bold text-success mb-2 font-mono">
-                                {stats.completedDeadlines}
-                            </div>
-                            <div className="text-sm font-semibold text-foreground-secondary uppercase tracking-wider">
-                                Completed
+                            <div className="h-12 w-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                <Clock className="h-6 w-6 text-yellow-600" />
                             </div>
                         </div>
                     </div>
-                    <div className="card group relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-br from-danger/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <div className="card-content text-center relative z-10">
-                            <div className="w-20 h-20 bg-gradient-to-br from-danger to-accent rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-2xl">
-                                <Bell className="w-10 h-10 text-white" />
+
+                    <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-gray-600">Completed</p>
+                                <p className="text-3xl font-bold text-green-600 mt-1">
+                                    {stats.completedDeadlines}
+                                </p>
                             </div>
-                            <div className="text-4xl font-bold text-danger mb-2 font-mono">
-                                {stats.overdueDeadlines}
+                            <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <CheckCircle2 className="h-6 w-6 text-green-600" />
                             </div>
-                            <div className="text-sm font-medium text-slate-600">Overdue</div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-gray-600">Overdue</p>
+                                <p className="text-3xl font-bold text-red-600 mt-1">
+                                    {stats.overdueDeadlines}
+                                </p>
+                            </div>
+                            <div className="h-12 w-12 bg-red-100 rounded-lg flex items-center justify-center">
+                                <AlertCircle className="h-6 w-6 text-red-600" />
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Quick Actions */}
-                <div className="card mb-12">
-                    <div className="card-header">
-                        <h2 className="card-title text-2xl">Quick Actions</h2>
-                        <p className="card-description">
-                            Get started with these essential features
-                        </p>
+                {/* Quick Actions - Compact */}
+                <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
+                    <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <Link
+                            href="/deadlines"
+                            className="flex flex-col items-center p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all group"
+                        >
+                            <div className="h-10 w-10 bg-blue-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-blue-200">
+                                <Calendar className="h-5 w-5 text-blue-600" />
+                            </div>
+                            <span className="text-sm font-medium text-gray-900">Deadlines</span>
+                        </Link>
+                        <Link
+                            href="/whatsapp"
+                            className="flex flex-col items-center p-4 rounded-lg border border-gray-200 hover:border-green-500 hover:bg-green-50 transition-all group"
+                        >
+                            <div className="h-10 w-10 bg-green-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-green-200">
+                                <MessageSquare className="h-5 w-5 text-green-600" />
+                            </div>
+                            <span className="text-sm font-medium text-gray-900">WhatsApp</span>
+                        </Link>
+                        <Link
+                            href="/settings/notifications"
+                            className="flex flex-col items-center p-4 rounded-lg border border-gray-200 hover:border-purple-500 hover:bg-purple-50 transition-all group"
+                        >
+                            <div className="h-10 w-10 bg-purple-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-purple-200">
+                                <Bell className="h-5 w-5 text-purple-600" />
+                            </div>
+                            <span className="text-sm font-medium text-gray-900">Settings</span>
+                        </Link>
+                        <Link
+                            href="/portals"
+                            className="flex flex-col items-center p-4 rounded-lg border border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group"
+                        >
+                            <div className="h-10 w-10 bg-orange-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-orange-200">
+                                <LinkIcon className="h-5 w-5 text-orange-600" />
+                            </div>
+                            <span className="text-sm font-medium text-gray-900">Portals</span>
+                        </Link>
                     </div>
-                    <div className="card-content">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                </div>
+
+                {/* Upcoming Deadlines & Tips */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Upcoming Deadlines - Takes 2 columns */}
+                    <div className="lg:col-span-2 bg-white rounded-lg border border-gray-200 p-6">
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-lg font-semibold text-gray-900">
+                                Upcoming Deadlines
+                            </h2>
                             <Link
                                 href="/deadlines"
-                                className="p-6 rounded-xl border border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 group"
+                                className="text-sm text-blue-600 hover:text-blue-700 font-medium"
                             >
-                                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
-                                    <Calendar className="w-6 h-6 text-blue-600" />
-                                </div>
-                                <h3 className="font-semibold text-slate-900 mb-2">
-                                    View Deadlines
-                                </h3>
-                                <p className="text-sm text-slate-600">
-                                    Manage all your upcoming tasks
-                                </p>
-                            </Link>
-                            <Link
-                                href="/whatsapp"
-                                className="p-6 rounded-xl border border-slate-200 hover:border-green-300 hover:bg-green-50 transition-all duration-200 group"
-                            >
-                                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors">
-                                    <MessageSquare className="w-6 h-6 text-green-600" />
-                                </div>
-                                <h3 className="font-semibold text-slate-900 mb-2">
-                                    WhatsApp Analysis
-                                </h3>
-                                <p className="text-sm text-slate-600">
-                                    Extract deadlines from chats
-                                </p>
-                            </Link>
-                            <Link
-                                href="/notifications"
-                                className="p-6 rounded-xl border border-slate-200 hover:border-purple-300 hover:bg-purple-50 transition-all duration-200 group"
-                            >
-                                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-200 transition-colors">
-                                    <Bell className="w-6 h-6 text-purple-600" />
-                                </div>
-                                <h3 className="font-semibold text-slate-900 mb-2">Notifications</h3>
-                                <p className="text-sm text-slate-600">Customize your alerts</p>
-                            </Link>
-                            <Link
-                                href="/portals"
-                                className="p-6 rounded-xl border border-slate-200 hover:border-orange-300 hover:bg-orange-50 transition-all duration-200 group"
-                            >
-                                <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-orange-200 transition-colors">
-                                    <FileText className="w-6 h-6 text-orange-600" />
-                                </div>
-                                <h3 className="font-semibold text-slate-900 mb-2">
-                                    Connect Portals
-                                </h3>
-                                <p className="text-sm text-slate-600">Link your course platforms</p>
+                                View all →
                             </Link>
                         </div>
-                    </div>
-                </div>
-
-                {/* Recent Activity Section */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div className="card">
-                        <div className="card-header">
-                            <h2 className="card-title">Recent Activity</h2>
-                            <p className="card-description">Your latest deadline updates</p>
-                        </div>
-                        <div className="card-content space-y-4">
-                            <div className="flex items-center space-x-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                                <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                                <div className="flex-1">
-                                    <h4 className="font-medium text-slate-900">
-                                        New deadline added
-                                    </h4>
-                                    <p className="text-sm text-slate-600">
-                                        Mathematics Assignment - Due in 5 days
-                                    </p>
-                                </div>
+                        {recentDeadlines.length === 0 ? (
+                            <div className="text-center py-8 text-gray-500">
+                                <Calendar className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                                <p>No upcoming deadlines</p>
+                                <Link
+                                    href="/deadlines"
+                                    className="text-sm text-blue-600 hover:underline mt-2 inline-block"
+                                >
+                                    Add your first deadline
+                                </Link>
                             </div>
-
-                            <div className="flex items-center space-x-4 p-4 bg-green-50 rounded-lg border border-green-200">
-                                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                                <div className="flex-1">
-                                    <h4 className="font-medium text-slate-900">Task completed</h4>
-                                    <p className="text-sm text-slate-600">
-                                        Physics Lab Report submitted
-                                    </p>
-                                </div>
+                        ) : (
+                            <div className="space-y-3">
+                                {recentDeadlines.map((deadline) => (
+                                    <div
+                                        key={deadline.id}
+                                        className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 transition-colors"
+                                    >
+                                        <div className="flex-1">
+                                            <h3 className="font-medium text-gray-900">
+                                                {deadline.title}
+                                            </h3>
+                                            <div className="flex items-center gap-3 mt-1">
+                                                <p className="text-sm text-gray-600">
+                                                    {new Date(deadline.due_date).toLocaleDateString(
+                                                        "en-US",
+                                                        {
+                                                            month: "short",
+                                                            day: "numeric",
+                                                            hour: "2-digit",
+                                                            minute: "2-digit",
+                                                        }
+                                                    )}
+                                                </p>
+                                                <span
+                                                    className={`text-xs px-2 py-0.5 rounded-full border ${getPriorityColor(
+                                                        deadline.priority
+                                                    )}`}
+                                                >
+                                                    {deadline.priority}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <span className="text-sm font-medium text-blue-600">
+                                                {getTimeUntil(deadline.due_date)}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-
-                            <div className="flex items-center space-x-4 p-4 bg-purple-50 rounded-lg border border-purple-200">
-                                <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-                                <div className="flex-1">
-                                    <h4 className="font-medium text-slate-900">Reminder sent</h4>
-                                    <p className="text-sm text-slate-600">
-                                        Chemistry exam notification delivered
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                        )}
                     </div>
 
-                    <div className="card">
-                        <div className="card-header">
-                            <h2 className="card-title">Productivity Insights</h2>
-                            <p className="card-description">Tips to stay organized</p>
-                        </div>
-                        <div className="card-content space-y-4">
-                            <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                                <h4 className="font-medium text-slate-900 mb-2">💡 Pro Tip</h4>
-                                <p className="text-sm text-slate-600">
-                                    Upload your WhatsApp group chats weekly to catch any missed
-                                    assignment announcements.
+                    {/* Quick Tips */}
+                    <div className="bg-white rounded-lg border border-gray-200 p-6">
+                        <h2 className="text-lg font-semibold text-gray-900 mb-4">💡 Quick Tips</h2>
+                        <div className="space-y-4">
+                            <div className="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                                <p className="text-sm text-gray-700">
+                                    Set reminders at multiple intervals to stay ahead of deadlines
                                 </p>
                             </div>
-
-                            <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                                <h4 className="font-medium text-slate-900 mb-2">
-                                    ✅ Best Practice
-                                </h4>
-                                <p className="text-sm text-slate-600">
-                                    Set multiple reminders: 1 week, 3 days, and 1 day before each
-                                    deadline for optimal preparation.
+                            <div className="p-3 bg-green-50 rounded-lg border border-green-100">
+                                <p className="text-sm text-gray-700">
+                                    Use WhatsApp analysis to extract deadlines from group chats
                                 </p>
                             </div>
-
-                            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                                <h4 className="font-medium text-slate-900 mb-2">🎯 Goal Setting</h4>
-                                <p className="text-sm text-slate-600">
-                                    Connect your university portal to automatically sync new
-                                    assignments and never miss updates.
+                            <div className="p-3 bg-purple-50 rounded-lg border border-purple-100">
+                                <p className="text-sm text-gray-700">
+                                    Connect portals to auto-sync assignments from your courses
                                 </p>
                             </div>
                         </div>

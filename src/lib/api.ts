@@ -59,25 +59,29 @@ class ApiClient {
         }
     }
 
-    private getHeaders(): Record<string, string> {
+    private getHeaders(requireAuth: boolean = false): Record<string, string> {
         const headers: Record<string, string> = {
             "Content-Type": "application/json",
         };
 
         if (this.token) {
             headers["Authorization"] = `Bearer ${this.token}`;
-        } else {
-            console.warn("No auth token available for API request");
+        } else if (requireAuth) {
+            console.warn("No auth token available for API request that requires authentication");
         }
 
         return headers;
     }
 
-    async request<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
+    async request<T>(
+        endpoint: string,
+        options: RequestInit = {},
+        requireAuth: boolean = true
+    ): Promise<ApiResponse<T>> {
         try {
             const url = `${this.baseURL}${endpoint}`;
             const config: RequestInit = {
-                headers: this.getHeaders(),
+                headers: this.getHeaders(requireAuth),
                 ...options,
             };
 
@@ -144,10 +148,45 @@ class ApiClient {
         password: string;
         full_name: string;
     }): Promise<ApiResponse<AuthResponse>> {
-        return this.request("/api/auth/signup", {
-            method: "POST",
-            body: JSON.stringify(userData),
-        });
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
+            const response = await fetch(`${this.baseURL}/api/auth/signup`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(userData),
+                signal: controller.signal,
+            });
+
+            clearTimeout(timeoutId);
+
+            if (response.ok) {
+                const data = await response.json();
+
+                // Set the token if provided
+                if (data.session) {
+                    this.setToken(data.session);
+                }
+
+                return { data };
+            } else {
+                const errorData = await response.json().catch(() => ({}));
+                return { error: errorData.detail || "Registration failed" };
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                if (error.name === "AbortError") {
+                    return {
+                        error: "Registration is taking longer than expected. Please try again or check your email for verification.",
+                    };
+                }
+                return { error: error.message };
+            }
+            return { error: "Registration failed" };
+        }
     }
 
     async logout(): Promise<void> {
