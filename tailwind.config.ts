@@ -12,6 +12,20 @@ const config: Config = {
                 sans: ["Inter", "sans-serif"],
             },
             colors: {
+                // Minimalist Color Palette
+                'bg-primary': '#FFFFFF',
+                'bg-secondary': '#F5F5F5',
+                'text-primary': '#1A1A1A',
+                'text-secondary': '#6B7280',
+                'primary-blue': '#2563EB',
+                'primary-blue-hover': '#1E40AF',
+                'success-green': '#22C55E',
+                'warning-yellow': '#EAB308',
+                'danger-red': '#EF4444',
+                'border-gray': '#D1D5DB',
+                'disabled-gray': '#9CA3AF',
+                
+                // Keep existing vars for backward compatibility
                 background: "var(--background)",
                 foreground: "var(--foreground)",
                 card: {

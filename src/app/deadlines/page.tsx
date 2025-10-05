@@ -69,10 +69,14 @@ export default function DeadlinesPage() {
 
         try {
             console.log("Creating deadline through API...");
+            // Convert datetime-local to ISO string (keeps local timezone)
+            const localDate = new Date(formData.due_date);
+            const isoDate = localDate.toISOString();
+
             const response = await apiClient.createDeadline({
                 title: formData.title,
                 description: formData.description,
-                due_date: formData.due_date,
+                due_date: isoDate,
                 priority: formData.priority,
             });
 
@@ -94,7 +98,11 @@ export default function DeadlinesPage() {
         console.log("Edit deadline clicked", deadline);
         setEditingDeadline(deadline);
         // Format the date properly for datetime-local input
-        const formattedDate = new Date(deadline.due_date).toISOString().slice(0, 16);
+        // Convert UTC date from backend to local datetime-local format
+        const utcDate = new Date(deadline.due_date);
+        const localDate = new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
+        const formattedDate = localDate.toISOString().slice(0, 16);
+
         setFormData({
             title: deadline.title,
             description: deadline.description || "",
@@ -117,11 +125,15 @@ export default function DeadlinesPage() {
         try {
             console.log("Updating deadline through API...");
 
+            // Convert datetime-local to ISO string (keeps local timezone)
+            const localDate = new Date(formData.due_date);
+            const isoDate = localDate.toISOString();
+
             // Call the actual update API
             const response = await apiClient.updateDeadline(editingDeadline.id, {
                 title: formData.title,
                 description: formData.description,
-                due_date: formData.due_date,
+                due_date: isoDate,
                 priority: formData.priority,
             });
 

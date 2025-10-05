@@ -44,50 +44,51 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-            <div className="max-w-md w-full">
+        <div className="min-h-screen bg-[#F5F5F5] flex items-center justify-center p-6">
+            <div className="max-w-sm w-full">
                 {/* Back to home */}
                 <Link
                     href="/"
-                    className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-8 transition-colors"
+                    className="inline-flex items-center text-[#6B7280] hover:text-[#1A1A1A] mb-6 transition-colors text-sm"
                 >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Back to home
+                    <ArrowLeft className="w-4 h-4 mr-1.5" strokeWidth={1.5} />
+                    <span className="font-light">Back</span>
                 </Link>
 
                 {/* Login Card */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+                <div className="bg-white border border-[#D1D5DB] p-8">
                     <div className="text-center mb-8">
-                        <div className="flex items-center justify-center mb-6">
-                            <div className="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center">
-                                <span className="text-white font-bold text-2xl">C</span>
-                            </div>
-                        </div>
-                        <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
-                        <p className="text-gray-600">Sign in to your account</p>
+                        <h1 className="text-2xl font-light text-[#1A1A1A] mb-2">Welcome Back</h1>
+                        <p className="text-[#6B7280] font-light text-sm">Sign in to your account</p>
                     </div>
 
                     {/* Error Message */}
                     {error && (
-                        <div className="mb-6 p-4 rounded-lg bg-red-50 border border-red-200">
+                        <div className="mb-6 p-3 bg-white border border-[#EF4444]">
                             <div className="flex items-center">
-                                <AlertCircle className="w-5 h-5 text-red-600 mr-3" />
-                                <p className="text-sm text-red-600">{error}</p>
+                                <AlertCircle
+                                    className="w-4 h-4 text-[#EF4444] mr-2"
+                                    strokeWidth={1.5}
+                                />
+                                <p className="text-xs text-[#EF4444] font-light">{error}</p>
                             </div>
                         </div>
                     )}
 
                     {/* Login Form */}
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
                             <label
                                 htmlFor="email"
-                                className="block text-sm font-medium text-gray-700 mb-2"
+                                className="block text-xs font-light text-[#1A1A1A] mb-1.5"
                             >
-                                Email address
+                                Email
                             </label>
                             <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                <Mail
+                                    className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#6B7280]"
+                                    strokeWidth={1.5}
+                                />
                                 <input
                                     id="email"
                                     name="email"
@@ -97,8 +98,8 @@ export default function LoginPage() {
                                     onChange={(e) =>
                                         setFormData({ ...formData, email: e.target.value })
                                     }
-                                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    placeholder="Enter your email"
+                                    className="w-full pl-10 pr-4 py-2.5 border border-[#D1D5DB] focus:border-[#2563EB] focus:outline-none font-light text-[#1A1A1A] text-sm"
+                                    placeholder="you@example.com"
                                 />
                             </div>
                         </div>
@@ -106,12 +107,15 @@ export default function LoginPage() {
                         <div>
                             <label
                                 htmlFor="password"
-                                className="block text-sm font-medium text-gray-700 mb-2"
+                                className="block text-xs font-light text-[#1A1A1A] mb-1.5"
                             >
                                 Password
                             </label>
                             <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                <Lock
+                                    className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#6B7280]"
+                                    strokeWidth={1.5}
+                                />
                                 <input
                                     id="password"
                                     name="password"
@@ -121,18 +125,18 @@ export default function LoginPage() {
                                     onChange={(e) =>
                                         setFormData({ ...formData, password: e.target.value })
                                     }
-                                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    placeholder="Enter your password"
+                                    className="w-full pl-10 pr-10 py-2.5 border border-[#D1D5DB] focus:border-[#2563EB] focus:outline-none font-light text-[#1A1A1A] text-sm"
+                                    placeholder="••••••••"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#6B7280] hover:text-[#1A1A1A]"
                                 >
                                     {showPassword ? (
-                                        <EyeOff className="w-5 h-5" />
+                                        <EyeOff className="w-4 h-4" strokeWidth={1.5} />
                                     ) : (
-                                        <Eye className="w-5 h-5" />
+                                        <Eye className="w-4 h-4" strokeWidth={1.5} />
                                     )}
                                 </button>
                             </div>
@@ -141,12 +145,12 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed"
+                            className="w-full py-2.5 bg-[#2563EB] text-white font-light text-sm hover:bg-[#1E40AF] transition-colors disabled:bg-[#9CA3AF] disabled:cursor-not-allowed"
                         >
                             {isLoading ? (
                                 <div className="flex items-center justify-center">
                                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                                    Signing in...
+                                    <span className="font-light">Signing in...</span>
                                 </div>
                             ) : (
                                 "Sign in"
@@ -156,13 +160,13 @@ export default function LoginPage() {
 
                     {/* Sign up Link */}
                     <div className="mt-6 text-center">
-                        <p className="text-sm text-gray-600">
+                        <p className="text-xs text-[#6B7280] font-light">
                             Don&apos;t have an account?{" "}
                             <Link
                                 href="/register"
-                                className="text-blue-600 hover:text-blue-700 font-medium"
+                                className="text-[#2563EB] hover:text-[#1E40AF] font-light"
                             >
-                                Sign up for free
+                                Sign up
                             </Link>
                         </p>
                     </div>

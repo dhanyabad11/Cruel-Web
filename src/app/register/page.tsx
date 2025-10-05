@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Eye, EyeOff, User, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, User, Mail, Lock, ArrowLeft } from "lucide-react";
 
 export default function RegisterPage() {
     const [email, setEmail] = useState("");
@@ -51,205 +51,193 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background-secondary to-primary/5 p-4">
-            {/* Animated Background Elements */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse"></div>
-                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-pulse delay-1000"></div>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-conic from-primary/10 via-transparent to-accent/10 rounded-full blur-3xl animate-spin-slow"></div>
-            </div>
+        <div className="min-h-screen flex items-center justify-center bg-[#F5F5F5] p-6">
+            <div className="w-full max-w-sm">
+                {/* Back to home */}
+                <Link
+                    href="/"
+                    className="inline-flex items-center text-[#6B7280] hover:text-[#1A1A1A] mb-6 transition-colors text-sm"
+                >
+                    <ArrowLeft className="w-4 h-4 mr-1.5" strokeWidth={1.5} />
+                    <span className="font-light">Back</span>
+                </Link>
 
-            <div className="w-full max-w-md relative z-10">
-                {/* Glass Card */}
-                <div className="card backdrop-blur-xl bg-card/80 border border-border/50 shadow-2xl">
-                    <div className="card-content p-8">
-                        {/* Header */}
-                        <div className="text-center mb-8">
-                            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-2xl mb-6 shadow-lg">
-                                <User className="w-8 h-8 text-white" />
-                            </div>
-                            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary via-accent to-warning bg-clip-text text-transparent mb-2">
-                                Create Account
-                            </h1>
-                            <p className="text-foreground-secondary">
-                                Join AI Cruel and never miss a deadline again
-                            </p>
-                        </div>
-
-                        {/* Error Message */}
-                        {error && (
-                            <div className="mb-6 p-4 bg-danger/10 border border-danger/20 rounded-xl">
-                                <p className="text-danger text-sm font-medium">{error}</p>
-                            </div>
-                        )}
-
-                        {/* Registration Form */}
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            {/* Full Name Input */}
-                            <div className="space-y-2">
-                                <label
-                                    htmlFor="fullName"
-                                    className="text-sm font-semibold text-foreground"
-                                >
-                                    Full Name
-                                </label>
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <User className="h-5 w-5 text-foreground-secondary" />
-                                    </div>
-                                    <input
-                                        id="fullName"
-                                        name="fullName"
-                                        type="text"
-                                        required
-                                        value={fullName}
-                                        onChange={(e) => setFullName(e.target.value)}
-                                        className="input pl-12"
-                                        placeholder="Enter your full name"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Email Input */}
-                            <div className="space-y-2">
-                                <label
-                                    htmlFor="email"
-                                    className="text-sm font-semibold text-foreground"
-                                >
-                                    Email Address
-                                </label>
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <Mail className="h-5 w-5 text-foreground-secondary" />
-                                    </div>
-                                    <input
-                                        id="email"
-                                        name="email"
-                                        type="email"
-                                        autoComplete="email"
-                                        required
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        className="input pl-12"
-                                        placeholder="Enter your email"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Password Input */}
-                            <div className="space-y-2">
-                                <label
-                                    htmlFor="password"
-                                    className="text-sm font-semibold text-foreground"
-                                >
-                                    Password
-                                </label>
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <Lock className="h-5 w-5 text-foreground-secondary" />
-                                    </div>
-                                    <input
-                                        id="password"
-                                        name="password"
-                                        type={showPassword ? "text" : "password"}
-                                        autoComplete="new-password"
-                                        required
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        className="input pl-12 pr-12"
-                                        placeholder="Create a password"
-                                    />
-                                    <button
-                                        type="button"
-                                        className="absolute inset-y-0 right-0 pr-4 flex items-center"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                    >
-                                        {showPassword ? (
-                                            <EyeOff className="h-5 w-5 text-foreground-secondary hover:text-foreground transition-colors" />
-                                        ) : (
-                                            <Eye className="h-5 w-5 text-foreground-secondary hover:text-foreground transition-colors" />
-                                        )}
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Confirm Password Input */}
-                            <div className="space-y-2">
-                                <label
-                                    htmlFor="confirmPassword"
-                                    className="text-sm font-semibold text-foreground"
-                                >
-                                    Confirm Password
-                                </label>
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <Lock className="h-5 w-5 text-foreground-secondary" />
-                                    </div>
-                                    <input
-                                        id="confirmPassword"
-                                        name="confirmPassword"
-                                        type={showConfirmPassword ? "text" : "password"}
-                                        autoComplete="new-password"
-                                        required
-                                        value={confirmPassword}
-                                        onChange={(e) => setConfirmPassword(e.target.value)}
-                                        className="input pl-12 pr-12"
-                                        placeholder="Confirm your password"
-                                    />
-                                    <button
-                                        type="button"
-                                        className="absolute inset-y-0 right-0 pr-4 flex items-center"
-                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                    >
-                                        {showConfirmPassword ? (
-                                            <EyeOff className="h-5 w-5 text-foreground-secondary hover:text-foreground transition-colors" />
-                                        ) : (
-                                            <Eye className="h-5 w-5 text-foreground-secondary hover:text-foreground transition-colors" />
-                                        )}
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Register Button */}
-                            <button
-                                type="submit"
-                                disabled={isLoading}
-                                className="btn-primary w-full relative overflow-hidden group"
-                            >
-                                <span className="relative z-10 flex items-center justify-center">
-                                    {isLoading ? (
-                                        <>
-                                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                                            Creating Account...
-                                        </>
-                                    ) : (
-                                        "Create Account"
-                                    )}
-                                </span>
-                                <div className="absolute inset-0 bg-gradient-to-r from-accent via-primary to-warning opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                            </button>
-                        </form>
-
-                        {/* Login Link */}
-                        <div className="mt-8 text-center">
-                            <p className="text-foreground-secondary text-sm">
-                                Already have an account?{" "}
-                                <Link
-                                    href="/login"
-                                    className="font-semibold text-primary hover:text-accent transition-colors duration-200"
-                                >
-                                    Sign in here
-                                </Link>
-                            </p>
-                        </div>
+                {/* Register Card */}
+                <div className="bg-white border border-[#D1D5DB] p-8">
+                    <div className="text-center mb-8">
+                        <h1 className="text-2xl font-light text-[#1A1A1A] mb-2">Create Account</h1>
+                        <p className="text-[#6B7280] font-light text-sm">
+                            Never miss a deadline
+                        </p>
                     </div>
-                </div>
 
-                {/* Footer */}
-                <div className="text-center mt-8">
-                    <p className="text-foreground-secondary text-xs">
-                        By creating an account, you agree to our terms and privacy policy.
-                    </p>
+                    {/* Error Message */}
+                    {error && (
+                        <div className="mb-6 p-3 bg-white border border-[#EF4444]">
+                            <p className="text-[#EF4444] text-xs font-light">{error}</p>
+                        </div>
+                    )}
+
+                    {/* Registration Form */}
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        {/* Full Name Input */}
+                        <div>
+                            <label
+                                htmlFor="fullName"
+                                className="block text-xs font-light text-[#1A1A1A] mb-1.5"
+                            >
+                                Full Name
+                            </label>
+                            <div className="relative">
+                                <User
+                                    className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#6B7280]"
+                                    strokeWidth={1.5}
+                                />
+                                <input
+                                    id="fullName"
+                                    name="fullName"
+                                    type="text"
+                                    required
+                                    value={fullName}
+                                    onChange={(e) => setFullName(e.target.value)}
+                                    className="w-full pl-10 pr-4 py-2.5 border border-[#D1D5DB] focus:border-[#2563EB] focus:outline-none font-light text-[#1A1A1A] text-sm"
+                                    placeholder="John Doe"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Email Input */}
+                        <div>
+                            <label
+                                htmlFor="email"
+                                className="block text-xs font-light text-[#1A1A1A] mb-1.5"
+                            >
+                                Email
+                            </label>
+                            <div className="relative">
+                                <Mail
+                                    className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#6B7280]"
+                                    strokeWidth={1.5}
+                                />
+                                <input
+                                    id="email"
+                                    name="email"
+                                    type="email"
+                                    autoComplete="email"
+                                    required
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="w-full pl-10 pr-4 py-2.5 border border-[#D1D5DB] focus:border-[#2563EB] focus:outline-none font-light text-[#1A1A1A] text-sm"
+                                    placeholder="you@example.com"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Password Input */}
+                        <div>
+                            <label
+                                htmlFor="password"
+                                className="block text-xs font-light text-[#1A1A1A] mb-1.5"
+                            >
+                                Password
+                            </label>
+                            <div className="relative">
+                                <Lock
+                                    className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#6B7280]"
+                                    strokeWidth={1.5}
+                                />
+                                <input
+                                    id="password"
+                                    name="password"
+                                    type={showPassword ? "text" : "password"}
+                                    autoComplete="new-password"
+                                    required
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="w-full pl-10 pr-10 py-2.5 border border-[#D1D5DB] focus:border-[#2563EB] focus:outline-none font-light text-[#1A1A1A] text-sm"
+                                    placeholder="••••••••"
+                                />
+                                <button
+                                    type="button"
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#6B7280] hover:text-[#1A1A1A]"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? (
+                                        <EyeOff className="w-4 h-4" strokeWidth={1.5} />
+                                    ) : (
+                                        <Eye className="w-4 h-4" strokeWidth={1.5} />
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Confirm Password Input */}
+                        <div>
+                            <label
+                                htmlFor="confirmPassword"
+                                className="block text-xs font-light text-[#1A1A1A] mb-1.5"
+                            >
+                                Confirm Password
+                            </label>
+                            <div className="relative">
+                                <Lock
+                                    className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#6B7280]"
+                                    strokeWidth={1.5}
+                                />
+                                <input
+                                    id="confirmPassword"
+                                    name="confirmPassword"
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    autoComplete="new-password"
+                                    required
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    className="w-full pl-10 pr-10 py-2.5 border border-[#D1D5DB] focus:border-[#2563EB] focus:outline-none font-light text-[#1A1A1A] text-sm"
+                                    placeholder="••••••••"
+                                />
+                                <button
+                                    type="button"
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#6B7280] hover:text-[#1A1A1A]"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                >
+                                    {showConfirmPassword ? (
+                                        <EyeOff className="w-4 h-4" strokeWidth={1.5} />
+                                    ) : (
+                                        <Eye className="w-4 h-4" strokeWidth={1.5} />
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Register Button */}
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full py-2.5 bg-[#2563EB] text-white font-light text-sm hover:bg-[#1E40AF] transition-colors disabled:bg-[#9CA3AF] disabled:cursor-not-allowed"
+                        >
+                            {isLoading ? (
+                                <div className="flex items-center justify-center">
+                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                                    <span className="font-light">Creating Account...</span>
+                                </div>
+                            ) : (
+                                "Create Account"
+                            )}
+                        </button>
+                    </form>
+
+                    {/* Login Link */}
+                    <div className="mt-6 text-center">
+                        <p className="text-[#6B7280] text-xs font-light">
+                            Already have an account?{" "}
+                            <Link
+                                href="/login"
+                                className="text-[#2563EB] hover:text-[#1E40AF] font-light"
+                            >
+                                Sign in
+                            </Link>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

@@ -20,66 +20,36 @@ export function Navigation() {
     }
 
     return (
-        <nav className="border-b border-border bg-card/50 backdrop-blur-xl sticky top-0 z-50">
-            <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-                <div className="flex justify-between h-20">
-                    <div className="flex items-center">
-                        <Link
-                            href="/"
-                            className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
-                        >
-                            AI Cruel
+        <nav className="border-b border-gray-100 bg-white">
+            <div className="max-w-6xl mx-auto px-8">
+                <div className="flex justify-between h-16">
+                    <div className="flex items-center space-x-12">
+                        <Link href="/" className="text-xl font-light text-black">
+                            Cruel
                         </Link>
-                        <div className="ml-16 flex items-center space-x-12">
-                            <Link
-                                href="/dashboard"
-                                className="text-foreground-secondary hover:text-foreground text-sm font-semibold transition-all duration-300 hover:scale-105"
-                            >
-                                Dashboard
-                            </Link>
+                        <div className="flex items-center space-x-8">
                             <Link
                                 href="/deadlines"
-                                className="text-foreground-secondary hover:text-foreground text-sm font-semibold transition-all duration-300 hover:scale-105"
+                                className="text-sm font-light text-gray-500 hover:text-black transition-colors"
                             >
                                 Deadlines
                             </Link>
                             <Link
-                                href="/portals"
-                                className="text-foreground-secondary hover:text-foreground text-sm font-semibold transition-all duration-300 hover:scale-105"
-                            >
-                                Portals
-                            </Link>
-                            <Link
-                                href="/whatsapp"
-                                className="text-foreground-secondary hover:text-foreground text-sm font-semibold transition-all duration-300 hover:scale-105"
-                            >
-                                WhatsApp
-                            </Link>
-                            <Link
                                 href="/settings/notifications"
-                                className="text-foreground-secondary hover:text-foreground text-sm font-semibold transition-all duration-300 hover:scale-105"
+                                className="text-sm font-light text-gray-500 hover:text-black transition-colors"
                             >
-                                Notifications
+                                Settings
                             </Link>
                         </div>
                     </div>
 
-                    <div className="flex items-center space-x-8">
-                        <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center">
-                                <span className="text-white font-bold text-sm">
-                                    {user.email?.charAt(0).toUpperCase()}
-                                </span>
-                            </div>
-                            <span className="text-sm text-foreground-secondary font-medium">
-                                {user.email}
-                            </span>
-                        </div>
+                    <div className="flex items-center space-x-6">
+                        <span className="text-sm font-light text-gray-400">{user.email}</span>
                         <button
                             onClick={handleLogout}
-                            className="btn btn-ghost text-foreground-secondary hover:text-foreground"
+                            className="text-sm font-light text-gray-500 hover:text-black transition-colors"
                         >
-                            Logout
+                            Sign Out
                         </button>
                     </div>
                 </div>
