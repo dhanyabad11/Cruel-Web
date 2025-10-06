@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function Navigation() {
     const { user, logout } = useAuth();
@@ -20,23 +21,26 @@ export function Navigation() {
     }
 
     return (
-        <nav className="border-b border-gray-100 bg-white">
+        <nav className="border-b border-[#D1D5DB] bg-white dark:bg-gray-900 dark:border-gray-800 transition-colors">
             <div className="max-w-6xl mx-auto px-8">
                 <div className="flex justify-between h-16">
                     <div className="flex items-center space-x-12">
-                        <Link href="/" className="text-xl font-light text-black">
+                        <Link
+                            href="/"
+                            className="text-xl font-light text-[#1A1A1A] dark:text-white"
+                        >
                             Cruel
                         </Link>
                         <div className="flex items-center space-x-8">
                             <Link
                                 href="/deadlines"
-                                className="text-sm font-light text-gray-500 hover:text-black transition-colors"
+                                className="text-sm font-light text-[#6B7280] hover:text-[#1A1A1A] dark:text-gray-400 dark:hover:text-white transition-colors"
                             >
                                 Deadlines
                             </Link>
                             <Link
                                 href="/settings/notifications"
-                                className="text-sm font-light text-gray-500 hover:text-black transition-colors"
+                                className="text-sm font-light text-[#6B7280] hover:text-[#1A1A1A] dark:text-gray-400 dark:hover:text-white transition-colors"
                             >
                                 Settings
                             </Link>
@@ -44,10 +48,13 @@ export function Navigation() {
                     </div>
 
                     <div className="flex items-center space-x-6">
-                        <span className="text-sm font-light text-gray-400">{user.email}</span>
+                        <ThemeToggle />
+                        <span className="text-sm font-light text-[#6B7280] dark:text-gray-400">
+                            {user.email}
+                        </span>
                         <button
                             onClick={handleLogout}
-                            className="text-sm font-light text-gray-500 hover:text-black transition-colors"
+                            className="text-sm font-light text-[#6B7280] hover:text-[#1A1A1A] dark:text-gray-400 dark:hover:text-white transition-colors"
                         >
                             Sign Out
                         </button>

@@ -6,17 +6,17 @@
 
 /* Minimalist Design - Clean Variables */
 :root {
-    --bg-primary: #FFFFFF;
-    --bg-secondary: #F5F5F5;
-    --text-primary: #1A1A1A;
-    --text-secondary: #6B7280;
-    --primary-blue: #2563EB;
-    --primary-blue-hover: #1E40AF;
-    --success-green: #22C55E;
-    --warning-yellow: #EAB308;
-    --danger-red: #EF4444;
-    --border-gray: #D1D5DB;
-    --disabled-gray: #9CA3AF;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --text-primary: #1a1a1a;
+    --text-secondary: #6b7280;
+    --primary-blue: #2563eb;
+    --primary-blue-hover: #1e40af;
+    --success-green: #22c55e;
+    --warning-yellow: #eab308;
+    --danger-red: #ef4444;
+    --border-gray: #d1d5db;
+    --disabled-gray: #9ca3af;
 }
 
 /* Base Styles - Minimalist */

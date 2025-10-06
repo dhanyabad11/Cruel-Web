@@ -44,22 +44,26 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#F5F5F5] flex items-center justify-center p-6">
+        <div className="min-h-screen bg-[#F5F5F5] dark:bg-gray-900 flex items-center justify-center p-6 transition-colors">
             <div className="max-w-sm w-full">
                 {/* Back to home */}
                 <Link
                     href="/"
-                    className="inline-flex items-center text-[#6B7280] hover:text-[#1A1A1A] mb-6 transition-colors text-sm"
+                    className="inline-flex items-center text-[#6B7280] dark:text-gray-400 hover:text-[#1A1A1A] dark:hover:text-white mb-6 transition-colors text-sm"
                 >
                     <ArrowLeft className="w-4 h-4 mr-1.5" strokeWidth={1.5} />
                     <span className="font-light">Back</span>
                 </Link>
 
                 {/* Login Card */}
-                <div className="bg-white border border-[#D1D5DB] p-8">
+                <div className="bg-white dark:bg-gray-800 border border-[#D1D5DB] dark:border-gray-700 p-8">
                     <div className="text-center mb-8">
-                        <h1 className="text-2xl font-light text-[#1A1A1A] mb-2">Welcome Back</h1>
-                        <p className="text-[#6B7280] font-light text-sm">Sign in to your account</p>
+                        <h1 className="text-2xl font-light text-[#1A1A1A] dark:text-white mb-2">
+                            Welcome Back
+                        </h1>
+                        <p className="text-[#6B7280] dark:text-gray-400 font-light text-sm">
+                            Sign in to your account
+                        </p>
                     </div>
 
                     {/* Error Message */}
@@ -80,13 +84,13 @@ export default function LoginPage() {
                         <div>
                             <label
                                 htmlFor="email"
-                                className="block text-xs font-light text-[#1A1A1A] mb-1.5"
+                                className="block text-xs font-light text-[#1A1A1A] dark:text-gray-300 mb-1.5"
                             >
                                 Email
                             </label>
                             <div className="relative">
                                 <Mail
-                                    className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#6B7280]"
+                                    className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#6B7280] dark:text-gray-500"
                                     strokeWidth={1.5}
                                 />
                                 <input
@@ -98,7 +102,7 @@ export default function LoginPage() {
                                     onChange={(e) =>
                                         setFormData({ ...formData, email: e.target.value })
                                     }
-                                    className="w-full pl-10 pr-4 py-2.5 border border-[#D1D5DB] focus:border-[#2563EB] focus:outline-none font-light text-[#1A1A1A] text-sm"
+                                    className="w-full pl-10 pr-4 py-2.5 border border-[#D1D5DB] dark:border-gray-600 focus:border-[#2563EB] dark:focus:border-blue-400 focus:outline-none font-light text-[#1A1A1A] dark:text-white dark:bg-gray-700 text-sm"
                                     placeholder="you@example.com"
                                 />
                             </div>
@@ -107,13 +111,13 @@ export default function LoginPage() {
                         <div>
                             <label
                                 htmlFor="password"
-                                className="block text-xs font-light text-[#1A1A1A] mb-1.5"
+                                className="block text-xs font-light text-[#1A1A1A] dark:text-gray-300 mb-1.5"
                             >
                                 Password
                             </label>
                             <div className="relative">
                                 <Lock
-                                    className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#6B7280]"
+                                    className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#6B7280] dark:text-gray-500"
                                     strokeWidth={1.5}
                                 />
                                 <input
@@ -125,13 +129,13 @@ export default function LoginPage() {
                                     onChange={(e) =>
                                         setFormData({ ...formData, password: e.target.value })
                                     }
-                                    className="w-full pl-10 pr-10 py-2.5 border border-[#D1D5DB] focus:border-[#2563EB] focus:outline-none font-light text-[#1A1A1A] text-sm"
+                                    className="w-full pl-10 pr-10 py-2.5 border border-[#D1D5DB] dark:border-gray-600 focus:border-[#2563EB] dark:focus:border-blue-400 focus:outline-none font-light text-[#1A1A1A] dark:text-white dark:bg-gray-700 text-sm"
                                     placeholder="••••••••"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#6B7280] hover:text-[#1A1A1A]"
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#6B7280] dark:text-gray-400 hover:text-[#1A1A1A] dark:hover:text-white"
                                 >
                                     {showPassword ? (
                                         <EyeOff className="w-4 h-4" strokeWidth={1.5} />
@@ -160,11 +164,11 @@ export default function LoginPage() {
 
                     {/* Sign up Link */}
                     <div className="mt-6 text-center">
-                        <p className="text-xs text-[#6B7280] font-light">
+                        <p className="text-xs text-[#6B7280] dark:text-gray-400 font-light">
                             Don&apos;t have an account?{" "}
                             <Link
                                 href="/register"
-                                className="text-[#2563EB] hover:text-[#1E40AF] font-light"
+                                className="text-[#2563EB] dark:text-blue-400 hover:text-[#1E40AF] dark:hover:text-blue-300 font-light"
                             >
                                 Sign up
                             </Link>
