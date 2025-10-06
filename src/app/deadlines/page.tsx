@@ -237,14 +237,14 @@ export default function DeadlinesPage() {
     if (!user) return null;
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
             <Navigation />
             <div className="container mx-auto px-4 py-8">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-8">
                     <div>
-                        <h1 className="text-2xl font-bold mb-2">Deadlines</h1>
-                        <p className="text-gray-600">Manage your assignments and deadlines</p>
+                        <h1 className="text-2xl font-bold mb-2 dark:text-white">Deadlines</h1>
+                        <p className="text-gray-600 dark:text-gray-400">Manage your assignments and deadlines</p>
                     </div>
                     <button
                         onClick={() => {
@@ -266,7 +266,7 @@ export default function DeadlinesPage() {
                 </div>
 
                 {/* Filters */}
-                <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6 border dark:border-gray-700">
                     <div className="flex flex-col md:flex-row gap-4">
                         <div className="flex-1">
                             <input
@@ -304,7 +304,7 @@ export default function DeadlinesPage() {
                 {/* Deadlines List */}
                 <div className="space-y-4">
                     {filteredDeadlines.length === 0 ? (
-                        <div className="text-center py-12 text-gray-500">
+                        <div className="text-center py-12 text-gray-500 dark:text-gray-400">
                             <Calendar className="mx-auto h-12 w-12 mb-4" />
                             <p>No deadlines found. Add your first deadline to get started!</p>
                         </div>
@@ -312,9 +312,9 @@ export default function DeadlinesPage() {
                         filteredDeadlines.map((deadline) => (
                             <div
                                 key={deadline.id}
-                                className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 p-8 border border-gray-100 group relative overflow-hidden"
+                                className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 p-8 border border-gray-100 dark:border-gray-700 group relative overflow-hidden"
                             >
-                                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                                 <div className="relative z-10">
                                     {/* Header with Title and Priority */}
                                     <div className="flex items-center justify-between mb-6">

@@ -189,30 +189,30 @@ export default function NotificationSettingsPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                    <p className="mt-4 text-gray-600">Loading settings...</p>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400 mx-auto"></div>
+                    <p className="mt-4 text-gray-600 dark:text-gray-400">Loading settings...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
             <Navigation />
             <div className="max-w-4xl mx-auto px-4 py-8">
                 {/* Header */}
                 <div className="mb-6">
-                    <h1 className="text-3xl font-bold text-gray-900">Notification Settings</h1>
-                    <p className="mt-2 text-gray-600">
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Notification Settings</h1>
+                    <p className="mt-2 text-gray-600 dark:text-gray-400">
                         Configure how you receive deadline reminders
                     </p>
                 </div>
 
                 {/* Contact Information */}
-                <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-                    <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                         <Mail className="h-5 w-5" />
                         Contact Information
                     </h2>
@@ -263,20 +263,20 @@ export default function NotificationSettingsPage() {
                 </div>
 
                 {/* Reminder Schedule - Compact Table */}
-                <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-                    <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                         <Bell className="h-5 w-5" />
                         Reminder Schedule
                     </h2>
-                    <p className="text-sm text-gray-600 mb-4">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                         Select when and how you want to be reminded before deadlines
                     </p>
 
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>
-                                <tr className="border-b border-gray-200">
-                                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">
+                                <tr className="border-b border-gray-200 dark:border-gray-700">
+                                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-700 dark:text-gray-300">
                                         Time Before
                                     </th>
                                     <th className="text-center py-3 px-4 text-sm font-medium text-gray-700">
@@ -300,9 +300,9 @@ export default function NotificationSettingsPage() {
                                 {REMINDER_OPTIONS.map((option) => (
                                     <tr
                                         key={option.value}
-                                        className="border-b border-gray-100 hover:bg-gray-50"
+                                        className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
                                     >
-                                        <td className="py-3 px-4 text-sm text-gray-900">
+                                        <td className="py-3 px-4 text-sm text-gray-900 dark:text-gray-300">
                                             {option.label}
                                         </td>
                                         <td className="py-3 px-4 text-center">
