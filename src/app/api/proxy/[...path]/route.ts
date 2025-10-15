@@ -1,20 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-    request: NextRequest,
-    context: { params: Promise<{ path: string[] }> }
-) {
+export async function GET(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
     const params = await context.params;
     const path = params.path.join("/");
     const backendUrl = process.env.BACKEND_URL || "http://198.211.106.97";
-    const url = `${backendUrl}/${path}`;
+    
+    // Preserve query string
+    const searchParams = request.nextUrl.searchParams.toString();
+    const url = searchParams ? `${backendUrl}/${path}?${searchParams}` : `${backendUrl}/${path}`;
+
+    // Forward authorization header
+    const headers: HeadersInit = {
+        "Content-Type": "application/json",
+    };
+    const authHeader = request.headers.get("authorization");
+    if (authHeader) {
+        headers["Authorization"] = authHeader;
+    }
 
     try {
         const response = await fetch(url, {
             method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers,
         });
 
         const data = await response.json();
@@ -24,22 +31,27 @@ export async function GET(
     }
 }
 
-export async function POST(
-    request: NextRequest,
-    context: { params: Promise<{ path: string[] }> }
-) {
+export async function POST(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
     const params = await context.params;
     const path = params.path.join("/");
     const backendUrl = process.env.BACKEND_URL || "http://198.211.106.97";
-    const url = `${backendUrl}/${path}`;
+    
+    const searchParams = request.nextUrl.searchParams.toString();
+    const url = searchParams ? `${backendUrl}/${path}?${searchParams}` : `${backendUrl}/${path}`;
     const body = await request.json();
+
+    const headers: HeadersInit = {
+        "Content-Type": "application/json",
+    };
+    const authHeader = request.headers.get("authorization");
+    if (authHeader) {
+        headers["Authorization"] = authHeader;
+    }
 
     try {
         const response = await fetch(url, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers,
             body: JSON.stringify(body),
         });
 
@@ -50,22 +62,27 @@ export async function POST(
     }
 }
 
-export async function PUT(
-    request: NextRequest,
-    context: { params: Promise<{ path: string[] }> }
-) {
+export async function PUT(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
     const params = await context.params;
     const path = params.path.join("/");
     const backendUrl = process.env.BACKEND_URL || "http://198.211.106.97";
-    const url = `${backendUrl}/${path}`;
+    
+    const searchParams = request.nextUrl.searchParams.toString();
+    const url = searchParams ? `${backendUrl}/${path}?${searchParams}` : `${backendUrl}/${path}`;
     const body = await request.json();
+
+    const headers: HeadersInit = {
+        "Content-Type": "application/json",
+    };
+    const authHeader = request.headers.get("authorization");
+    if (authHeader) {
+        headers["Authorization"] = authHeader;
+    }
 
     try {
         const response = await fetch(url, {
             method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers,
             body: JSON.stringify(body),
         });
 
@@ -83,14 +100,22 @@ export async function DELETE(
     const params = await context.params;
     const path = params.path.join("/");
     const backendUrl = process.env.BACKEND_URL || "http://198.211.106.97";
-    const url = `${backendUrl}/${path}`;
+    
+    const searchParams = request.nextUrl.searchParams.toString();
+    const url = searchParams ? `${backendUrl}/${path}?${searchParams}` : `${backendUrl}/${path}`;
+
+    const headers: HeadersInit = {
+        "Content-Type": "application/json",
+    };
+    const authHeader = request.headers.get("authorization");
+    if (authHeader) {
+        headers["Authorization"] = authHeader;
+    }
 
     try {
         const response = await fetch(url, {
             method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers,
         });
 
         const data = await response.json();
