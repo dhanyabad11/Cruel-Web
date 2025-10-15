@@ -10,7 +10,6 @@ import {
     Bell,
     MessageSquare,
     Link as LinkIcon,
-    TrendingUp,
     CheckCircle2,
     Clock,
     AlertCircle,
@@ -143,7 +142,7 @@ export default function DashboardPage() {
                         Welcome back, {user.email?.split("@")[0]}!
                     </h1>
                     <p className="mt-2 text-gray-600 dark:text-gray-400">
-                        Here's what's happening with your deadlines
+                        Here&apos;s what&apos;s happening with your deadlines
                     </p>
                 </div>
 
@@ -152,7 +151,9 @@ export default function DashboardPage() {
                     <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total</p>
+                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                                    Total
+                                </p>
                                 <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">
                                     {stats.totalDeadlines}
                                 </p>
@@ -165,7 +166,9 @@ export default function DashboardPage() {
                     <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Upcoming</p>
+                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                                    Upcoming
+                                </p>
                                 <p className="text-3xl font-bold text-yellow-600 dark:text-yellow-400 mt-1">
                                     {stats.upcomingDeadlines}
                                 </p>
@@ -179,7 +182,9 @@ export default function DashboardPage() {
                     <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Completed</p>
+                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                                    Completed
+                                </p>
                                 <p className="text-3xl font-bold text-green-600 dark:text-green-400 mt-1">
                                     {stats.completedDeadlines}
                                 </p>
@@ -193,7 +198,9 @@ export default function DashboardPage() {
                     <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Overdue</p>
+                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                                    Overdue
+                                </p>
                                 <p className="text-3xl font-bold text-red-600 dark:text-red-400 mt-1">
                                     {stats.overdueDeadlines}
                                 </p>
@@ -207,7 +214,9 @@ export default function DashboardPage() {
 
                 {/* Quick Actions - Compact */}
                 <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
-                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h2>
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                        Quick Actions
+                    </h2>
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                         <Link
                             href="/deadlines"
@@ -216,7 +225,9 @@ export default function DashboardPage() {
                             <div className="h-10 w-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-2 group-hover:bg-blue-200 dark:group-hover:bg-blue-900/50">
                                 <Calendar className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                             </div>
-                            <span className="text-sm font-medium text-gray-900 dark:text-gray-300">Deadlines</span>
+                            <span className="text-sm font-medium text-gray-900 dark:text-gray-300">
+                                Deadlines
+                            </span>
                         </Link>
                         <Link
                             href="/whatsapp"
@@ -225,7 +236,9 @@ export default function DashboardPage() {
                             <div className="h-10 w-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-2 group-hover:bg-green-200 dark:group-hover:bg-green-900/50">
                                 <MessageSquare className="h-5 w-5 text-green-600 dark:text-green-400" />
                             </div>
-                            <span className="text-sm font-medium text-gray-900 dark:text-gray-300">WhatsApp</span>
+                            <span className="text-sm font-medium text-gray-900 dark:text-gray-300">
+                                WhatsApp
+                            </span>
                         </Link>
                         <Link
                             href="/settings/notifications"
@@ -234,7 +247,9 @@ export default function DashboardPage() {
                             <div className="h-10 w-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-2 group-hover:bg-purple-200 dark:group-hover:bg-purple-900/50">
                                 <Bell className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                             </div>
-                            <span className="text-sm font-medium text-gray-900 dark:text-gray-300">Settings</span>
+                            <span className="text-sm font-medium text-gray-900 dark:text-gray-300">
+                                Settings
+                            </span>
                         </Link>
                         <Link
                             href="/portals"
@@ -243,7 +258,9 @@ export default function DashboardPage() {
                             <div className="h-10 w-10 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center mb-2 group-hover:bg-orange-200 dark:group-hover:bg-orange-900/50">
                                 <LinkIcon className="h-5 w-5 text-orange-600 dark:text-orange-400" />
                             </div>
-                            <span className="text-sm font-medium text-gray-900 dark:text-gray-300">Portals</span>
+                            <span className="text-sm font-medium text-gray-900 dark:text-gray-300">
+                                Portals
+                            </span>
                         </Link>
                     </div>
                 </div>
@@ -319,7 +336,9 @@ export default function DashboardPage() {
 
                     {/* Quick Tips */}
                     <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-                        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">💡 Quick Tips</h2>
+                        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                            💡 Quick Tips
+                        </h2>
                         <div className="space-y-4">
                             <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-800">
                                 <p className="text-sm text-gray-700 dark:text-gray-300">

@@ -244,7 +244,9 @@ export default function DeadlinesPage() {
                 <div className="flex justify-between items-center mb-8">
                     <div>
                         <h1 className="text-2xl font-bold mb-2 dark:text-white">Deadlines</h1>
-                        <p className="text-gray-600 dark:text-gray-400">Manage your assignments and deadlines</p>
+                        <p className="text-gray-600 dark:text-gray-400">
+                            Manage your assignments and deadlines
+                        </p>
                     </div>
                     <button
                         onClick={() => {

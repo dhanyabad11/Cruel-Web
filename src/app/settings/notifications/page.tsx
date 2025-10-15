@@ -204,7 +204,9 @@ export default function NotificationSettingsPage() {
             <div className="max-w-4xl mx-auto px-4 py-8">
                 {/* Header */}
                 <div className="mb-6">
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Notification Settings</h1>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                        Notification Settings
+                    </h1>
                     <p className="mt-2 text-gray-600 dark:text-gray-400">
                         Configure how you receive deadline reminders
                     </p>
@@ -279,20 +281,20 @@ export default function NotificationSettingsPage() {
                                     <th className="text-left py-3 px-4 text-sm font-medium text-gray-700 dark:text-gray-300">
                                         Time Before
                                     </th>
-                                    <th className="text-center py-3 px-4 text-sm font-medium text-gray-700">
-                                        <Mail className="h-4 w-4 mx-auto" title="Email" />
+                                    <th className="text-center py-3 px-4 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <Mail className="h-4 w-4 mx-auto" aria-label="Email" />
                                     </th>
-                                    <th className="text-center py-3 px-4 text-sm font-medium text-gray-700">
-                                        <Smartphone className="h-4 w-4 mx-auto" title="SMS" />
+                                    <th className="text-center py-3 px-4 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <Smartphone className="h-4 w-4 mx-auto" aria-label="SMS" />
                                     </th>
-                                    <th className="text-center py-3 px-4 text-sm font-medium text-gray-700">
+                                    <th className="text-center py-3 px-4 text-sm font-medium text-gray-700 dark:text-gray-300">
                                         <MessageSquare
                                             className="h-4 w-4 mx-auto"
-                                            title="WhatsApp"
+                                            aria-label="WhatsApp"
                                         />
                                     </th>
-                                    <th className="text-center py-3 px-4 text-sm font-medium text-gray-700">
-                                        <Bell className="h-4 w-4 mx-auto" title="Push" />
+                                    <th className="text-center py-3 px-4 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <Bell className="h-4 w-4 mx-auto" aria-label="Push" />
                                     </th>
                                 </tr>
                             </thead>
