@@ -1,4 +1,6 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cruel Frontend
+
+A modern Next.js frontend application with a comprehensive dashboard, deadline tracking, and notification management system.
 
 ## Getting Started
 
@@ -18,14 +20,42 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Screenshots
+
+![Screenshot 1](./public/screenshots/screenshot1.png)
+
+![Screenshot 2](./public/screenshots/screenshot2.png)
+
+![Screenshot 3](./public/screenshots/screenshot3.png)
+
+![Screenshot 4](./public/screenshots/screenshot4.png)
+
+## Features
+
+-   User authentication and authorization
+-   Dashboard with statistics and portal overview
+-   Deadline tracking and management
+-   Notification preferences and settings
+-   WhatsApp integration
+-   Dark/Light theme toggle
+-   Responsive design
+
+## Project Structure
+
+-   `/src/app` - Next.js pages and API routes
+-   `/src/components` - Reusable React components
+-   `/src/contexts` - React context providers (Auth, Theme)
+-   `/src/services` - API service layer
+-   `/src/lib` - Utility functions and API helpers
+-   `/src/types` - TypeScript type definitions
+-   `/public` - Static assets
 
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+-   [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+-   [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 

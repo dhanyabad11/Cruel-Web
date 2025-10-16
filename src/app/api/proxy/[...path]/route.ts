@@ -4,7 +4,7 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
     const params = await context.params;
     const path = params.path.join("/");
     const backendUrl = process.env.BACKEND_URL || "http://198.211.106.97";
-    
+
     // Preserve query string
     const searchParams = request.nextUrl.searchParams.toString();
     const url = searchParams ? `${backendUrl}/${path}?${searchParams}` : `${backendUrl}/${path}`;
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest, context: { params: Promise<{ pa
     const params = await context.params;
     const path = params.path.join("/");
     const backendUrl = process.env.BACKEND_URL || "http://198.211.106.97";
-    
+
     const searchParams = request.nextUrl.searchParams.toString();
     const url = searchParams ? `${backendUrl}/${path}?${searchParams}` : `${backendUrl}/${path}`;
     const body = await request.json();
@@ -66,7 +66,7 @@ export async function PUT(request: NextRequest, context: { params: Promise<{ pat
     const params = await context.params;
     const path = params.path.join("/");
     const backendUrl = process.env.BACKEND_URL || "http://198.211.106.97";
-    
+
     const searchParams = request.nextUrl.searchParams.toString();
     const url = searchParams ? `${backendUrl}/${path}?${searchParams}` : `${backendUrl}/${path}`;
     const body = await request.json();
@@ -100,7 +100,7 @@ export async function DELETE(
     const params = await context.params;
     const path = params.path.join("/");
     const backendUrl = process.env.BACKEND_URL || "http://198.211.106.97";
-    
+
     const searchParams = request.nextUrl.searchParams.toString();
     const url = searchParams ? `${backendUrl}/${path}?${searchParams}` : `${backendUrl}/${path}`;
 
