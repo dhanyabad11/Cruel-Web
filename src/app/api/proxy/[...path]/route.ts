@@ -49,6 +49,9 @@ export async function POST(request: NextRequest, context: { params: Promise<{ pa
     }
 
     try {
+        console.log(`[Proxy POST] Forwarding to: ${url}`);
+        console.log(`[Proxy POST] Backend URL env: ${process.env.BACKEND_URL}`);
+        
         const response = await fetch(url, {
             method: "POST",
             headers,
@@ -56,9 +59,15 @@ export async function POST(request: NextRequest, context: { params: Promise<{ pa
         });
 
         const data = await response.json();
+        console.log(`[Proxy POST] Response status: ${response.status}`);
         return NextResponse.json(data, { status: response.status });
-    } catch {
-        return NextResponse.json({ error: "Failed to fetch from backend" }, { status: 500 });
+    } catch (error) {
+        console.error(`[Proxy POST] Error:`, error);
+        return NextResponse.json({ 
+            error: "Failed to fetch from backend", 
+            details: error instanceof Error ? error.message : String(error),
+            url 
+        }, { status: 500 });
     }
 }
 
