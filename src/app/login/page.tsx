@@ -33,7 +33,9 @@ export default function LoginPage() {
         try {
             console.log("Attempting login...");
             await login(formData.email, formData.password);
-            router.replace("/dashboard"); // Use replace instead of push
+            
+            // Force a complete navigation to clear browser history
+            window.location.href = "/dashboard";
         } catch (error) {
             console.error("Login error:", error);
             setError(
