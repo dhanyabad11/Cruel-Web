@@ -4,7 +4,7 @@ import { Navigation } from "@/components/Navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Plus, Calendar, AlertCircle, CheckCircle } from "lucide-react";
+import { Plus, Calendar, AlertCircle, CheckCircle, X, FileText, AlignLeft, Flag } from "lucide-react";
 import { apiClient } from "@/lib/api";
 import { Deadline } from "@/types/api";
 
@@ -446,151 +446,128 @@ export default function DeadlinesPage() {
                             padding: "20px",
                         }}
                     >
-                        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-auto transform transition-all">
-                            {/* Header with gradient */}
-                            <div className="relative mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
-                                <div className="absolute top-0 left-0 w-20 h-20 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full opacity-20 blur-2xl"></div>
-                                <div className="relative flex justify-between items-center">
-                                    <div>
-                                        <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                                            Add New Deadline
-                                        </h2>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                            Stay organized and never miss a deadline
-                                        </p>
-                                    </div>
-                                    <button
-                                        onClick={() => {
-                                            console.log("Close button clicked");
-                                            setShowAddModal(false);
-                                        }}
-                                        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                                    >
-                                        <span className="text-2xl text-gray-500 dark:text-gray-400">
-                                            ✕
-                                        </span>
-                                    </button>
+                        <div className="bg-white dark:bg-gray-800 border border-[#D1D5DB] dark:border-gray-700 p-8 max-w-md w-full">
+                            {/* Header */}
+                            <div className="flex justify-between items-start mb-6">
+                                <div>
+                                    <h2 className="text-2xl font-light text-[#1A1A1A] dark:text-white mb-1">
+                                        Add Deadline
+                                    </h2>
+                                    <p className="text-xs text-[#6B7280] dark:text-gray-400 font-light">
+                                        Create a new deadline to track
+                                    </p>
                                 </div>
+                                <button
+                                    onClick={() => {
+                                        console.log("Close button clicked");
+                                        setShowAddModal(false);
+                                    }}
+                                    className="text-[#6B7280] hover:text-[#1A1A1A] dark:hover:text-white transition-colors"
+                                >
+                                    <X className="w-5 h-5" strokeWidth={1.5} />
+                                </button>
                             </div>
 
-                            <form onSubmit={handleAddDeadline} className="space-y-6">
+                            <form onSubmit={handleAddDeadline} className="space-y-4">
                                 {/* Title Field */}
-                                <div className="group">
-                                    <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-                                        <span className="w-5 h-5 flex items-center justify-center rounded bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400">
-                                            📝
-                                        </span>
+                                <div>
+                                    <label className="block text-xs font-light text-[#1A1A1A] dark:text-gray-300 mb-1.5">
                                         Title *
                                     </label>
-                                    <input
-                                        type="text"
-                                        value={formData.title}
-                                        onChange={(e) =>
-                                            setFormData({ ...formData, title: e.target.value })
-                                        }
-                                        placeholder="e.g., Mathematics Assignment"
-                                        required
-                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all outline-none"
-                                    />
+                                    <div className="relative">
+                                        <FileText
+                                            className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#6B7280] dark:text-gray-500"
+                                            strokeWidth={1.5}
+                                        />
+                                        <input
+                                            type="text"
+                                            value={formData.title}
+                                            onChange={(e) =>
+                                                setFormData({ ...formData, title: e.target.value })
+                                            }
+                                            placeholder="e.g., Mathematics Assignment"
+                                            required
+                                            className="w-full pl-10 pr-3 py-2.5 bg-white dark:bg-gray-700 border border-[#D1D5DB] dark:border-gray-600 text-[#1A1A1A] dark:text-white placeholder-[#9CA3AF] dark:placeholder-gray-500 text-sm font-light focus:outline-none focus:border-[#1A1A1A] dark:focus:border-gray-400 transition-colors"
+                                        />
+                                    </div>
                                 </div>
 
                                 {/* Description Field */}
-                                <div className="group">
-                                    <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-                                        <span className="w-5 h-5 flex items-center justify-center rounded bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-400">
-                                            📄
-                                        </span>
+                                <div>
+                                    <label className="block text-xs font-light text-[#1A1A1A] dark:text-gray-300 mb-1.5">
                                         Description
                                     </label>
-                                    <textarea
-                                        value={formData.description}
-                                        onChange={(e) =>
-                                            setFormData({
-                                                ...formData,
-                                                description: e.target.value,
-                                            })
-                                        }
-                                        placeholder="Add any additional details or notes..."
-                                        rows={4}
-                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-4 focus:ring-purple-100 dark:focus:ring-purple-900 transition-all outline-none resize-none"
-                                    />
+                                    <div className="relative">
+                                        <AlignLeft
+                                            className="absolute left-3 top-3 w-4 h-4 text-[#6B7280] dark:text-gray-500"
+                                            strokeWidth={1.5}
+                                        />
+                                        <textarea
+                                            value={formData.description}
+                                            onChange={(e) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    description: e.target.value,
+                                                })
+                                            }
+                                            placeholder="Optional description..."
+                                            rows={3}
+                                            className="w-full pl-10 pr-3 py-2.5 bg-white dark:bg-gray-700 border border-[#D1D5DB] dark:border-gray-600 text-[#1A1A1A] dark:text-white placeholder-[#9CA3AF] dark:placeholder-gray-500 text-sm font-light focus:outline-none focus:border-[#1A1A1A] dark:focus:border-gray-400 transition-colors resize-none"
+                                        />
+                                    </div>
                                 </div>
 
                                 {/* Due Date Field */}
-                                <div className="group">
-                                    <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-                                        <span className="w-5 h-5 flex items-center justify-center rounded bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400">
-                                            📅
-                                        </span>
+                                <div>
+                                    <label className="block text-xs font-light text-[#1A1A1A] dark:text-gray-300 mb-1.5">
                                         Due Date *
                                     </label>
-                                    <input
-                                        type="datetime-local"
-                                        value={formData.due_date}
-                                        onChange={(e) =>
-                                            setFormData({ ...formData, due_date: e.target.value })
-                                        }
-                                        required
-                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white focus:border-green-500 dark:focus:border-green-400 focus:ring-4 focus:ring-green-100 dark:focus:ring-green-900 transition-all outline-none"
-                                    />
+                                    <div className="relative">
+                                        <Calendar
+                                            className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#6B7280] dark:text-gray-500"
+                                            strokeWidth={1.5}
+                                        />
+                                        <input
+                                            type="datetime-local"
+                                            value={formData.due_date}
+                                            onChange={(e) =>
+                                                setFormData({ ...formData, due_date: e.target.value })
+                                            }
+                                            required
+                                            className="w-full pl-10 pr-3 py-2.5 bg-white dark:bg-gray-700 border border-[#D1D5DB] dark:border-gray-600 text-[#1A1A1A] dark:text-white text-sm font-light focus:outline-none focus:border-[#1A1A1A] dark:focus:border-gray-400 transition-colors"
+                                        />
+                                    </div>
                                 </div>
 
                                 {/* Priority Field */}
-                                <div className="group">
-                                    <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-                                        <span className="w-5 h-5 flex items-center justify-center rounded bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400">
-                                            ⭐
-                                        </span>
+                                <div>
+                                    <label className="block text-xs font-light text-[#1A1A1A] dark:text-gray-300 mb-1.5">
                                         Priority
                                     </label>
-                                    <div className="grid grid-cols-3 gap-3">
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                setFormData({ ...formData, priority: "low" })
+                                    <div className="relative">
+                                        <Flag
+                                            className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#6B7280] dark:text-gray-500"
+                                            strokeWidth={1.5}
+                                        />
+                                        <select
+                                            value={formData.priority}
+                                            onChange={(e) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    priority: e.target.value as "low" | "medium" | "high",
+                                                })
                                             }
-                                            className={`px-4 py-3 rounded-xl font-medium transition-all ${
-                                                formData.priority === "low"
-                                                    ? "bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 border-2 border-green-500 shadow-md"
-                                                    : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600"
-                                            }`}
+                                            className="w-full pl-10 pr-3 py-2.5 bg-white dark:bg-gray-700 border border-[#D1D5DB] dark:border-gray-600 text-[#1A1A1A] dark:text-white text-sm font-light focus:outline-none focus:border-[#1A1A1A] dark:focus:border-gray-400 transition-colors appearance-none"
                                         >
-                                            <div className="text-xs mb-1">🟢</div>
-                                            Low
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                setFormData({ ...formData, priority: "medium" })
-                                            }
-                                            className={`px-4 py-3 rounded-xl font-medium transition-all ${
-                                                formData.priority === "medium"
-                                                    ? "bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300 border-2 border-yellow-500 shadow-md"
-                                                    : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600"
-                                            }`}
-                                        >
-                                            <div className="text-xs mb-1">🟡</div>
-                                            Medium
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                setFormData({ ...formData, priority: "high" })
-                                            }
-                                            className={`px-4 py-3 rounded-xl font-medium transition-all ${
-                                                formData.priority === "high"
-                                                    ? "bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 border-2 border-red-500 shadow-md"
-                                                    : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600"
-                                            }`}
-                                        >
-                                            <div className="text-xs mb-1">🔴</div>
-                                            High
-                                        </button>
+                                            <option value="low">Low Priority</option>
+                                            <option value="medium">Medium Priority</option>
+                                            <option value="high">High Priority</option>
+                                        </select>
                                     </div>
                                 </div>
 
                                 {/* Action Buttons */}
-                                <div className="flex gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                                <div className="flex gap-3 pt-4">
                                     <button
                                         type="button"
                                         onClick={() => {
@@ -598,23 +575,16 @@ export default function DeadlinesPage() {
                                             setShowAddModal(false);
                                         }}
                                         disabled={isSubmitting}
-                                        className="flex-1 px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="flex-1 px-4 py-2.5 bg-white dark:bg-gray-700 border border-[#D1D5DB] dark:border-gray-600 text-[#1A1A1A] dark:text-white text-sm font-light hover:bg-[#F9FAFB] dark:hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={isSubmitting}
-                                        className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02]"
+                                        className="flex-1 px-4 py-2.5 bg-[#1A1A1A] dark:bg-white text-white dark:text-[#1A1A1A] text-sm font-light hover:bg-[#000000] dark:hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
-                                        {isSubmitting ? (
-                                            <span className="flex items-center justify-center gap-2">
-                                                <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                                                Adding...
-                                            </span>
-                                        ) : (
-                                            "✨ Add Deadline"
-                                        )}
+                                        {isSubmitting ? "Adding..." : "Add Deadline"}
                                     </button>
                                 </div>
                             </form>
