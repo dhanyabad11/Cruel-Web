@@ -262,11 +262,6 @@ export default function DeadlinesPage() {
                     </button>
                 </div>
 
-                {/* Debug State */}
-                <div className="p-4 bg-red-100 text-red-800 mb-4">
-                    DEBUG: showAddModal = {showAddModal ? "TRUE" : "FALSE"}
-                </div>
-
                 {/* Filters */}
                 <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6 border dark:border-gray-700">
                     <div className="flex flex-col md:flex-row gap-4">
