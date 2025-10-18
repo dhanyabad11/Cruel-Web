@@ -316,7 +316,7 @@ export default function DeadlinesPage() {
                                     {/* Header with Title and Priority */}
                                     <div className="flex items-center justify-between mb-6">
                                         <div className="flex items-center gap-4">
-                                            <h3 className="text-2xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
+                                            <h3 className="text-2xl font-bold text-gray-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                                 {deadline.title}
                                             </h3>
                                             <span
@@ -358,7 +358,7 @@ export default function DeadlinesPage() {
                                     {/* Description */}
                                     {deadline.description && (
                                         <div className="mb-8">
-                                            <p className="text-gray-600 text-lg leading-relaxed">
+                                            <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
                                                 {deadline.description}
                                             </p>
                                         </div>
@@ -371,10 +371,10 @@ export default function DeadlinesPage() {
                                                 <Calendar className="h-7 w-7 text-white" />
                                             </div>
                                             <div>
-                                                <p className="text-sm font-semibold text-gray-500 mb-1 uppercase tracking-wide">
+                                                <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">
                                                     Due Date
                                                 </p>
-                                                <p className="text-xl font-bold text-gray-800">
+                                                <p className="text-xl font-bold text-gray-800 dark:text-white">
                                                     {new Date(deadline.due_date).toLocaleDateString(
                                                         "en-US",
                                                         {
@@ -385,7 +385,7 @@ export default function DeadlinesPage() {
                                                         }
                                                     )}
                                                 </p>
-                                                <p className="text-sm text-gray-500 font-medium">
+                                                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
                                                     {new Date(deadline.due_date).toLocaleTimeString(
                                                         "en-US",
                                                         {
@@ -414,10 +414,10 @@ export default function DeadlinesPage() {
                                                 )}
                                             </div>
                                             <div>
-                                                <p className="text-sm font-semibold text-gray-500 mb-1 uppercase tracking-wide">
+                                                <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">
                                                     Status
                                                 </p>
-                                                <p className="text-xl font-bold text-gray-800 capitalize">
+                                                <p className="text-xl font-bold text-gray-800 dark:text-white capitalize">
                                                     {deadline.status}
                                                 </p>
                                             </div>
