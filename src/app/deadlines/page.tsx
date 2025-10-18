@@ -446,65 +446,40 @@ export default function DeadlinesPage() {
                             padding: "20px",
                         }}
                     >
-                        <div
-                            style={{
-                                backgroundColor: "white",
-                                borderRadius: "8px",
-                                padding: "30px",
-                                maxWidth: "500px",
-                                width: "100%",
-                                maxHeight: "90vh",
-                                overflow: "auto",
-                            }}
-                        >
-                            <div
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                    marginBottom: "20px",
-                                }}
-                            >
-                                <h2
-                                    style={{
-                                        fontSize: "24px",
-                                        fontWeight: "bold",
-                                        margin: 0,
-                                        color: "black",
-                                    }}
-                                >
-                                    Add New Deadline
-                                </h2>
-                                <button
-                                    onClick={() => {
-                                        console.log("Close button clicked");
-                                        setShowAddModal(false);
-                                    }}
-                                    style={{
-                                        background: "none",
-                                        border: "none",
-                                        fontSize: "24px",
-                                        cursor: "pointer",
-                                        padding: "5px",
-                                    }}
-                                >
-                                    ✕
-                                </button>
+                        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-auto transform transition-all">
+                            {/* Header with gradient */}
+                            <div className="relative mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
+                                <div className="absolute top-0 left-0 w-20 h-20 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full opacity-20 blur-2xl"></div>
+                                <div className="relative flex justify-between items-center">
+                                    <div>
+                                        <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                            Add New Deadline
+                                        </h2>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                            Stay organized and never miss a deadline
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={() => {
+                                            console.log("Close button clicked");
+                                            setShowAddModal(false);
+                                        }}
+                                        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                    >
+                                        <span className="text-2xl text-gray-500 dark:text-gray-400">
+                                            ✕
+                                        </span>
+                                    </button>
+                                </div>
                             </div>
 
-                            <form
-                                onSubmit={handleAddDeadline}
-                                style={{ display: "flex", flexDirection: "column", gap: "15px" }}
-                            >
-                                <div>
-                                    <label
-                                        style={{
-                                            display: "block",
-                                            marginBottom: "5px",
-                                            fontWeight: "bold",
-                                            color: "black",
-                                        }}
-                                    >
+                            <form onSubmit={handleAddDeadline} className="space-y-6">
+                                {/* Title Field */}
+                                <div className="group">
+                                    <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                                        <span className="w-5 h-5 flex items-center justify-center rounded bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400">
+                                            📝
+                                        </span>
                                         Title *
                                     </label>
                                     <input
@@ -515,26 +490,16 @@ export default function DeadlinesPage() {
                                         }
                                         placeholder="e.g., Mathematics Assignment"
                                         required
-                                        style={{
-                                            width: "100%",
-                                            padding: "10px",
-                                            border: "1px solid #ccc",
-                                            borderRadius: "4px",
-                                            fontSize: "16px",
-                                            boxSizing: "border-box",
-                                        }}
+                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all outline-none"
                                     />
                                 </div>
 
-                                <div>
-                                    <label
-                                        style={{
-                                            display: "block",
-                                            marginBottom: "5px",
-                                            fontWeight: "bold",
-                                            color: "black",
-                                        }}
-                                    >
+                                {/* Description Field */}
+                                <div className="group">
+                                    <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                                        <span className="w-5 h-5 flex items-center justify-center rounded bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-400">
+                                            📄
+                                        </span>
                                         Description
                                     </label>
                                     <textarea
@@ -545,29 +510,18 @@ export default function DeadlinesPage() {
                                                 description: e.target.value,
                                             })
                                         }
-                                        placeholder="Optional description..."
-                                        rows={3}
-                                        style={{
-                                            width: "100%",
-                                            padding: "10px",
-                                            border: "1px solid #ccc",
-                                            borderRadius: "4px",
-                                            fontSize: "16px",
-                                            resize: "vertical",
-                                            boxSizing: "border-box",
-                                        }}
+                                        placeholder="Add any additional details or notes..."
+                                        rows={4}
+                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-4 focus:ring-purple-100 dark:focus:ring-purple-900 transition-all outline-none resize-none"
                                     />
                                 </div>
 
-                                <div>
-                                    <label
-                                        style={{
-                                            display: "block",
-                                            marginBottom: "5px",
-                                            fontWeight: "bold",
-                                            color: "black",
-                                        }}
-                                    >
+                                {/* Due Date Field */}
+                                <div className="group">
+                                    <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                                        <span className="w-5 h-5 flex items-center justify-center rounded bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400">
+                                            📅
+                                        </span>
                                         Due Date *
                                     </label>
                                     <input
@@ -577,55 +531,66 @@ export default function DeadlinesPage() {
                                             setFormData({ ...formData, due_date: e.target.value })
                                         }
                                         required
-                                        style={{
-                                            width: "100%",
-                                            padding: "10px",
-                                            border: "1px solid #ccc",
-                                            borderRadius: "4px",
-                                            fontSize: "16px",
-                                            boxSizing: "border-box",
-                                        }}
+                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white focus:border-green-500 dark:focus:border-green-400 focus:ring-4 focus:ring-green-100 dark:focus:ring-green-900 transition-all outline-none"
                                     />
                                 </div>
 
-                                <div>
-                                    <label
-                                        style={{
-                                            display: "block",
-                                            marginBottom: "5px",
-                                            fontWeight: "bold",
-                                            color: "black",
-                                        }}
-                                    >
+                                {/* Priority Field */}
+                                <div className="group">
+                                    <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                                        <span className="w-5 h-5 flex items-center justify-center rounded bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400">
+                                            ⭐
+                                        </span>
                                         Priority
                                     </label>
-                                    <select
-                                        value={formData.priority}
-                                        onChange={(e) =>
-                                            setFormData({
-                                                ...formData,
-                                                priority: e.target.value as
-                                                    | "low"
-                                                    | "medium"
-                                                    | "high",
-                                            })
-                                        }
-                                        style={{
-                                            width: "100%",
-                                            padding: "10px",
-                                            border: "1px solid #ccc",
-                                            borderRadius: "4px",
-                                            fontSize: "16px",
-                                            boxSizing: "border-box",
-                                        }}
-                                    >
-                                        <option value="low">Low Priority</option>
-                                        <option value="medium">Medium Priority</option>
-                                        <option value="high">High Priority</option>
-                                    </select>
+                                    <div className="grid grid-cols-3 gap-3">
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setFormData({ ...formData, priority: "low" })
+                                            }
+                                            className={`px-4 py-3 rounded-xl font-medium transition-all ${
+                                                formData.priority === "low"
+                                                    ? "bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 border-2 border-green-500 shadow-md"
+                                                    : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600"
+                                            }`}
+                                        >
+                                            <div className="text-xs mb-1">🟢</div>
+                                            Low
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setFormData({ ...formData, priority: "medium" })
+                                            }
+                                            className={`px-4 py-3 rounded-xl font-medium transition-all ${
+                                                formData.priority === "medium"
+                                                    ? "bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300 border-2 border-yellow-500 shadow-md"
+                                                    : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600"
+                                            }`}
+                                        >
+                                            <div className="text-xs mb-1">🟡</div>
+                                            Medium
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setFormData({ ...formData, priority: "high" })
+                                            }
+                                            className={`px-4 py-3 rounded-xl font-medium transition-all ${
+                                                formData.priority === "high"
+                                                    ? "bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 border-2 border-red-500 shadow-md"
+                                                    : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600"
+                                            }`}
+                                        >
+                                            <div className="text-xs mb-1">🔴</div>
+                                            High
+                                        </button>
+                                    </div>
                                 </div>
 
-                                <div style={{ display: "flex", gap: "10px", paddingTop: "20px" }}>
+                                {/* Action Buttons */}
+                                <div className="flex gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
                                     <button
                                         type="button"
                                         onClick={() => {
@@ -633,33 +598,23 @@ export default function DeadlinesPage() {
                                             setShowAddModal(false);
                                         }}
                                         disabled={isSubmitting}
-                                        style={{
-                                            flex: 1,
-                                            padding: "12px",
-                                            border: "1px solid #ccc",
-                                            borderRadius: "4px",
-                                            background: "white",
-                                            cursor: "pointer",
-                                            fontSize: "16px",
-                                        }}
+                                        className="flex-1 px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={isSubmitting}
-                                        style={{
-                                            flex: 1,
-                                            padding: "12px",
-                                            border: "none",
-                                            borderRadius: "4px",
-                                            background: "#6366f1",
-                                            color: "white",
-                                            cursor: "pointer",
-                                            fontSize: "16px",
-                                        }}
+                                        className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02]"
                                     >
-                                        {isSubmitting ? "Adding..." : "Add Deadline"}
+                                        {isSubmitting ? (
+                                            <span className="flex items-center justify-center gap-2">
+                                                <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                                                Adding...
+                                            </span>
+                                        ) : (
+                                            "✨ Add Deadline"
+                                        )}
                                     </button>
                                 </div>
                             </form>
