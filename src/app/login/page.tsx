@@ -6,13 +6,16 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginPage() {
-    const { login } = useAuth();
+    const { login, user, loading } = useAuth();
     const router = useRouter();
 
-    // Test basic JavaScript functionality
+    // Redirect if already logged in
     useEffect(() => {
-        console.log("LoginPage component mounted - JavaScript is working");
-    }, []);
+        if (!loading && user) {
+            router.replace("/dashboard");
+        }
+    }, [user, loading, router]);
+
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string>("");
@@ -30,7 +33,7 @@ export default function LoginPage() {
         try {
             console.log("Attempting login...");
             await login(formData.email, formData.password);
-            router.push("/dashboard");
+            router.replace("/dashboard"); // Use replace instead of push
         } catch (error) {
             console.error("Login error:", error);
             setError(

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -16,8 +16,15 @@ export default function RegisterPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const { register } = useAuth();
+    const { register, user, loading } = useAuth();
     const router = useRouter();
+
+    // Redirect if already logged in
+    useEffect(() => {
+        if (!loading && user) {
+            router.replace("/dashboard");
+        }
+    }, [user, loading, router]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -42,7 +49,7 @@ export default function RegisterPage() {
             alert(
                 "Registration successful! Please check your email to verify your account, then you can sign in."
             );
-            router.push("/login"); // Redirect to login page
+            router.replace("/login"); // Use replace instead of push
         } catch (err) {
             setError(err instanceof Error ? err.message : "Registration failed");
         } finally {

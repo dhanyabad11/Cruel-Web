@@ -1,16 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { ThemeToggle } from "./ThemeToggle";
 
 export function Navigation() {
     const { user, logout } = useAuth();
+    const router = useRouter();
 
     const handleLogout = async () => {
         console.log("Logout button clicked");
         try {
             await logout();
+            router.replace("/login"); // Use replace to prevent going back to protected pages
         } catch (error) {
             console.error("Logout failed:", error);
         }

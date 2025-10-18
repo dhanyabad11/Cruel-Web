@@ -4,7 +4,16 @@ import { Navigation } from "@/components/Navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Plus, Calendar, AlertCircle, CheckCircle, X, FileText, AlignLeft, Flag } from "lucide-react";
+import {
+    Plus,
+    Calendar,
+    AlertCircle,
+    CheckCircle,
+    X,
+    FileText,
+    AlignLeft,
+    Flag,
+} from "lucide-react";
 import { apiClient } from "@/lib/api";
 import { Deadline } from "@/types/api";
 
@@ -32,7 +41,7 @@ export default function DeadlinesPage() {
 
     useEffect(() => {
         if (!loading && !user) {
-            router.push("/login");
+            router.replace("/login");
         }
     }, [user, loading, router]);
 
@@ -531,7 +540,10 @@ export default function DeadlinesPage() {
                                             type="datetime-local"
                                             value={formData.due_date}
                                             onChange={(e) =>
-                                                setFormData({ ...formData, due_date: e.target.value })
+                                                setFormData({
+                                                    ...formData,
+                                                    due_date: e.target.value,
+                                                })
                                             }
                                             required
                                             className="w-full pl-10 pr-3 py-2.5 bg-white dark:bg-gray-700 border border-[#D1D5DB] dark:border-gray-600 text-[#1A1A1A] dark:text-white text-sm font-light focus:outline-none focus:border-[#1A1A1A] dark:focus:border-gray-400 transition-colors"
@@ -554,7 +566,10 @@ export default function DeadlinesPage() {
                                             onChange={(e) =>
                                                 setFormData({
                                                     ...formData,
-                                                    priority: e.target.value as "low" | "medium" | "high",
+                                                    priority: e.target.value as
+                                                        | "low"
+                                                        | "medium"
+                                                        | "high",
                                                 })
                                             }
                                             className="w-full pl-10 pr-3 py-2.5 bg-white dark:bg-gray-700 border border-[#D1D5DB] dark:border-gray-600 text-[#1A1A1A] dark:text-white text-sm font-light focus:outline-none focus:border-[#1A1A1A] dark:focus:border-gray-400 transition-colors appearance-none"

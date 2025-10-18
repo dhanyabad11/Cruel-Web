@@ -12,10 +12,10 @@ export default function NotificationsPage() {
 
     useEffect(() => {
         if (!loading && !user) {
-            router.push("/login");
+            router.replace("/login");
         } else if (user) {
             // Redirect to the proper notification settings page
-            router.push("/settings/notifications");
+            router.replace("/settings/notifications");
         }
     }, [user, loading, router]);
 
