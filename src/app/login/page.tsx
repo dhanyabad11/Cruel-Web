@@ -16,6 +16,20 @@ export default function LoginPage() {
         }
     }, [user, loading, router]);
 
+    // Handle back-forward cache (pageshow) — redirect immediately if user token exists
+    useEffect(() => {
+        const onPageShow = () => {
+            const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
+            if (token) {
+                // Use replace so login doesn't stay in history
+                window.location.replace("/dashboard");
+            }
+        };
+
+        window.addEventListener("pageshow", onPageShow as EventListener);
+        return () => window.removeEventListener("pageshow", onPageShow as EventListener);
+    }, []);
+
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string>("");
@@ -34,8 +48,8 @@ export default function LoginPage() {
             console.log("Attempting login...");
             await login(formData.email, formData.password);
 
-            // Force a complete navigation to clear browser history
-            window.location.href = "/dashboard";
+            // Use replace to avoid adding login to history
+            window.location.replace("/dashboard");
         } catch (error) {
             console.error("Login error:", error);
             setError(
