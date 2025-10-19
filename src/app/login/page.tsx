@@ -33,7 +33,7 @@ export default function LoginPage() {
         try {
             console.log("Attempting login...");
             await login(formData.email, formData.password);
-            
+
             // Force a complete navigation to clear browser history
             window.location.href = "/dashboard";
         } catch (error) {
