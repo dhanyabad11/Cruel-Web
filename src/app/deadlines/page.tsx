@@ -252,7 +252,9 @@ export default function DeadlinesPage() {
                 {/* Header */}
                 <div className="flex justify-between items-center mb-12">
                     <div>
-                        <h1 className="text-4xl font-light mb-2 text-[#1A1A1A] dark:text-white">Deadlines</h1>
+                        <h1 className="text-4xl font-light mb-2 text-[#1A1A1A] dark:text-white">
+                            Deadlines
+                        </h1>
                         <p className="text-[#6B7280] dark:text-gray-400 font-light">
                             Manage your assignments and deadlines
                         </p>
@@ -311,8 +313,13 @@ export default function DeadlinesPage() {
                 <div className="space-y-4">
                     {filteredDeadlines.length === 0 ? (
                         <div className="text-center py-16 bg-white dark:bg-gray-800 border border-[#D1D5DB] dark:border-gray-700">
-                            <Calendar className="mx-auto h-12 w-12 mb-4 text-[#6B7280] dark:text-gray-400" strokeWidth={1.5} />
-                            <p className="text-[#6B7280] dark:text-gray-400 font-light">No deadlines found. Add your first deadline to get started!</p>
+                            <Calendar
+                                className="mx-auto h-12 w-12 mb-4 text-[#6B7280] dark:text-gray-400"
+                                strokeWidth={1.5}
+                            />
+                            <p className="text-[#6B7280] dark:text-gray-400 font-light">
+                                No deadlines found. Add your first deadline to get started!
+                            </p>
                         </div>
                     ) : (
                         filteredDeadlines.map((deadline) => (
@@ -344,7 +351,10 @@ export default function DeadlinesPage() {
                                                     }
                                                     className="px-4 py-2 text-sm font-light text-[#2563EB] dark:text-blue-400 hover:text-[#1E40AF] dark:hover:text-blue-300 transition-colors flex items-center gap-2"
                                                 >
-                                                    <CheckCircle className="w-4 h-4" strokeWidth={1.5} />
+                                                    <CheckCircle
+                                                        className="w-4 h-4"
+                                                        strokeWidth={1.5}
+                                                    />
                                                     Complete
                                                 </button>
                                             )}
@@ -375,7 +385,10 @@ export default function DeadlinesPage() {
                                     {/* Date and Status */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-[#D1D5DB] dark:border-gray-700">
                                         <div className="flex items-center space-x-3">
-                                            <Calendar className="h-5 w-5 text-[#2563EB] dark:text-blue-400" strokeWidth={1.5} />
+                                            <Calendar
+                                                className="h-5 w-5 text-[#2563EB] dark:text-blue-400"
+                                                strokeWidth={1.5}
+                                            />
                                             <div>
                                                 <p className="text-sm font-light text-[#6B7280] dark:text-gray-400 mb-1">
                                                     Due Date
@@ -408,9 +421,15 @@ export default function DeadlinesPage() {
                                                 className={`h-5 w-5 flex items-center justify-center`}
                                             >
                                                 {deadline.status === "completed" ? (
-                                                    <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" strokeWidth={1.5} />
+                                                    <CheckCircle
+                                                        className="h-5 w-5 text-green-600 dark:text-green-400"
+                                                        strokeWidth={1.5}
+                                                    />
                                                 ) : (
-                                                    <AlertCircle className="h-5 w-5 text-[#2563EB] dark:text-blue-400" strokeWidth={1.5} />
+                                                    <AlertCircle
+                                                        className="h-5 w-5 text-[#2563EB] dark:text-blue-400"
+                                                        strokeWidth={1.5}
+                                                    />
                                                 )}
                                             </div>
                                             <div>

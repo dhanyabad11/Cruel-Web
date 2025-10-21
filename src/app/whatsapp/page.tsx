@@ -117,7 +117,9 @@ export default function WhatsAppPage() {
             <div className="max-w-6xl mx-auto px-8 py-12">
                 {/* Header */}
                 <div className="mb-12">
-                    <h1 className="text-4xl font-light text-[#1A1A1A] dark:text-white mb-2">WhatsApp Chat Analysis</h1>
+                    <h1 className="text-4xl font-light text-[#1A1A1A] dark:text-white mb-2">
+                        WhatsApp Chat Analysis
+                    </h1>
                     <p className="text-[#6B7280] dark:text-gray-400 font-light">
                         Upload WhatsApp chat exports to automatically extract deadlines and
                         assignments
@@ -126,7 +128,9 @@ export default function WhatsAppPage() {
 
                 {/* Instructions */}
                 <div className="bg-white dark:bg-gray-800 border border-[#D1D5DB] dark:border-gray-700 p-6 mb-8">
-                    <h2 className="text-lg font-light text-[#1A1A1A] dark:text-white mb-4">How to export WhatsApp chats:</h2>
+                    <h2 className="text-lg font-light text-[#1A1A1A] dark:text-white mb-4">
+                        How to export WhatsApp chats:
+                    </h2>
                     <div className="space-y-3 text-sm font-light text-[#6B7280] dark:text-gray-400">
                         <div className="flex items-center gap-3">
                             <span className="w-6 h-6 bg-[#1A1A1A] dark:bg-white text-white dark:text-[#1A1A1A] flex items-center justify-center text-xs font-light">
@@ -158,7 +162,9 @@ export default function WhatsAppPage() {
                 {/* Upload Area */}
                 <div
                     className={`bg-white dark:bg-gray-800 border-2 border-dashed transition-colors p-6 ${
-                        dragOver ? "border-[#2563EB] dark:border-blue-400 bg-[#F5F5F5] dark:bg-gray-700" : "border-[#D1D5DB] dark:border-gray-700"
+                        dragOver
+                            ? "border-[#2563EB] dark:border-blue-400 bg-[#F5F5F5] dark:bg-gray-700"
+                            : "border-[#D1D5DB] dark:border-gray-700"
                     } ${uploading ? "pointer-events-none opacity-50" : ""}`}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
@@ -167,7 +173,10 @@ export default function WhatsAppPage() {
                     <div className="text-center py-12">
                         {uploading ? (
                             <div className="space-y-4">
-                                <MessageSquare className="h-12 w-12 text-[#2563EB] dark:text-blue-400 mx-auto animate-pulse" strokeWidth={1.5} />
+                                <MessageSquare
+                                    className="h-12 w-12 text-[#2563EB] dark:text-blue-400 mx-auto animate-pulse"
+                                    strokeWidth={1.5}
+                                />
                                 <p className="text-lg font-light text-[#1A1A1A] dark:text-white">
                                     Processing your WhatsApp chats...
                                 </p>
@@ -177,7 +186,10 @@ export default function WhatsAppPage() {
                             </div>
                         ) : (
                             <>
-                                <Upload className="h-12 w-12 text-[#6B7280] dark:text-gray-400 mx-auto mb-4" strokeWidth={1.5} />
+                                <Upload
+                                    className="h-12 w-12 text-[#6B7280] dark:text-gray-400 mx-auto mb-4"
+                                    strokeWidth={1.5}
+                                />
                                 <h3 className="text-lg font-light text-[#1A1A1A] dark:text-white mb-2">
                                     Upload WhatsApp Chat Files
                                 </h3>
@@ -211,7 +223,10 @@ export default function WhatsAppPage() {
                 {error && (
                     <div className="bg-white dark:bg-gray-800 border border-red-600 dark:border-red-400 p-4 mt-6">
                         <div className="flex items-center">
-                            <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 mr-2" strokeWidth={1.5} />
+                            <AlertCircle
+                                className="h-5 w-5 text-red-600 dark:text-red-400 mr-2"
+                                strokeWidth={1.5}
+                            />
                             <p className="text-red-600 dark:text-red-400 font-light">{error}</p>
                         </div>
                     </div>
@@ -220,7 +235,9 @@ export default function WhatsAppPage() {
                 {/* Uploaded Files */}
                 {uploadedFiles.length > 0 && (
                     <div className="mt-8">
-                        <h2 className="text-lg font-light text-[#1A1A1A] dark:text-white mb-4">Uploaded Files</h2>
+                        <h2 className="text-lg font-light text-[#1A1A1A] dark:text-white mb-4">
+                            Uploaded Files
+                        </h2>
                         <div className="space-y-2">
                             {uploadedFiles.map((file, index) => (
                                 <div
@@ -228,15 +245,23 @@ export default function WhatsAppPage() {
                                     className="flex items-center justify-between bg-white dark:bg-gray-800 border border-[#D1D5DB] dark:border-gray-700 p-4"
                                 >
                                     <div className="flex items-center">
-                                        <FileText className="h-5 w-5 text-[#2563EB] dark:text-blue-400 mr-3" strokeWidth={1.5} />
+                                        <FileText
+                                            className="h-5 w-5 text-[#2563EB] dark:text-blue-400 mr-3"
+                                            strokeWidth={1.5}
+                                        />
                                         <div>
-                                            <p className="font-light text-[#1A1A1A] dark:text-white">{file.name}</p>
+                                            <p className="font-light text-[#1A1A1A] dark:text-white">
+                                                {file.name}
+                                            </p>
                                             <p className="text-sm font-light text-[#6B7280] dark:text-gray-400">
                                                 {(file.size / 1024).toFixed(1)} KB
                                             </p>
                                         </div>
                                     </div>
-                                    <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" strokeWidth={1.5} />
+                                    <CheckCircle
+                                        className="h-5 w-5 text-green-600 dark:text-green-400"
+                                        strokeWidth={1.5}
+                                    />
                                 </div>
                             ))}
                         </div>
@@ -246,7 +271,9 @@ export default function WhatsAppPage() {
                 {/* Extracted Deadlines */}
                 {extractedDeadlines.length > 0 && (
                     <div className="mt-8">
-                        <h2 className="text-lg font-light text-[#1A1A1A] dark:text-white mb-4">Extracted Deadlines</h2>
+                        <h2 className="text-lg font-light text-[#1A1A1A] dark:text-white mb-4">
+                            Extracted Deadlines
+                        </h2>
                         <div className="space-y-4">
                             {extractedDeadlines.map((deadline) => (
                                 <div

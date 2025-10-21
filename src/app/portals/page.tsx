@@ -140,15 +140,27 @@ export default function PortalsPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {portals.map((portal) => (
-                        <div key={portal.id} className="bg-white dark:bg-gray-800 border border-[#D1D5DB] dark:border-gray-700 p-6 hover:border-[#2563EB] dark:hover:border-blue-400 transition-colors">
+                        <div
+                            key={portal.id}
+                            className="bg-white dark:bg-gray-800 border border-[#D1D5DB] dark:border-gray-700 p-6 hover:border-[#2563EB] dark:hover:border-blue-400 transition-colors"
+                        >
                             <div>
                                 <div className="flex items-center justify-between mb-4">
-                                    <Globe className="w-6 h-6 text-[#2563EB] dark:text-blue-400" strokeWidth={1.5} />
+                                    <Globe
+                                        className="w-6 h-6 text-[#2563EB] dark:text-blue-400"
+                                        strokeWidth={1.5}
+                                    />
                                     <div className="flex items-center space-x-2">
                                         {portal.status === "connected" ? (
-                                            <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" strokeWidth={1.5} />
+                                            <CheckCircle
+                                                className="w-5 h-5 text-green-600 dark:text-green-400"
+                                                strokeWidth={1.5}
+                                            />
                                         ) : (
-                                            <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" strokeWidth={1.5} />
+                                            <AlertCircle
+                                                className="w-5 h-5 text-red-600 dark:text-red-400"
+                                                strokeWidth={1.5}
+                                            />
                                         )}
                                         <span
                                             className={`text-sm font-light capitalize ${
@@ -165,7 +177,9 @@ export default function PortalsPage() {
                                 <h3 className="text-xl font-light text-[#1A1A1A] dark:text-white mb-2">
                                     {portal.name}
                                 </h3>
-                                <p className="text-sm font-light text-[#6B7280] dark:text-gray-400 mb-4">{portal.url}</p>
+                                <p className="text-sm font-light text-[#6B7280] dark:text-gray-400 mb-4">
+                                    {portal.url}
+                                </p>
 
                                 <div className="flex items-center justify-between text-sm font-light text-[#6B7280] dark:text-gray-400 mb-4 pb-4 border-b border-[#D1D5DB] dark:border-gray-700">
                                     <span>Last sync: {portal.last_sync || "Never"}</span>
@@ -183,7 +197,10 @@ export default function PortalsPage() {
                                         className="px-4 py-2 text-sm font-light bg-[#2563EB] text-white hover:bg-[#1E40AF] transition-colors disabled:opacity-50"
                                     >
                                         {syncingPortals.has(portal.id) ? (
-                                            <RefreshCw className="w-4 h-4 animate-spin" strokeWidth={1.5} />
+                                            <RefreshCw
+                                                className="w-4 h-4 animate-spin"
+                                                strokeWidth={1.5}
+                                            />
                                         ) : (
                                             "Sync Now"
                                         )}
