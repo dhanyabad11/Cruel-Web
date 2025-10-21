@@ -36,13 +36,27 @@ export default function LoginPage() {
         // Check immediately
         checkAuth();
 
-        // Check on pageshow (handles back/forward navigation)
-        window.addEventListener("pageshow", checkAuth);
-        
-        return () => window.removeEventListener("pageshow", checkAuth);
-    }, []);
+        // Check on pageshow (handles back/forward navigation and bfcache)
+        const handlePageShow = (event: PageTransitionEvent) => {
+            // If page is restored from bfcache, check auth again
+            if (event.persisted) {
+                checkAuth();
+            }
+        };
 
-    // Don't render login form if already authenticated
+        window.addEventListener("pageshow", handlePageShow);
+        
+        // Disable bfcache by adding unload handler
+        const disableBfCache = () => {
+            // Empty handler to disable bfcache
+        };
+        window.addEventListener("unload", disableBfCache);
+        
+        return () => {
+            window.removeEventListener("pageshow", handlePageShow);
+            window.removeEventListener("unload", disableBfCache);
+        };
+    }, []);    // Don't render login form if already authenticated
     if (loading) {
         return (
             <div className="min-h-screen bg-[#F5F5F5] dark:bg-gray-900 flex items-center justify-center">
