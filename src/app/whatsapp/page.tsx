@@ -4,7 +4,6 @@ import { Navigation } from "@/components/Navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { usePreventBack } from "@/hooks/usePreventBack";
 import { Upload, FileText, AlertCircle, CheckCircle, Download, MessageSquare } from "lucide-react";
 
 interface ExtractedDeadline {
@@ -19,7 +18,6 @@ interface ExtractedDeadline {
 export default function WhatsAppPage() {
     const { user, loading } = useAuth();
     const router = useRouter();
-    usePreventBack(); // Prevent back button navigation
     const [dragOver, setDragOver] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);

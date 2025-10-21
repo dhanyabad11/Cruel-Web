@@ -16,12 +16,10 @@ import {
 } from "lucide-react";
 import { apiClient } from "@/lib/api";
 import { Deadline } from "@/types/api";
-import { usePreventBack } from "@/hooks/usePreventBack";
 
 export default function DashboardPage() {
     const { user, loading } = useAuth();
     const router = useRouter();
-    usePreventBack(); // Prevent back button navigation
     const [stats, setStats] = useState({
         totalDeadlines: 0,
         upcomingDeadlines: 0,
