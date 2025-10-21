@@ -157,7 +157,10 @@ export default function DashboardPage() {
                                     {stats.totalDeadlines}
                                 </p>
                             </div>
-                            <Calendar className="w-6 h-6 text-[#2563EB] dark:text-blue-400" strokeWidth={1.5} />
+                            <Calendar
+                                className="w-6 h-6 text-[#2563EB] dark:text-blue-400"
+                                strokeWidth={1.5}
+                            />
                         </div>
                     </div>
                     <div className="bg-white dark:bg-gray-800 border border-[#D1D5DB] dark:border-gray-700 p-6 transition-colors">
@@ -170,7 +173,10 @@ export default function DashboardPage() {
                                     {stats.upcomingDeadlines}
                                 </p>
                             </div>
-                            <Clock className="w-6 h-6 text-[#2563EB] dark:text-blue-400" strokeWidth={1.5} />
+                            <Clock
+                                className="w-6 h-6 text-[#2563EB] dark:text-blue-400"
+                                strokeWidth={1.5}
+                            />
                         </div>
                     </div>
                     <div className="bg-white dark:bg-gray-800 border border-[#D1D5DB] dark:border-gray-700 p-6 transition-colors">
@@ -183,7 +189,10 @@ export default function DashboardPage() {
                                     {stats.completedDeadlines}
                                 </p>
                             </div>
-                            <CheckCircle2 className="w-6 h-6 text-[#2563EB] dark:text-blue-400" strokeWidth={1.5} />
+                            <CheckCircle2
+                                className="w-6 h-6 text-[#2563EB] dark:text-blue-400"
+                                strokeWidth={1.5}
+                            />
                         </div>
                     </div>
                     <div className="bg-white dark:bg-gray-800 border border-[#D1D5DB] dark:border-gray-700 p-6 transition-colors">
@@ -196,7 +205,10 @@ export default function DashboardPage() {
                                     {stats.overdueDeadlines}
                                 </p>
                             </div>
-                            <AlertCircle className="w-6 h-6 text-red-600 dark:text-red-400" strokeWidth={1.5} />
+                            <AlertCircle
+                                className="w-6 h-6 text-red-600 dark:text-red-400"
+                                strokeWidth={1.5}
+                            />
                         </div>
                     </div>
                 </div>
@@ -211,7 +223,10 @@ export default function DashboardPage() {
                             href="/deadlines"
                             className="flex flex-col items-center p-4 border border-[#D1D5DB] dark:border-gray-700 hover:border-[#2563EB] dark:hover:border-blue-400 transition-colors"
                         >
-                            <Calendar className="w-6 h-6 text-[#2563EB] dark:text-blue-400 mb-2" strokeWidth={1.5} />
+                            <Calendar
+                                className="w-6 h-6 text-[#2563EB] dark:text-blue-400 mb-2"
+                                strokeWidth={1.5}
+                            />
                             <span className="text-sm font-light text-[#1A1A1A] dark:text-white">
                                 Deadlines
                             </span>
@@ -220,7 +235,10 @@ export default function DashboardPage() {
                             href="/whatsapp"
                             className="flex flex-col items-center p-4 border border-[#D1D5DB] dark:border-gray-700 hover:border-[#2563EB] dark:hover:border-blue-400 transition-colors"
                         >
-                            <MessageSquare className="w-6 h-6 text-[#2563EB] dark:text-blue-400 mb-2" strokeWidth={1.5} />
+                            <MessageSquare
+                                className="w-6 h-6 text-[#2563EB] dark:text-blue-400 mb-2"
+                                strokeWidth={1.5}
+                            />
                             <span className="text-sm font-light text-[#1A1A1A] dark:text-white">
                                 WhatsApp
                             </span>
@@ -229,7 +247,10 @@ export default function DashboardPage() {
                             href="/settings/notifications"
                             className="flex flex-col items-center p-4 border border-[#D1D5DB] dark:border-gray-700 hover:border-[#2563EB] dark:hover:border-blue-400 transition-colors"
                         >
-                            <Bell className="w-6 h-6 text-[#2563EB] dark:text-blue-400 mb-2" strokeWidth={1.5} />
+                            <Bell
+                                className="w-6 h-6 text-[#2563EB] dark:text-blue-400 mb-2"
+                                strokeWidth={1.5}
+                            />
                             <span className="text-sm font-light text-[#1A1A1A] dark:text-white">
                                 Settings
                             </span>
@@ -238,7 +259,10 @@ export default function DashboardPage() {
                             href="/portals"
                             className="flex flex-col items-center p-4 border border-[#D1D5DB] dark:border-gray-700 hover:border-[#2563EB] dark:hover:border-blue-400 transition-colors"
                         >
-                            <LinkIcon className="w-6 h-6 text-[#2563EB] dark:text-blue-400 mb-2" strokeWidth={1.5} />
+                            <LinkIcon
+                                className="w-6 h-6 text-[#2563EB] dark:text-blue-400 mb-2"
+                                strokeWidth={1.5}
+                            />
                             <span className="text-sm font-light text-[#1A1A1A] dark:text-white">
                                 Portals
                             </span>
@@ -261,8 +285,13 @@ export default function DashboardPage() {
                     </div>
                     {recentDeadlines.length === 0 ? (
                         <div className="text-center py-12">
-                            <Calendar className="w-12 h-12 mx-auto mb-3 text-[#6B7280] dark:text-gray-400" strokeWidth={1.5} />
-                            <p className="text-[#6B7280] dark:text-gray-400 font-light mb-2">No upcoming deadlines</p>
+                            <Calendar
+                                className="w-12 h-12 mx-auto mb-3 text-[#6B7280] dark:text-gray-400"
+                                strokeWidth={1.5}
+                            />
+                            <p className="text-[#6B7280] dark:text-gray-400 font-light mb-2">
+                                No upcoming deadlines
+                            </p>
                             <Link
                                 href="/deadlines"
                                 className="text-sm font-light text-[#2563EB] dark:text-blue-400 hover:text-[#1E40AF]"
