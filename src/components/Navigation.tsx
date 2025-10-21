@@ -28,7 +28,7 @@ export function Navigation() {
                 <div className="flex justify-between h-16">
                     <div className="flex items-center space-x-12">
                         <Link
-                            href="/"
+                            href="/dashboard"
                             className="text-xl font-light text-[#1A1A1A] dark:text-white"
                         >
                             Cruel
@@ -52,7 +52,7 @@ export function Navigation() {
                     <div className="flex items-center space-x-6">
                         <ThemeToggle />
                         <span className="text-sm font-light text-[#6B7280] dark:text-gray-400">
-                            {user.email}
+                            {user.full_name || user.email}
                         </span>
                         <button
                             onClick={handleLogout}
