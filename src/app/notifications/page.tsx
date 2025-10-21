@@ -64,7 +64,7 @@ export default function NotificationsPage() {
         setTestResults((prev) => ({ ...prev, [type]: null }));
 
         try {
-            const token = localStorage.getItem("token");
+            const token = localStorage.getItem("auth_token");
             let url = "http://localhost:8000/api/notifications/test-notifications";
 
             // For SMS and WhatsApp, we need phone number
