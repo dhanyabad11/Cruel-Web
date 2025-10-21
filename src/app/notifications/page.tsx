@@ -4,11 +4,13 @@ import { Navigation } from "@/components/Navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { usePreventBack } from "@/hooks/usePreventBack";
 import { Mail, MessageSquare, Save, Send, CheckCircle, XCircle } from "lucide-react";
 
 export default function NotificationsPage() {
     const { user, loading } = useAuth();
     const router = useRouter();
+    usePreventBack(); // Prevent back button navigation
 
     useEffect(() => {
         if (!loading && !user) {

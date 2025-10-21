@@ -4,6 +4,7 @@ import { Navigation } from "@/components/Navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { usePreventBack } from "@/hooks/usePreventBack";
 import {
     Plus,
     Calendar,
@@ -20,6 +21,7 @@ import { Deadline } from "@/types/api";
 export default function DeadlinesPage() {
     const { user, loading } = useAuth();
     const router = useRouter();
+    usePreventBack(); // Prevent back button navigation
     const [deadlines, setDeadlines] = useState<Deadline[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");

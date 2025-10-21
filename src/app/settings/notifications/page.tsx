@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Navigation } from "@/components/Navigation";
+import { usePreventBack } from "@/hooks/usePreventBack";
 import { Bell, Mail, MessageSquare, Smartphone, Save } from "lucide-react";
 
 interface NotificationSettings {
@@ -34,6 +35,7 @@ const REMINDER_OPTIONS = [
 ];
 
 export default function NotificationSettingsPage() {
+    usePreventBack(); // Prevent back button navigation
     const [settings, setSettings] = useState<NotificationSettings>({
         email: "",
         phone_number: "",

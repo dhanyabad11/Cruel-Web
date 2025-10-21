@@ -45,18 +45,18 @@ export default function LoginPage() {
         };
 
         window.addEventListener("pageshow", handlePageShow);
-        
+
         // Disable bfcache by adding unload handler
         const disableBfCache = () => {
             // Empty handler to disable bfcache
         };
         window.addEventListener("unload", disableBfCache);
-        
+
         return () => {
             window.removeEventListener("pageshow", handlePageShow);
             window.removeEventListener("unload", disableBfCache);
         };
-    }, []);    // Don't render login form if already authenticated
+    }, []); // Don't render login form if already authenticated
     if (loading) {
         return (
             <div className="min-h-screen bg-[#F5F5F5] dark:bg-gray-900 flex items-center justify-center">

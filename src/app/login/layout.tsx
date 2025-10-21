@@ -6,11 +6,7 @@ export const metadata: Metadata = {
     robots: "noindex, nofollow",
 };
 
-export default function LoginLayout({
-    children,
-}: {
-    children: React.ReactNode;
-}) {
+export default function LoginLayout({ children }: { children: React.ReactNode }) {
     return (
         <>
             <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />

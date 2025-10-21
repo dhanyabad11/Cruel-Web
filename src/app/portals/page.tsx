@@ -4,6 +4,7 @@ import { Navigation } from "@/components/Navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { usePreventBack } from "@/hooks/usePreventBack";
 import { Plus, Globe, CheckCircle, AlertCircle, Settings, RefreshCw } from "lucide-react";
 import { apiClient } from "@/lib/api";
 import { Portal } from "@/types/api";
@@ -11,6 +12,7 @@ import { Portal } from "@/types/api";
 export default function PortalsPage() {
     const { user, loading } = useAuth();
     const router = useRouter();
+    usePreventBack(); // Prevent back button navigation
     const [portals, setPortals] = useState<Portal[]>([]);
     const [syncingPortals, setSyncingPortals] = useState<Set<number>>(new Set());
     const [showAddModal, setShowAddModal] = useState(false);
