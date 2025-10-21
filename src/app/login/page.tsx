@@ -2,34 +2,10 @@
 import Link from "next/link";
 import { ArrowLeft, Eye, EyeOff, Mail, Lock, AlertCircle } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginPage() {
     const { login, user, loading } = useAuth();
-    const router = useRouter();
-
-    // Redirect if already logged in
-    useEffect(() => {
-        if (!loading && user) {
-            router.replace("/dashboard");
-        }
-    }, [user, loading, router]);
-
-    // Handle back-forward cache (pageshow) — redirect immediately if user token exists
-    useEffect(() => {
-        const onPageShow = () => {
-            const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
-            if (token) {
-                // Use replace so login doesn't stay in history
-                window.location.replace("/dashboard");
-            }
-        };
-
-        window.addEventListener("pageshow", onPageShow as EventListener);
-        return () => window.removeEventListener("pageshow", onPageShow as EventListener);
-    }, []);
-
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string>("");
@@ -37,6 +13,47 @@ export default function LoginPage() {
         email: "",
         password: "",
     });
+
+    // Redirect if already logged in - use window.location for hard redirect
+    useEffect(() => {
+        if (!loading && user) {
+            window.location.replace("/dashboard");
+        }
+    }, [user, loading]);
+
+    // Immediate check on mount and pageshow events
+    useEffect(() => {
+        const checkAuth = () => {
+            if (typeof window !== "undefined") {
+                const token = localStorage.getItem("auth_token");
+                const storedUser = localStorage.getItem("user");
+                if (token && storedUser) {
+                    window.location.replace("/dashboard");
+                }
+            }
+        };
+
+        // Check immediately
+        checkAuth();
+
+        // Check on pageshow (handles back/forward navigation)
+        window.addEventListener("pageshow", checkAuth);
+        
+        return () => window.removeEventListener("pageshow", checkAuth);
+    }, []);
+
+    // Don't render login form if already authenticated
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-[#F5F5F5] dark:bg-gray-900 flex items-center justify-center">
+                <div className="text-[#6B7280] dark:text-gray-400">Loading...</div>
+            </div>
+        );
+    }
+
+    if (user) {
+        return null; // Don't render anything if user is logged in
+    }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
