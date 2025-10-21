@@ -79,8 +79,10 @@ export default function LoginPage() {
             console.log("Attempting login...");
             await login(formData.email, formData.password);
 
-            // Use replace to avoid adding login to history
-            window.location.replace("/dashboard");
+            // Clear all history and navigate to dashboard
+            window.history.pushState(null, "", "/dashboard");
+            window.history.pushState(null, "", "/dashboard");
+            window.location.href = "/dashboard";
         } catch (error) {
             console.error("Login error:", error);
             setError(
