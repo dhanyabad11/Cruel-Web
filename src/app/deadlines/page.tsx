@@ -225,20 +225,20 @@ export default function DeadlinesPage() {
         switch (priority) {
             case "high":
             case "urgent":
-                return "bg-gradient-to-r from-red-500 to-pink-600 text-white";
+                return "text-red-600 dark:text-red-400";
             case "medium":
-                return "bg-gradient-to-r from-yellow-500 to-orange-600 text-white";
+                return "text-[#2563EB] dark:text-blue-400";
             case "low":
-                return "bg-gradient-to-r from-green-500 to-emerald-600 text-white";
+                return "text-[#6B7280] dark:text-gray-400";
             default:
-                return "bg-gradient-to-r from-gray-500 to-gray-600 text-white";
+                return "text-[#6B7280] dark:text-gray-400";
         }
     };
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="min-h-screen flex items-center justify-center bg-[#F5F5F5] dark:bg-gray-900">
+                <div className="text-[#6B7280] dark:text-gray-400 font-light">Loading...</div>
             </div>
         );
     }
@@ -246,14 +246,14 @@ export default function DeadlinesPage() {
     if (!user) return null;
 
     return (
-        <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
+        <div className="min-h-screen bg-[#F5F5F5] dark:bg-gray-900 transition-colors">
             <Navigation />
-            <div className="container mx-auto px-4 py-8">
+            <div className="max-w-6xl mx-auto px-8 py-12">
                 {/* Header */}
-                <div className="flex justify-between items-center mb-8">
+                <div className="flex justify-between items-center mb-12">
                     <div>
-                        <h1 className="text-2xl font-bold mb-2 dark:text-white">Deadlines</h1>
-                        <p className="text-gray-600 dark:text-gray-400">
+                        <h1 className="text-4xl font-light mb-2 text-[#1A1A1A] dark:text-white">Deadlines</h1>
+                        <p className="text-[#6B7280] dark:text-gray-400 font-light">
                             Manage your assignments and deadlines
                         </p>
                     </div>
@@ -264,15 +264,15 @@ export default function DeadlinesPage() {
                             setShowAddModal(true);
                             console.log("showAddModal should now be:", true);
                         }}
-                        className="btn btn-primary"
+                        className="px-6 py-2 bg-[#2563EB] text-white hover:bg-[#1E40AF] transition-colors font-light flex items-center gap-2"
                     >
-                        <Plus className="h-4 w-4 mr-2" />
+                        <Plus className="h-4 w-4" strokeWidth={1.5} />
                         Add Deadline
                     </button>
                 </div>
 
                 {/* Filters */}
-                <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6 border dark:border-gray-700">
+                <div className="bg-white dark:bg-gray-800 border border-[#D1D5DB] dark:border-gray-700 p-6 mb-8">
                     <div className="flex flex-col md:flex-row gap-4">
                         <div className="flex-1">
                             <input
@@ -280,14 +280,14 @@ export default function DeadlinesPage() {
                                 placeholder="Search deadlines..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="input w-full"
+                                className="w-full px-4 py-2 border border-[#D1D5DB] dark:border-gray-700 bg-white dark:bg-gray-800 text-[#1A1A1A] dark:text-white font-light focus:outline-none focus:border-[#2563EB] transition-colors"
                             />
                         </div>
                         <div className="flex gap-2">
                             <select
                                 value={statusFilter}
                                 onChange={(e) => setStatusFilter(e.target.value)}
-                                className="input"
+                                className="px-4 py-2 border border-[#D1D5DB] dark:border-gray-700 bg-white dark:bg-gray-800 text-[#1A1A1A] dark:text-white font-light focus:outline-none focus:border-[#2563EB] transition-colors"
                             >
                                 <option value="all">All Status</option>
                                 <option value="pending">Pending</option>
@@ -299,7 +299,7 @@ export default function DeadlinesPage() {
                                     setSearchTerm("");
                                     setStatusFilter("all");
                                 }}
-                                className="btn btn-ghost text-sm"
+                                className="px-4 py-2 text-[#6B7280] dark:text-gray-400 hover:text-[#1A1A1A] dark:hover:text-white transition-colors font-light"
                             >
                                 Clear
                             </button>
@@ -310,28 +310,27 @@ export default function DeadlinesPage() {
                 {/* Deadlines List */}
                 <div className="space-y-4">
                     {filteredDeadlines.length === 0 ? (
-                        <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-                            <Calendar className="mx-auto h-12 w-12 mb-4" />
-                            <p>No deadlines found. Add your first deadline to get started!</p>
+                        <div className="text-center py-16 bg-white dark:bg-gray-800 border border-[#D1D5DB] dark:border-gray-700">
+                            <Calendar className="mx-auto h-12 w-12 mb-4 text-[#6B7280] dark:text-gray-400" strokeWidth={1.5} />
+                            <p className="text-[#6B7280] dark:text-gray-400 font-light">No deadlines found. Add your first deadline to get started!</p>
                         </div>
                     ) : (
                         filteredDeadlines.map((deadline) => (
                             <div
                                 key={deadline.id}
-                                className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 p-8 border border-gray-100 dark:border-gray-700 group relative overflow-hidden"
+                                className="bg-white dark:bg-gray-800 border border-[#D1D5DB] dark:border-gray-700 p-6 hover:border-[#2563EB] dark:hover:border-blue-400 transition-colors"
                             >
-                                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                                <div className="relative z-10">
+                                <div>
                                     {/* Header with Title and Priority */}
-                                    <div className="flex items-center justify-between mb-6">
-                                        <div className="flex items-center gap-4">
-                                            <h3 className="text-2xl font-bold text-gray-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="flex items-center gap-3">
+                                            <h3 className="text-xl font-light text-[#1A1A1A] dark:text-white">
                                                 {deadline.title}
                                             </h3>
                                             <span
-                                                className={`px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wider ${getPriorityColor(
+                                                className={`px-3 py-1 border text-sm font-light ${getPriorityColor(
                                                     deadline.priority
-                                                )} shadow-lg`}
+                                                )} border-current`}
                                             >
                                                 {deadline.priority}
                                             </span>
@@ -343,47 +342,45 @@ export default function DeadlinesPage() {
                                                     onClick={() =>
                                                         handleCompleteDeadline(deadline.id)
                                                     }
-                                                    className="btn btn-success text-sm px-4 py-2 shadow-lg hover:scale-105 transition-all duration-200"
+                                                    className="px-4 py-2 text-sm font-light text-[#2563EB] dark:text-blue-400 hover:text-[#1E40AF] dark:hover:text-blue-300 transition-colors flex items-center gap-2"
                                                 >
-                                                    <CheckCircle className="w-4 h-4 mr-2" />
+                                                    <CheckCircle className="w-4 h-4" strokeWidth={1.5} />
                                                     Complete
                                                 </button>
                                             )}
                                             <button
                                                 onClick={() => handleEditDeadline(deadline)}
-                                                className="btn btn-secondary text-sm px-4 py-2 shadow-lg hover:scale-105 transition-all duration-200"
+                                                className="px-4 py-2 text-sm font-light text-[#6B7280] dark:text-gray-400 hover:text-[#1A1A1A] dark:hover:text-white transition-colors"
                                             >
-                                                ✏️ Edit
+                                                Edit
                                             </button>
                                             <button
                                                 onClick={() => handleDeleteDeadline(deadline.id)}
-                                                className="btn btn-danger text-sm px-4 py-2 shadow-lg hover:scale-105 transition-all duration-200"
+                                                className="px-4 py-2 text-sm font-light text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors"
                                             >
-                                                🗑️ Delete
+                                                Delete
                                             </button>
                                         </div>
                                     </div>
 
                                     {/* Description */}
                                     {deadline.description && (
-                                        <div className="mb-8">
-                                            <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+                                        <div className="mb-6">
+                                            <p className="text-[#6B7280] dark:text-gray-400 font-light leading-relaxed">
                                                 {deadline.description}
                                             </p>
                                         </div>
                                     )}
 
-                                    {/* Date and Status in Clean Grid */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                                        <div className="flex items-center space-x-4">
-                                            <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                                                <Calendar className="h-7 w-7 text-white" />
-                                            </div>
+                                    {/* Date and Status */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-[#D1D5DB] dark:border-gray-700">
+                                        <div className="flex items-center space-x-3">
+                                            <Calendar className="h-5 w-5 text-[#2563EB] dark:text-blue-400" strokeWidth={1.5} />
                                             <div>
-                                                <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">
+                                                <p className="text-sm font-light text-[#6B7280] dark:text-gray-400 mb-1">
                                                     Due Date
                                                 </p>
-                                                <p className="text-xl font-bold text-gray-800 dark:text-white">
+                                                <p className="text-base font-light text-[#1A1A1A] dark:text-white">
                                                     {new Date(deadline.due_date).toLocaleDateString(
                                                         "en-US",
                                                         {
@@ -394,7 +391,7 @@ export default function DeadlinesPage() {
                                                         }
                                                     )}
                                                 </p>
-                                                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                                                <p className="text-sm font-light text-[#6B7280] dark:text-gray-400">
                                                     {new Date(deadline.due_date).toLocaleTimeString(
                                                         "en-US",
                                                         {
@@ -406,27 +403,21 @@ export default function DeadlinesPage() {
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center space-x-4">
+                                        <div className="flex items-center space-x-3">
                                             <div
-                                                className={`w-14 h-14 rounded-xl flex items-center justify-center shadow-lg ${
-                                                    deadline.status === "completed"
-                                                        ? "bg-gradient-to-br from-green-500 to-emerald-600"
-                                                        : deadline.status === "overdue"
-                                                        ? "bg-gradient-to-br from-red-500 to-pink-600"
-                                                        : "bg-gradient-to-br from-yellow-500 to-orange-600"
-                                                }`}
+                                                className={`h-5 w-5 flex items-center justify-center`}
                                             >
                                                 {deadline.status === "completed" ? (
-                                                    <CheckCircle className="h-7 w-7 text-white" />
+                                                    <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" strokeWidth={1.5} />
                                                 ) : (
-                                                    <AlertCircle className="h-7 w-7 text-white" />
+                                                    <AlertCircle className="h-5 w-5 text-[#2563EB] dark:text-blue-400" strokeWidth={1.5} />
                                                 )}
                                             </div>
                                             <div>
-                                                <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">
+                                                <p className="text-sm font-light text-[#6B7280] dark:text-gray-400 mb-1">
                                                     Status
                                                 </p>
-                                                <p className="text-xl font-bold text-gray-800 dark:text-white capitalize">
+                                                <p className="text-base font-light text-[#1A1A1A] dark:text-white capitalize">
                                                     {deadline.status}
                                                 </p>
                                             </div>
