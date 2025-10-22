@@ -2,8 +2,19 @@
 import Link from "next/link";
 import { ArrowRight, Calendar, Bell, MessageSquare } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
+    const router = useRouter();
+
+    // Redirect to callback if OAuth hash is present
+    useEffect(() => {
+        if (typeof window !== "undefined" && window.location.hash.includes("access_token")) {
+            router.push(`/auth/callback${window.location.hash}`);
+        }
+    }, [router]);
+
     return (
         <div className="min-h-screen bg-[#FFFFFF] dark:bg-gray-900 transition-colors">
             <nav className="border-b border-[#D1D5DB] dark:border-gray-800">
