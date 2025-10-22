@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { apiClient } from "@/lib/api";
 
+// Force Vercel redeploy - callback route fix
+
 export default function AuthCallbackPage() {
     const [status, setStatus] = useState("Processing authentication...");
     const [error, setError] = useState("");
@@ -28,7 +30,7 @@ export default function AuthCallbackPage() {
                     console.error("Session error:", error);
                     setError(error.message);
                     setStatus("Authentication failed");
-                    setTimeout(() => window.location.href = "/login", 3000);
+                    setTimeout(() => (window.location.href = "/login"), 3000);
                     return;
                 }
 
@@ -59,13 +61,13 @@ export default function AuthCallbackPage() {
                     console.error("No session found");
                     setError("Authentication failed. Please try again.");
                     setStatus("No session found");
-                    setTimeout(() => window.location.href = "/login", 3000);
+                    setTimeout(() => (window.location.href = "/login"), 3000);
                 }
             } catch (error) {
                 console.error("Callback error:", error);
                 setError("An unexpected error occurred");
                 setStatus("Error occurred");
-                setTimeout(() => window.location.href = "/login", 3000);
+                setTimeout(() => (window.location.href = "/login"), 3000);
             }
         };
 
@@ -82,14 +84,8 @@ export default function AuthCallbackPage() {
                     <h1 className="text-2xl font-bold text-blue-600 mb-2">
                         {error ? "Authentication Failed" : "Completing Sign In"}
                     </h1>
-                    <p className="text-gray-600 mb-4">
-                        {status}
-                    </p>
-                    {error && (
-                        <p className="text-red-600 text-sm mb-4">
-                            {error}
-                        </p>
-                    )}
+                    <p className="text-gray-600 mb-4">{status}</p>
+                    {error && <p className="text-red-600 text-sm mb-4">{error}</p>}
                 </div>
 
                 {!error && (
