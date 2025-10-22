@@ -12,6 +12,10 @@ function AuthCallbackContent() {
     useEffect(() => {
         const handleCallback = async () => {
             try {
+                console.log("Callback page loaded, checking for OAuth session");
+                console.log("Current URL:", window.location.href);
+                console.log("Hash:", window.location.hash);
+
                 // Check for errors in URL params
                 const errorParam = searchParams.get("error");
                 const errorDescription = searchParams.get("error_description");
@@ -39,6 +43,7 @@ function AuthCallbackContent() {
                 }
 
                 if (data.session) {
+                    console.log("Session found, user authenticated:", data.session.user.email);
                     // Store the token and user for our backend API
                     apiClient.setToken(data.session.access_token);
                     const user = {

@@ -6,6 +6,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 export default function HomePage() {
     // Immediate redirect for OAuth callback
     if (typeof window !== "undefined" && window.location.hash.includes("access_token")) {
+        console.log("OAuth hash detected, redirecting to callback page");
         window.location.href = `/auth/callback${window.location.hash}`;
         return null;
     }
