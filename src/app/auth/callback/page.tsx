@@ -29,11 +29,14 @@ function AuthCallbackContent() {
                 // Supabase automatically handles the hash fragment and sets the session
                 // Just need to get the current session
                 const { supabase } = await import("@/lib/supabase");
+                console.log("Supabase client loaded in callback");
 
                 // Wait a moment for Supabase to process the hash
-                await new Promise((resolve) => setTimeout(resolve, 100));
+                await new Promise((resolve) => setTimeout(resolve, 500));
 
                 const { data, error } = await supabase.auth.getSession();
+                console.log("Session data:", data);
+                console.log("Session error:", error);
 
                 if (error) {
                     console.error("Session error:", error);
