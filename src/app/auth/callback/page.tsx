@@ -12,6 +12,7 @@ function AuthCallbackContent() {
     useEffect(() => {
         const handleCallback = async () => {
             try {
+                // Check for errors in URL params
                 const errorParam = searchParams.get("error");
                 const errorDescription = searchParams.get("error_description");
 
@@ -21,18 +22,24 @@ function AuthCallbackContent() {
                     return;
                 }
 
-                // Exchange the code for a session using Supabase
+                // Supabase automatically handles the hash fragment and sets the session
+                // Just need to get the current session
                 const { supabase } = await import("@/lib/supabase");
+                
+                // Wait a moment for Supabase to process the hash
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
                 const { data, error } = await supabase.auth.getSession();
 
                 if (error) {
+                    console.error("Session error:", error);
                     setError(error.message);
                     setTimeout(() => router.push("/login"), 3000);
                     return;
                 }
 
                 if (data.session) {
-                    // Store the token and user
+                    // Store the token and user for our backend API
                     apiClient.setToken(data.session.access_token);
                     const user = {
                         id: data.session.user.id,
@@ -45,11 +52,13 @@ function AuthCallbackContent() {
                         is_active: true,
                     };
                     localStorage.setItem("user", JSON.stringify(user));
+                    localStorage.setItem("auth_token", data.session.access_token);
 
                     // Redirect to dashboard
                     window.location.href = "/dashboard";
                 } else {
-                    setError("No session found");
+                    console.error("No session found");
+                    setError("Authentication failed. Please try again.");
                     setTimeout(() => router.push("/login"), 3000);
                 }
             } catch (error) {
