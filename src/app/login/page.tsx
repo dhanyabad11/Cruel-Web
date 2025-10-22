@@ -238,7 +238,9 @@ export default function LoginPage() {
                                 
                                 const { error } = await supabase.auth.signInWithOAuth({
                                     provider: "google",
-                                    // Let Supabase use the default redirect URL from dashboard
+                                    options: {
+                                        redirectTo: "https://cruel.vercel.app/auth/callback",
+                                    },
                                 });
                                 
                                 if (error) {
