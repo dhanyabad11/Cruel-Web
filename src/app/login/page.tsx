@@ -232,15 +232,20 @@ export default function LoginPage() {
                         onClick={async () => {
                             try {
                                 setIsLoading(true);
+                                console.log("Starting Google OAuth...");
                                 const { supabase } = await import("@/lib/supabase");
+                                console.log("Supabase client loaded");
+                                
                                 const { error } = await supabase.auth.signInWithOAuth({
                                     provider: "google",
-                                    options: {
-                                        redirectTo: `${window.location.origin}/auth/callback`,
-                                    },
+                                    // Let Supabase use the default redirect URL from dashboard
                                 });
+                                
                                 if (error) {
+                                    console.error("OAuth error:", error);
                                     setError(error.message);
+                                } else {
+                                    console.log("OAuth initiated successfully");
                                 }
                             } catch (error) {
                                 console.error("Google OAuth error:", error);
