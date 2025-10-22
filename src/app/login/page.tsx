@@ -235,14 +235,14 @@ export default function LoginPage() {
                                 console.log("Starting Google OAuth...");
                                 const { supabase } = await import("@/lib/supabase");
                                 console.log("Supabase client loaded");
-                                
+
                                 const { error } = await supabase.auth.signInWithOAuth({
                                     provider: "google",
                                     options: {
                                         redirectTo: "https://cruel.vercel.app/auth/callback",
                                     },
                                 });
-                                
+
                                 if (error) {
                                     console.error("OAuth error:", error);
                                     setError(error.message);

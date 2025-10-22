@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { apiClient } from "@/lib/api";
 
@@ -8,7 +8,6 @@ function AuthCallbackContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [error, setError] = useState<string>("");
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const handleCallback = async () => {
@@ -23,7 +22,6 @@ function AuthCallbackContent() {
 
                 if (errorParam) {
                     setError(errorDescription || errorParam);
-                    setLoading(false);
                     setTimeout(() => router.push("/login"), 3000);
                     return;
                 }
@@ -43,7 +41,6 @@ function AuthCallbackContent() {
                 if (error) {
                     console.error("Session error:", error);
                     setError(error.message);
-                    setLoading(false);
                     setTimeout(() => router.push("/login"), 3000);
                     return;
                 }
@@ -70,32 +67,17 @@ function AuthCallbackContent() {
                 } else {
                     console.error("No session found");
                     setError("Authentication failed. Please try again.");
-                    setLoading(false);
                     setTimeout(() => router.push("/login"), 3000);
                 }
             } catch (error) {
                 console.error("Callback error:", error);
                 setError("An unexpected error occurred");
-                setLoading(false);
                 setTimeout(() => router.push("/login"), 3000);
             }
         };
 
         handleCallback();
     }, [searchParams, router]);
-
-    if (loading) {
-        return (
-            <div className="min-h-screen bg-[#F5F5F5] dark:bg-gray-900 flex items-center justify-center">
-                <div className="space-y-4 text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2563EB] mx-auto"></div>
-                    <div className="text-[#1A1A1A] dark:text-white font-light">
-                        Completing sign in...
-                    </div>
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div className="min-h-screen bg-[#F5F5F5] dark:bg-gray-900 flex items-center justify-center">
@@ -126,5 +108,18 @@ function AuthCallbackContent() {
 }
 
 export default function AuthCallbackPage() {
-    return <AuthCallbackContent />;
+    return (
+        <Suspense
+            fallback={
+                <div className="min-h-screen bg-[#F5F5F5] dark:bg-gray-900 flex items-center justify-center">
+                    <div className="space-y-4 text-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2563EB] mx-auto"></div>
+                        <div className="text-[#1A1A1A] dark:text-white font-light">Loading...</div>
+                    </div>
+                </div>
+            }
+        >
+            <AuthCallbackContent />
+        </Suspense>
+    );
 }
