@@ -47,15 +47,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
             if (token && storedUser) {
                 try {
                     // Try to use stored user first for faster loading
-                    const parsedUser = JSON.parse(storedUser);
+                    const parsedData = JSON.parse(storedUser);
+                    // Handle nested user object from /me endpoint
+                    const parsedUser = parsedData.user || parsedData;
                     setUser(parsedUser);
 
                     // Validate token in background
                     const response = await apiClient.getCurrentUser();
                     if (response.data) {
                         // Update with fresh user data
-                        setUser(response.data);
-                        localStorage.setItem("user", JSON.stringify(response.data));
+                        // Handle if API returns {user: {...}} or just {...}
+                        const freshUser = (response.data as any).user || response.data;
+                        setUser(freshUser);
+                        localStorage.setItem("user", JSON.stringify(freshUser));
                     } else if (response.error) {
                         // Token is invalid
                         console.warn("Token validation failed:", response.error);

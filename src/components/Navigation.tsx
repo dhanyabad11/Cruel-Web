@@ -7,11 +7,6 @@ import { ThemeToggle } from "./ThemeToggle";
 export function Navigation() {
     const { user, logout } = useAuth();
 
-    // Debug: Log user object to see what data we have
-    console.log("Navigation - User object:", user);
-    console.log("Navigation - Full name:", user?.full_name);
-    console.log("Navigation - Email:", user?.email);
-
     const handleLogout = async () => {
         console.log("Logout button clicked");
         try {
