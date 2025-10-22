@@ -253,18 +253,15 @@ export default function RegisterPage() {
                         onClick={async () => {
                             try {
                                 setIsLoading(true);
-                                const response = await fetch("/api/proxy/api/auth/oauth/google", {
-                                    method: "POST",
-                                    headers: {
-                                        "Content-Type": "application/json",
+                                const { supabase } = await import("@/lib/supabase");
+                                const { error } = await supabase.auth.signInWithOAuth({
+                                    provider: "google",
+                                    options: {
+                                        redirectTo: `${window.location.origin}/auth/callback`,
                                     },
-                                    body: JSON.stringify({
-                                        redirect_url: `${window.location.origin}/auth/callback`,
-                                    }),
                                 });
-                                const data = await response.json();
-                                if (data.url) {
-                                    window.location.href = data.url;
+                                if (error) {
+                                    setError(error.message);
                                 }
                             } catch (error) {
                                 console.error("Google OAuth error:", error);

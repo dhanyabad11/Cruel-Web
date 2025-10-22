@@ -12,8 +12,6 @@ function AuthCallbackContent() {
     useEffect(() => {
         const handleCallback = async () => {
             try {
-                // Get the code from URL parameters
-                const code = searchParams.get("code");
                 const errorParam = searchParams.get("error");
                 const errorDescription = searchParams.get("error_description");
 
@@ -23,32 +21,35 @@ function AuthCallbackContent() {
                     return;
                 }
 
-                if (!code) {
-                    setError("No authorization code received");
+                // Exchange the code for a session using Supabase
+                const { supabase } = await import("@/lib/supabase");
+                const { data, error } = await supabase.auth.getSession();
+
+                if (error) {
+                    setError(error.message);
                     setTimeout(() => router.push("/login"), 3000);
                     return;
                 }
 
-                // Exchange code for session
-                const response = await fetch("/api/proxy/api/auth/oauth/callback", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ code }),
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.access_token) {
+                if (data.session) {
                     // Store the token and user
-                    apiClient.setToken(data.access_token);
-                    localStorage.setItem("user", JSON.stringify(data.user));
+                    apiClient.setToken(data.session.access_token);
+                    const user = {
+                        id: data.session.user.id,
+                        email: data.session.user.email || "",
+                        full_name:
+                            data.session.user.user_metadata?.full_name ||
+                            data.session.user.user_metadata?.name ||
+                            "",
+                        email_confirmed: !!data.session.user.email_confirmed_at,
+                        is_active: true,
+                    };
+                    localStorage.setItem("user", JSON.stringify(user));
 
                     // Redirect to dashboard
                     window.location.href = "/dashboard";
                 } else {
-                    setError(data.detail || "Authentication failed");
+                    setError("No session found");
                     setTimeout(() => router.push("/login"), 3000);
                 }
             } catch (error) {
