@@ -11,6 +11,15 @@ interface User {
     email_confirmed?: boolean;
 }
 
+interface ApiUserResponse {
+    user?: User;
+    id?: string;
+    email?: string;
+    full_name?: string;
+    is_active?: boolean;
+    email_confirmed?: boolean;
+}
+
 interface AuthContextType {
     user: User | null;
     loading: boolean;
@@ -50,6 +59,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
                     const parsedData = JSON.parse(storedUser);
                     // Handle nested user object from /me endpoint
                     const parsedUser = parsedData.user || parsedData;
+
+                    // If we extracted a nested user, save the corrected format
+                    if (parsedData.user && parsedData.user !== parsedData) {
+                        localStorage.setItem("user", JSON.stringify(parsedUser));
+                    }
+
                     setUser(parsedUser);
 
                     // Validate token in background
@@ -57,7 +72,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
                     if (response.data) {
                         // Update with fresh user data
                         // Handle if API returns {user: {...}} or just {...}
-                        const freshUser = (response.data as any).user || response.data;
+                        const apiResponse = response.data as ApiUserResponse;
+                        const freshUser = apiResponse.user || (response.data as User);
                         setUser(freshUser);
                         localStorage.setItem("user", JSON.stringify(freshUser));
                     } else if (response.error) {
