@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { apiClient } from "@/lib/api";
 
 // Force dynamic rendering for OAuth callback
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 function AuthCallbackContent() {
     const router = useRouter();
@@ -53,8 +53,10 @@ function AuthCallbackContent() {
                 const user = {
                     id: session.user.id,
                     email: session.user.email || "",
-                    full_name: session.user.user_metadata?.full_name ||
-                             session.user.user_metadata?.name || "",
+                    full_name:
+                        session.user.user_metadata?.full_name ||
+                        session.user.user_metadata?.name ||
+                        "",
                     avatar_url: session.user.user_metadata?.avatar_url || "",
                     email_confirmed: !!session.user.email_confirmed_at,
                     is_active: true,
@@ -85,7 +87,6 @@ function AuthCallbackContent() {
                 setTimeout(() => {
                     router.push("/dashboard");
                 }, 1500);
-
             } catch (error) {
                 console.error("Unexpected error during authentication:", error);
                 setStatus("error");
@@ -113,13 +114,21 @@ function AuthCallbackContent() {
                 {status === "success" && (
                     <>
                         <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            <svg
+                                className="w-6 h-6 text-green-600"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M5 13l4 4L19 7"
+                                />
                             </svg>
                         </div>
-                        <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                            Welcome Back!
-                        </h1>
+                        <h1 className="text-2xl font-bold text-gray-900 mb-2">Welcome Back!</h1>
                         <p className="text-gray-600">{message}</p>
                     </>
                 )}
@@ -127,17 +136,25 @@ function AuthCallbackContent() {
                 {status === "error" && (
                     <>
                         <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            <svg
+                                className="w-6 h-6 text-red-600"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
                             </svg>
                         </div>
                         <h1 className="text-2xl font-bold text-gray-900 mb-2">
                             Authentication Failed
                         </h1>
                         <p className="text-gray-600 mb-4">{message}</p>
-                        <p className="text-sm text-gray-500">
-                            Redirecting to login page...
-                        </p>
+                        <p className="text-sm text-gray-500">Redirecting to login page...</p>
                     </>
                 )}
             </div>
@@ -147,11 +164,13 @@ function AuthCallbackContent() {
 
 export default function AuthCallbackPage() {
     return (
-        <Suspense fallback={
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            </div>
-        }>
+        <Suspense
+            fallback={
+                <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                </div>
+            }
+        >
             <AuthCallbackContent />
         </Suspense>
     );
