@@ -97,29 +97,23 @@ export default function NotificationSettingsPage() {
                 return;
             }
 
-            const settingsResponse = await fetch(
-                `${API_URL}/api/settings/notifications`,
-                {
-                    method: "PUT",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(settings),
-                }
-            );
+            const settingsResponse = await fetch(`${API_URL}/api/settings/notifications`, {
+                method: "PUT",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(settings),
+            });
 
-            const remindersResponse = await fetch(
-                `${API_URL}/api/settings/reminders/bulk`,
-                {
-                    method: "PUT",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ reminders }),
-                }
-            );
+            const remindersResponse = await fetch(`${API_URL}/api/settings/reminders/bulk`, {
+                method: "PUT",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ reminders }),
+            });
 
             if (settingsResponse.ok && remindersResponse.ok) {
                 toast.success("Settings saved!");
