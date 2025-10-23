@@ -44,5 +44,6 @@ export const config = {
         "/settings/:path*",
         "/login",
         "/register",
+        "/auth/callback",
     ],
 };

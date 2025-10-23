@@ -1,10 +1,11 @@
+// Force Vercel redeploy - attempt 2
 "use client";
 
 import { useEffect, useState } from "react";
 import { apiClient } from "@/lib/api";
 
 // Force dynamic rendering for OAuth callback
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default function AuthCallbackPage() {
     const [status, setStatus] = useState("Processing authentication...");

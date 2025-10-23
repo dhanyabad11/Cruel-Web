@@ -1,19 +1,28 @@
 {
-  "rewrites": [
-    {
-      "source": "/auth/callback",
-      "destination": "/auth/callback"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/auth/callback",
-      "headers": [
+    "redirects": [
         {
-          "key": "Cache-Control",
-          "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
+            "source": "/auth/callback",
+            "destination": "/auth/callback",
+            "permanent": false
         }
-      ]
-    }
-  ]
+    ],
+    "headers": [
+        {
+            "source": "/auth/callback",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
+                },
+                {
+                    "key": "Pragma",
+                    "value": "no-cache"
+                },
+                {
+                    "key": "Expires",
+                    "value": "0"
+                }
+            ]
+        }
+    ]
 }
