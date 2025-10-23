@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { Navigation } from "@/components/Navigation";
 import { Bell, Mail, MessageSquare, Smartphone, Save } from "lucide-react";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://198.211.106.97";
+
 interface NotificationSettings {
     id?: number;
     email?: string;
@@ -67,7 +69,7 @@ export default function NotificationSettingsPage() {
                 return;
             }
 
-            const response = await fetch("http://localhost:8000/api/settings/notifications", {
+            const response = await fetch(`${API_URL}/api/settings/notifications`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -96,7 +98,7 @@ export default function NotificationSettingsPage() {
             }
 
             const settingsResponse = await fetch(
-                "http://localhost:8000/api/settings/notifications",
+                `${API_URL}/api/settings/notifications`,
                 {
                     method: "PUT",
                     headers: {
@@ -108,7 +110,7 @@ export default function NotificationSettingsPage() {
             );
 
             const remindersResponse = await fetch(
-                "http://localhost:8000/api/settings/reminders/bulk",
+                `${API_URL}/api/settings/reminders/bulk`,
                 {
                     method: "PUT",
                     headers: {
