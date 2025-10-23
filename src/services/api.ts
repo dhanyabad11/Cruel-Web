@@ -8,7 +8,7 @@ import type {
 } from "../types";
 import { whatsappAPI } from "./whatsapp";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://198.211.106.97";
 
 export const api = axios.create({
     baseURL: API_BASE_URL,

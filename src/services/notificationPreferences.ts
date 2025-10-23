@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://198.211.106.97";
 
 export async function getNotificationPreferences(token: string) {
     return axios.get(`${API_BASE}/notifications/preferences`, {

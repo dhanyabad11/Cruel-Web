@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Mail, MessageSquare, Save, Send, CheckCircle, XCircle } from "lucide-react";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://198.211.106.97";
+
 export default function NotificationsPage() {
     const { user, loading } = useAuth();
     const router = useRouter();
@@ -65,11 +67,11 @@ export default function NotificationsPage() {
 
         try {
             const token = localStorage.getItem("auth_token");
-            let url = "http://localhost:8000/api/notifications/test-notifications";
+            let url = `${API_URL}/api/notifications/test-notifications`;
 
             // For SMS and WhatsApp, we need phone number
             if ((type === "whatsapp" || type === "sms") && phoneNumber) {
-                url = `http://localhost:8000/api/notifications/test-notifications-public?phone_number=${encodeURIComponent(
+                url = `${API_URL}/api/notifications/test-notifications-public?phone_number=${encodeURIComponent(
                     phoneNumber
                 )}`;
             } else if (token) {
@@ -77,7 +79,7 @@ export default function NotificationsPage() {
                 // (no-op, use the default URL)
             } else {
                 // Fallback to public endpoint for email/push if no token
-                url = "http://localhost:8000/api/notifications/test-notifications-public";
+                url = `${API_URL}/api/notifications/test-notifications-public`;
             }
 
             const headers: Record<string, string> = {
