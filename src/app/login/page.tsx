@@ -237,9 +237,10 @@ export default function LoginPage() {
                                 console.log("Supabase client loaded");
 
                                 // Use current origin for callback URL
-                                const callbackUrl = typeof window !== 'undefined' 
-                                    ? `${window.location.origin}/auth/callback`
-                                    : 'https://cruel.vercel.app/auth/callback';
+                                const callbackUrl =
+                                    typeof window !== "undefined"
+                                        ? `${window.location.origin}/auth/callback`
+                                        : "https://cruel.vercel.app/auth/callback";
 
                                 const { error } = await supabase.auth.signInWithOAuth({
                                     provider: "google",
